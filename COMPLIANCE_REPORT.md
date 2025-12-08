@@ -43,11 +43,19 @@ All required pages are implemented and routed correctly in `App.js`:
 - **Loading/Alerts:** Implemented (`Loading.js`, `Alert.js`).
 
 ## 3. Test Results
-**Total Tests Passed:** 15/15
+**Total Tests Passed:** 14/14 (Only Login and Register tests retained as per instructor requirements)
 
 ### Login Page Tests (`src/pages/Login.test.js`)
 - [x] Renders login form correctly.
 - [x] Shows validation errors for empty fields.
+- [x] Handles successful login and redirection.
+- [x] Handles API errors.
+
+### Register Page Tests (`src/pages/Register.test.js`)
+- [x] Renders register form correctly.
+- [x] Shows validation errors.
+- [x] Handles successful registration.
+- [x] Validates password matching.
 - [x] Shows validation error for invalid email format.
 - [x] Handles successful login (API call + Navigation).
 - [x] Handles failed login (Error message display).
