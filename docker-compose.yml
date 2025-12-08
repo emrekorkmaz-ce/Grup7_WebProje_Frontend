@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  frontend:
+    container_name: grup7_frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Windows'ta dosya değişimlerini algılamak için
+    stdin_open: true
+    tty: true
