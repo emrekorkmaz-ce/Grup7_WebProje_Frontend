@@ -38,7 +38,7 @@ const ResetPassword = () => {
         setLoading(true);
 
         try {
-            await api.post(/auth/reset-password/, { password: data.password });
+            await api.post('/auth/reset-password', { password: data.password });
             setSuccess('Şifre başarıyla sıfırlandı! Giriş sayfasına yönlendiriliyorsunuz...');
             setTimeout(() => {
                 navigate('/login');
