@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '../context/AuthContext';
-import Register from './Register';
+import Register from '../pages/Register';
 import api from '../services/api';
 
 // Mock the useNavigate hook
