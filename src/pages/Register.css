@@ -127,6 +127,10 @@
 }
 
 .submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .error-message {
   background: rgba(211, 47, 47, 0.1);
   color: #ff6b6b;
@@ -152,10 +156,6 @@
 
 .login-link a:hover {
   text-decoration: underline;
-} padding: 12px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  border: 1px solid #cfc;
 }
 
 .login-link {

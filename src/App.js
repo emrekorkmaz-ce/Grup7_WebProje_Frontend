@@ -14,9 +14,10 @@ import NotFound from './pages/NotFound';
 import './App.css';
 
 function App() {
-    return ( <Router>
-        <AuthProvider>
-        <Routes>
+    return (
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <AuthProvider>
+                <Routes>
         <Route path = "/login"
         element = { <Login /> }
         /> <Route path = "/register"
