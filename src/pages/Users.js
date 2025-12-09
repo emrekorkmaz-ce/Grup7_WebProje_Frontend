@@ -13,8 +13,10 @@ const Users = () => {
     const fetchUsers = async () => {
       try {
         const response = await api.get('/users');
-        // Backend returns { users: [...], pagination: {...} }
-        if (response.data && response.data.users) {
+        // Backend returns { success: true, data: { users: [...], pagination: {...} } }
+        if (response.data?.data?.users) {
+            setUsers(response.data.data.users);
+        } else if (response.data?.users) {
             setUsers(response.data.users);
         } else if (Array.isArray(response.data)) {
             setUsers(response.data);

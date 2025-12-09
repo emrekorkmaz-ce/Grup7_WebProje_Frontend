@@ -18,9 +18,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check if user is logged in on mount
     const token = localStorage.getItem('accessToken');
-    if (token) {
+    if (token && token !== 'undefined' && token !== 'null') {
       fetchCurrentUser();
     } else {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       setLoading(false);
     }
   }, []);
@@ -28,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   const fetchCurrentUser = async () => {
     try {
       const response = await api.get('/users/me');
-      setUser(response.data);
+      setUser(response.data.data);
     } catch (error) {
       console.error('Failed to fetch user:', error);
       localStorage.removeItem('accessToken');
@@ -42,7 +44,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await api.post('/auth/login', { email, password });
-      const { user, accessToken, refreshToken } = response.data;
+      const { user, accessToken, refreshToken } = response.data.data;
       
       localStorage.setItem('accessToken', accessToken);
       if (refreshToken) {
@@ -52,9 +54,10 @@ export const AuthProvider = ({ children }) => {
       setUser(user);
       return { success: true, user };
     } catch (error) {
+      const errorMessage = error.response?.data?.error?.message || error.response?.data?.message || error.response?.data?.error || 'Giriş başarısız';
       return {
         success: false,
-        error: error.response?.data?.error || 'Giriş başarısız'
+        error: typeof errorMessage === 'object' ? JSON.stringify(errorMessage) : errorMessage
       };
     }
   };
@@ -64,9 +67,24 @@ export const AuthProvider = ({ children }) => {
       const response = await api.post('/auth/register', userData);
       return { success: true, message: response.data.message };
     } catch (error) {
+      const errorData = error.response?.data?.error;
+      let errorMessage = 'Kayıt başarısız';
+      
+      if (errorData) {
+          if (typeof errorData === 'string') {
+              errorMessage = errorData;
+          } else if (typeof errorData === 'object') {
+              if (errorData.details && Array.isArray(errorData.details)) {
+                  errorMessage = errorData.details.join(', ');
+              } else {
+                  errorMessage = errorData.message || JSON.stringify(errorData);
+              }
+          }
+      }
+      
       return {
         success: false,
-        error: error.response?.data?.error || 'Kayıt başarısız'
+        error: errorMessage
       };
     }
   };

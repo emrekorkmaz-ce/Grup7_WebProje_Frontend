@@ -38,13 +38,19 @@ const ResetPassword = () => {
         setLoading(true);
 
         try {
-            await api.post('/auth/reset-password', { password: data.password });
+            await api.post('/auth/reset-password', { 
+                token, 
+                password: data.password, 
+                confirmPassword: data.confirmPassword 
+            });
             setSuccess('Şifre başarıyla sıfırlandı! Giriş sayfasına yönlendiriliyorsunuz...');
             setTimeout(() => {
                 navigate('/login');
             }, 2000);
         } catch (err) {
-            setError(err.response?.data?.error || 'Şifre sıfırlanamadı');
+            const errorData = err.response?.data?.error;
+            const errorMessage = typeof errorData === 'object' ? (errorData.message || JSON.stringify(errorData)) : (errorData || 'Şifre sıfırlanamadı');
+            setError(errorMessage);
         }
 
         setLoading(false);

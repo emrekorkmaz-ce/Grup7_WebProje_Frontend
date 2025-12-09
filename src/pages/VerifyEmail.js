@@ -12,7 +12,7 @@ const VerifyEmail = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        await api.post(`/auth/verify-email/${token}`);
+        await api.post('/auth/verify-email', { token });
         setStatus('success');
         setMessage('E-posta başarıyla doğrulandı! Giriş sayfasına yönlendiriliyorsunuz...');
         setTimeout(() => {

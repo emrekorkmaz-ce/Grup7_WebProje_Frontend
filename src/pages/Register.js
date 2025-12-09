@@ -30,7 +30,10 @@ const registerSchema = yup.object().shape({
     role: yup.string().oneOf(['student', 'faculty'], 'Geçersiz rol').required('Rol gereklidir'),
     student_number: yup.string().when('role', {
         is: 'student',
-        then: (schema) => schema.required('Öğrenci numarası gereklidir'),
+        then: (schema) => schema
+            .required('Öğrenci numarası gereklidir')
+            .min(6, 'Öğrenci numarası en az 6 karakter olmalıdır')
+            .max(20, 'Öğrenci numarası en fazla 20 karakter olabilir'),
         otherwise: (schema) => schema.notRequired()
     }),
     employee_number: yup.string().when('role', {
@@ -67,7 +70,13 @@ const Register = () => {
 
     useEffect(() => {
         api.get('/departments').then(res => {
-            setDepartments(res.data);
+            if (res.data.data) {
+                setDepartments(res.data.data);
+            } else if (Array.isArray(res.data)) {
+                setDepartments(res.data);
+            } else {
+                setDepartments([]);
+            }
         }).catch(() => {
             setDepartments([
                 { id: '1', name: 'Bilgisayar Mühendisliği', code: 'CENG' },
@@ -93,6 +102,7 @@ const Register = () => {
         const userData = {
             email: data.email,
             password: data.password,
+            confirmPassword: data.confirmPassword,
             full_name: data.full_name,
             role: data.role,
             department_id: data.department_id

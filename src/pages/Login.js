@@ -17,8 +17,15 @@ const loginSchema = yup.object().shape({
 const Login = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
+    const { login, user } = useAuth();
     const navigate = useNavigate();
+
+    // Kullanıcı zaten giriş yapmışsa dashboard'a yönlendir
+    React.useEffect(() => {
+        if (user) {
+            navigate('/dashboard');
+        }
+    }, [user, navigate]);
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(loginSchema),
@@ -37,12 +44,15 @@ const Login = () => {
             if (data.rememberMe) {
                 localStorage.setItem('rememberMe', 'true');
             }
-            navigate('/dashboard');
+            // Yönlendirmeyi useEffect yapacak
         } else {
-            setError(result.error);
+            // Hata mesajını güvenli bir şekilde string'e çevir
+            const errorMsg = typeof result.error === 'object' 
+                ? (result.error.message || JSON.stringify(result.error)) 
+                : result.error;
+            setError(errorMsg);
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     return (
