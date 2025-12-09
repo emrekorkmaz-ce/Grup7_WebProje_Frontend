@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   const fetchCurrentUser = async () => {
     try {
       const response = await api.get('/users/me');
-      setUser(response.data);
+      setUser(response.data.data || response.data);
     } catch (error) {
       console.error('Failed to fetch user:', error);
       localStorage.removeItem('accessToken');
@@ -42,7 +42,8 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await api.post('/auth/login', { email, password });
-      const { user, accessToken, refreshToken } = response.data;
+      const data = response.data.data || response.data;
+      const { user, accessToken, refreshToken } = data;
       
       localStorage.setItem('accessToken', accessToken);
       if (refreshToken) {
@@ -52,9 +53,25 @@ export const AuthProvider = ({ children }) => {
       setUser(user);
       return { success: true, user };
     } catch (error) {
+      let errorMessage = 'Giriş başarısız';
+      
+      if (error.response?.data?.error) {
+        if (typeof error.response.data.error === 'string') {
+          errorMessage = error.response.data.error;
+        } else if (error.response.data.error.message) {
+          errorMessage = error.response.data.error.message;
+        } else if (error.response.data.error.details && Array.isArray(error.response.data.error.details)) {
+          errorMessage = error.response.data.error.details.join(', ');
+        }
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.details && Array.isArray(error.response.data.details)) {
+        errorMessage = error.response.data.details.join(', ');
+      }
+      
       return {
         success: false,
-        error: error.response?.data?.error || 'Giriş başarısız'
+        error: errorMessage
       };
     }
   };
@@ -62,11 +79,33 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const response = await api.post('/auth/register', userData);
-      return { success: true, message: response.data.message };
+      const message = response.data.message || response.data.data?.message || 'Kayıt başarılı';
+      return { success: true, message };
     } catch (error) {
+      let errorMessage = 'Kayıt başarısız';
+      
+      if (error.response?.data?.error) {
+        if (typeof error.response.data.error === 'string') {
+          errorMessage = error.response.data.error;
+        } else if (error.response.data.error.message) {
+          errorMessage = error.response.data.error.message;
+          if (error.response.data.error.details && Array.isArray(error.response.data.error.details) && error.response.data.error.details.length > 0) {
+            errorMessage += ': ' + error.response.data.error.details.join(', ');
+          }
+        } else if (error.response.data.error.details && Array.isArray(error.response.data.error.details)) {
+          errorMessage = error.response.data.error.details.join(', ');
+        }
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.details && Array.isArray(error.response.data.details)) {
+        errorMessage = error.response.data.details.join(', ');
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       return {
         success: false,
-        error: error.response?.data?.error || 'Kayıt başarısız'
+        error: errorMessage
       };
     }
   };

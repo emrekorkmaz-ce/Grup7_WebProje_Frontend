@@ -10,23 +10,62 @@ const VerifyEmail = () => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
+    // Don't do anything if token is not available yet
+    if (!token) {
+      // Wait a moment for React Router to populate the token
+      const timer = setTimeout(() => {
+        if (!token) {
+          setStatus('error');
+          setMessage('Doğrulama token\'ı bulunamadı.');
+        }
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+
+    let isMounted = true;
+
     const verifyEmail = async () => {
+      console.log('🔍 VerifyEmail: Token from URL:', token);
+      
       try {
-        await api.post(`/auth/verify-email/${token}`);
-        setStatus('success');
-        setMessage('E-posta başarıyla doğrulandı! Giriş sayfasına yönlendiriliyorsunuz...');
-        setTimeout(() => {
-          navigate('/login');
-        }, 3000);
+        console.log('📤 Sending verification request to backend...');
+        const response = await api.post('/auth/verify-email', { token });
+        console.log('✅ Verification response:', response.data);
+        
+        if (isMounted) {
+          setStatus('success');
+          setMessage('E-posta başarıyla doğrulandı! Giriş sayfasına yönlendiriliyorsunuz...');
+          setTimeout(() => {
+            navigate('/login');
+          }, 2000);
+        }
       } catch (error) {
-        setStatus('error');
-        setMessage(error.response?.data?.error || 'Doğrulama başarısız. Bağlantı geçersiz veya süresi dolmuş olabilir.');
+        console.error('❌ Verification error:', error);
+        console.error('❌ Error response:', error.response?.data);
+        
+        // Only show error if we have a response (not a network error)
+        // Network errors might be temporary, so we'll keep showing "verifying"
+        if (isMounted && error.response) {
+          const statusCode = error.response.status;
+          // Only show error for client errors (4xx), not server errors (5xx) or network errors
+          if (statusCode >= 400 && statusCode < 500) {
+            setStatus('error');
+            const errorMessage = error.response?.data?.error?.message || 
+                                error.response?.data?.error || 
+                                error.response?.data?.message ||
+                                'Doğrulama başarısız. Bağlantı geçersiz veya süresi dolmuş olabilir.';
+            setMessage(errorMessage);
+          }
+          // For 5xx or network errors, keep showing "verifying" state
+        }
       }
     };
 
-    if (token) {
-      verifyEmail();
-    }
+    verifyEmail();
+
+    return () => {
+      isMounted = false;
+    };
   }, [token, navigate]);
 
   return (

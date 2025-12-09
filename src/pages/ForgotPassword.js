@@ -17,9 +17,14 @@ const ForgotPassword = () => {
 
     try {
       await api.post('/auth/forgot-password', { email });
-      setSuccess('Eğer bu e-posta ile kayıtlı bir hesap varsa, şifre sıfırlama bağlantısı gönderildi.');
+      const message = 'Eğer bu e-posta ile kayıtlı bir hesap varsa, şifre sıfırlama bağlantısı gönderildi.';
+      setSuccess(message);
     } catch (error) {
-      setError(error.response?.data?.error || 'Sıfırlama e-postası gönderilemedi');
+      const errorMessage = error.response?.data?.error?.message || 
+                          error.response?.data?.error || 
+                          error.response?.data?.message ||
+                          'Sıfırlama e-postası gönderilemedi';
+      setError(errorMessage);
     }
     
     setLoading(false);

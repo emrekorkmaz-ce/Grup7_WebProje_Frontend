@@ -47,10 +47,15 @@ const Profile = () => {
 
         try {
             const response = await api.put('/users/me', data);
-            updateUser(response.data.user);
+            const userData = response.data.data || response.data.user || response.data;
+            updateUser(userData);
             setSuccess('Profil başarıyla güncellendi!');
         } catch (err) {
-            setError(err.response?.data?.error || 'Profil güncellenemedi');
+            const errorMessage = err.response?.data?.error?.message || 
+                               err.response?.data?.error || 
+                               err.response?.data?.message ||
+                               'Profil güncellenemedi';
+            setError(errorMessage);
         }
 
         setLoading(false);
@@ -82,11 +87,16 @@ const Profile = () => {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            setProfilePicture(response.data.profilePictureUrl);
-            updateUser({ ...user, profile_picture_url: response.data.profilePictureUrl });
+            const profilePictureUrl = response.data.data?.profilePictureUrl || response.data.profilePictureUrl;
+            setProfilePicture(profilePictureUrl);
+            updateUser({ ...user, profile_picture_url: profilePictureUrl });
             setSuccess('Profil resmi başarıyla yüklendi!');
         } catch (error) {
-            setError(error.response?.data?.error || 'Profil resmi yüklenemedi');
+            const errorMessage = error.response?.data?.error?.message || 
+                               error.response?.data?.error || 
+                               error.response?.data?.message ||
+                               'Profil resmi yüklenemedi';
+            setError(errorMessage);
         }
 
         setUploading(false);

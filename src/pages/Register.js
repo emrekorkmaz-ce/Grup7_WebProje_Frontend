@@ -67,7 +67,8 @@ const Register = () => {
 
     useEffect(() => {
         api.get('/departments').then(res => {
-            setDepartments(res.data);
+            const data = res.data.data || res.data;
+            setDepartments(Array.isArray(data) ? data : []);
         }).catch(() => {
             setDepartments([
                 { id: '1', name: 'Bilgisayar Mühendisliği', code: 'CENG' },
@@ -93,6 +94,7 @@ const Register = () => {
         const userData = {
             email: data.email,
             password: data.password,
+            confirmPassword: data.confirmPassword,
             full_name: data.full_name,
             role: data.role,
             department_id: data.department_id
