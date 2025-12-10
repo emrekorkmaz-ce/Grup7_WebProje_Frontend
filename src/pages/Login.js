@@ -46,10 +46,13 @@ const Login = () => {
             }
             // Yönlendirmeyi useEffect yapacak
         } else {
-            // Hata mesajını güvenli bir şekilde string'e çevir
-            const errorMsg = typeof result.error === 'object' 
+            // Eğer hata mail onay bekliyor ise Türkçeleştir
+            let errorMsg = typeof result.error === 'object' 
                 ? (result.error.message || JSON.stringify(result.error)) 
                 : result.error;
+            if (errorMsg && errorMsg.toLowerCase().includes('verify your email')) {
+                errorMsg = 'Hesabınızı kullanabilmek için önce e-posta adresinizi onaylamanız gerekiyor.';
+            }
             setError(errorMsg);
             setLoading(false);
         }

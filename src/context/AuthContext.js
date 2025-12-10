@@ -67,21 +67,24 @@ export const AuthProvider = ({ children }) => {
       const response = await api.post('/auth/register', userData);
       return { success: true, message: response.data.message };
     } catch (error) {
-      const errorData = error.response?.data?.error;
       let errorMessage = 'Kayıt başarısız';
-      
-      if (errorData) {
+      // 409 Conflict için özel Türkçe mesaj
+      if (error.response?.status === 409) {
+        errorMessage = 'Bu e-posta adresiyle zaten bir hesap mevcut. Lütfen farklı bir e-posta kullanın veya giriş yapın.';
+      } else {
+        const errorData = error.response?.data?.error;
+        if (errorData) {
           if (typeof errorData === 'string') {
-              errorMessage = errorData;
+            errorMessage = errorData;
           } else if (typeof errorData === 'object') {
-              if (errorData.details && Array.isArray(errorData.details)) {
-                  errorMessage = errorData.details.join(', ');
-              } else {
-                  errorMessage = errorData.message || JSON.stringify(errorData);
-              }
+            if (errorData.details && Array.isArray(errorData.details)) {
+              errorMessage = errorData.details.join(', ');
+            } else {
+              errorMessage = errorData.message || JSON.stringify(errorData);
+            }
           }
+        }
       }
-      
       return {
         success: false,
         error: errorMessage

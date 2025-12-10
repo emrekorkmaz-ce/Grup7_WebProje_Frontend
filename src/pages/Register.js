@@ -118,12 +118,20 @@ const Register = () => {
         const result = await registerUser(userData);
 
         if (result.success) {
-            setSuccess(result.message || 'Kayıt başarılı! Lütfen doğrulama için e-postanızı kontrol edin.');
+            setSuccess('Kayıt başarılı! Hesabınızı kullanabilmek için e-posta adresinize gelen onay linkine tıklayarak hesabınızı doğrulamanız gerekiyor.');
+            // Sayfa hemen yönlenmesin, kullanıcı mesajı görsün
             setTimeout(() => {
                 navigate('/login');
-            }, 3000);
+            }, 4000);
         } else {
-            setError(result.error);
+            // Eğer hata mail onay bekliyor ise Türkçeleştir
+            let errorMsg = typeof result.error === 'object' 
+                ? (result.error.message || JSON.stringify(result.error)) 
+                : result.error;
+            if (errorMsg && errorMsg.toLowerCase().includes('verify your email')) {
+                errorMsg = 'Hesabınızı kullanabilmek için önce e-posta adresinizi onaylamanız gerekiyor.';
+            }
+            setError(errorMsg);
         }
 
         setLoading(false);
