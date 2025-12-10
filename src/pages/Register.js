@@ -30,7 +30,10 @@ const registerSchema = yup.object().shape({
     role: yup.string().oneOf(['student', 'faculty'], 'Geçersiz rol').required('Rol gereklidir'),
     student_number: yup.string().when('role', {
         is: 'student',
-        then: (schema) => schema.required('Öğrenci numarası gereklidir'),
+        then: (schema) => schema
+            .required('Öğrenci numarası gereklidir')
+            .min(6, 'Öğrenci numarası en az 6 karakter olmalıdır')
+            .max(20, 'Öğrenci numarası en fazla 20 karakter olabilir'),
         otherwise: (schema) => schema.notRequired()
     }),
     employee_number: yup.string().when('role', {
@@ -67,8 +70,13 @@ const Register = () => {
 
     useEffect(() => {
         api.get('/departments').then(res => {
-            const data = res.data.data || res.data;
-            setDepartments(Array.isArray(data) ? data : []);
+            if (res.data.data) {
+                setDepartments(res.data.data);
+            } else if (Array.isArray(res.data)) {
+                setDepartments(res.data);
+            } else {
+                setDepartments([]);
+            }
         }).catch(() => {
             setDepartments([
                 { id: '1', name: 'Bilgisayar Mühendisliği', code: 'CENG' },
@@ -110,12 +118,20 @@ const Register = () => {
         const result = await registerUser(userData);
 
         if (result.success) {
-            setSuccess(result.message || 'Kayıt başarılı! Lütfen doğrulama için e-postanızı kontrol edin.');
+            setSuccess('Kayıt başarılı! Hesabınızı kullanabilmek için e-posta adresinize gelen onay linkine tıklayarak hesabınızı doğrulamanız gerekiyor.');
+            // Sayfa hemen yönlenmesin, kullanıcı mesajı görsün
             setTimeout(() => {
                 navigate('/login');
-            }, 3000);
+            }, 4000);
         } else {
-            setError(result.error);
+            // Eğer hata mail onay bekliyor ise Türkçeleştir
+            let errorMsg = typeof result.error === 'object' 
+                ? (result.error.message || JSON.stringify(result.error)) 
+                : result.error;
+            if (errorMsg && errorMsg.toLowerCase().includes('verify your email')) {
+                errorMsg = 'Hesabınızı kullanabilmek için önce e-posta adresinizi onaylamanız gerekiyor.';
+            }
+            setError(errorMsg);
         }
 
         setLoading(false);

@@ -28,17 +28,12 @@ const VerifyEmail = () => {
       console.log('🔍 VerifyEmail: Token from URL:', token);
       
       try {
-        console.log('📤 Sending verification request to backend...');
-        const response = await api.post('/auth/verify-email', { token });
-        console.log('✅ Verification response:', response.data);
-        
-        if (isMounted) {
-          setStatus('success');
-          setMessage('E-posta başarıyla doğrulandı! Giriş sayfasına yönlendiriliyorsunuz...');
-          setTimeout(() => {
-            navigate('/login');
-          }, 2000);
-        }
+        await api.post('/auth/verify-email', { token });
+        setStatus('success');
+        setMessage('E-posta başarıyla doğrulandı! Giriş sayfasına yönlendiriliyorsunuz...');
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
       } catch (error) {
         console.error('❌ Verification error:', error);
         console.error('❌ Error response:', error.response?.data);

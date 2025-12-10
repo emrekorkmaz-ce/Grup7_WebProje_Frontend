@@ -59,6 +59,7 @@
   font-size: 2rem;
   background: linear-gradient(45deg, #ffffff, #ff5252, #ffffff);
   background-size: 200% auto;
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shine 3s linear infinite;
@@ -127,6 +128,10 @@
 }
 
 .submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .error-message {
   background: rgba(211, 47, 47, 0.1);
   color: #ff6b6b;
@@ -144,7 +149,7 @@
 }
 
 .login-link a {
-  color: #D32F2F;
+  color: #D32F2F !important;
   text-decoration: none;
   font-weight: 600;
   margin-left: 5px;
@@ -152,25 +157,7 @@
 
 .login-link a:hover {
   text-decoration: underline;
-} padding: 12px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  border: 1px solid #cfc;
 }
 
-.login-link {
-  text-align: center;
-  margin-top: 20px;
-  color: #666;
-}
 
-.login-link a {
-  color: #667eea;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.login-link a:hover {
-  text-decoration: underline;
-}
 

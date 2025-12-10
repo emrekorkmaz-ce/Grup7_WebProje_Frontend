@@ -14,11 +14,12 @@ const Users = () => {
       try {
         const response = await api.get('/users');
         // Backend returns { success: true, data: { users: [...], pagination: {...} } }
-        const data = response.data.data || response.data;
-        if (data && data.users) {
-            setUsers(data.users);
-        } else if (Array.isArray(data)) {
-            setUsers(data);
+        if (response.data?.data?.users) {
+            setUsers(response.data.data.users);
+        } else if (response.data?.users) {
+            setUsers(response.data.users);
+        } else if (Array.isArray(response.data)) {
+            setUsers(response.data);
         } else {
             setUsers([]);
             console.error('Unexpected API response format:', response.data);

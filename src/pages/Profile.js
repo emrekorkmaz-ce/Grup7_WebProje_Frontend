@@ -21,6 +21,7 @@ const Profile = () => {
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [imageError, setImageError] = useState(false);
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
         resolver: yupResolver(profileSchema),
@@ -40,6 +41,10 @@ const Profile = () => {
         }
     }, [user, reset]);
 
+    useEffect(() => {
+        setImageError(false);
+    }, [profilePicture]);
+
     const onSubmit = async (data) => {
         setError('');
         setSuccess('');
@@ -47,14 +52,11 @@ const Profile = () => {
 
         try {
             const response = await api.put('/users/me', data);
-            const userData = response.data.data || response.data.user || response.data;
-            updateUser(userData);
+            updateUser(response.data.data);
             setSuccess('Profil başarıyla güncellendi!');
         } catch (err) {
-            const errorMessage = err.response?.data?.error?.message || 
-                               err.response?.data?.error || 
-                               err.response?.data?.message ||
-                               'Profil güncellenemedi';
+            const errorData = err.response?.data?.error;
+            const errorMessage = typeof errorData === 'object' ? (errorData.message || JSON.stringify(errorData)) : (errorData || 'Profil güncellenemedi');
             setError(errorMessage);
         }
 
@@ -87,15 +89,30 @@ const Profile = () => {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            const profilePictureUrl = response.data.data?.profilePictureUrl || response.data.profilePictureUrl;
-            setProfilePicture(profilePictureUrl);
-            updateUser({ ...user, profile_picture_url: profilePictureUrl });
+            setProfilePicture(response.data.data.profilePictureUrl);
+            updateUser({ ...user, profile_picture_url: response.data.data.profilePictureUrl });
             setSuccess('Profil resmi başarıyla yüklendi!');
         } catch (error) {
-            const errorMessage = error.response?.data?.error?.message || 
-                               error.response?.data?.error || 
-                               error.response?.data?.message ||
-                               'Profil resmi yüklenemedi';
+            const errorData = error.response?.data?.error;
+            const errorMessage = typeof errorData === 'object' ? (errorData.message || JSON.stringify(errorData)) : (errorData || 'Profil resmi yüklenemedi');
+            setError(errorMessage);
+        }
+
+        setUploading(false);
+    };
+
+    const handleDeleteProfilePicture = async () => {
+        setUploading(true);
+        setError('');
+
+        try {
+            await api.delete('/users/me/profile-picture');
+            setProfilePicture(null);
+            updateUser({ ...user, profile_picture_url: null });
+            setSuccess('Profil resmi başarıyla kaldırıldı!');
+        } catch (error) {
+            const errorData = error.response?.data?.error;
+            const errorMessage = typeof errorData === 'object' ? (errorData.message || JSON.stringify(errorData)) : (errorData || 'Profil resmi kaldırılamadı');
             setError(errorMessage);
         }
 
@@ -122,11 +139,15 @@ const Profile = () => {
                     <div className='profile-section'>
                         <h2>Profil Resmi</h2>
                         <div className='profile-picture-section'>
-                            {profilePicture ? (
+                            {profilePicture && !imageError ? (
                                 <img 
                                     src={`http://localhost:5000${profilePicture}`} 
                                     alt='Profile' 
-                                    className='profile-picture' 
+                                    className='profile-picture'
+                                    onError={(e) => {
+                                        console.error('Image load error:', e);
+                                        setImageError(true);
+                                    }}
                                 />
                             ) : (
                                 <div className='profile-picture-placeholder'>
@@ -145,6 +166,17 @@ const Profile = () => {
                                     disabled={uploading}
                                     style={{ display: 'none' }}
                                 />
+                                {profilePicture && (
+                                    <button 
+                                        type="button" 
+                                        onClick={handleDeleteProfilePicture}
+                                        className="delete-photo-button"
+                                        disabled={uploading}
+                                        style={{ marginTop: '10px', backgroundColor: '#d32f2f', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', display: 'block' }}
+                                    >
+                                        Resmi Kaldır
+                                    </button>
+                                )}
                                 <small>Maks 5 MB, sadece JPG / PNG</small>
                             </div>
                         </div>

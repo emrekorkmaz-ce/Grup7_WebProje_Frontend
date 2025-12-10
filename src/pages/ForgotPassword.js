@@ -20,10 +20,8 @@ const ForgotPassword = () => {
       const message = 'Eğer bu e-posta ile kayıtlı bir hesap varsa, şifre sıfırlama bağlantısı gönderildi.';
       setSuccess(message);
     } catch (error) {
-      const errorMessage = error.response?.data?.error?.message || 
-                          error.response?.data?.error || 
-                          error.response?.data?.message ||
-                          'Sıfırlama e-postası gönderilemedi';
+      const errorData = error.response?.data?.error;
+      const errorMessage = typeof errorData === 'object' ? (errorData.message || JSON.stringify(errorData)) : (errorData || 'Sıfırlama e-postası gönderilemedi');
       setError(errorMessage);
     }
     

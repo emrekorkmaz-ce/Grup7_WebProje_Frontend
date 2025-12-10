@@ -18,9 +18,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check if user is logged in on mount
     const token = localStorage.getItem('accessToken');
-    if (token) {
+    if (token && token !== 'undefined' && token !== 'null') {
       fetchCurrentUser();
     } else {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       setLoading(false);
     }
   }, []);
@@ -28,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   const fetchCurrentUser = async () => {
     try {
       const response = await api.get('/users/me');
-      setUser(response.data.data || response.data);
+      setUser(response.data.data);
     } catch (error) {
       console.error('Failed to fetch user:', error);
       localStorage.removeItem('accessToken');
@@ -42,8 +44,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await api.post('/auth/login', { email, password });
-      const data = response.data.data || response.data;
-      const { user, accessToken, refreshToken } = data;
+      const { user, accessToken, refreshToken } = response.data.data;
       
       localStorage.setItem('accessToken', accessToken);
       if (refreshToken) {
@@ -53,25 +54,10 @@ export const AuthProvider = ({ children }) => {
       setUser(user);
       return { success: true, user };
     } catch (error) {
-      let errorMessage = 'Giriş başarısız';
-      
-      if (error.response?.data?.error) {
-        if (typeof error.response.data.error === 'string') {
-          errorMessage = error.response.data.error;
-        } else if (error.response.data.error.message) {
-          errorMessage = error.response.data.error.message;
-        } else if (error.response.data.error.details && Array.isArray(error.response.data.error.details)) {
-          errorMessage = error.response.data.error.details.join(', ');
-        }
-      } else if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.response?.data?.details && Array.isArray(error.response.data.details)) {
-        errorMessage = error.response.data.details.join(', ');
-      }
-      
+      const errorMessage = error.response?.data?.error?.message || error.response?.data?.message || error.response?.data?.error || 'Giriş başarısız';
       return {
         success: false,
-        error: errorMessage
+        error: typeof errorMessage === 'object' ? JSON.stringify(errorMessage) : errorMessage
       };
     }
   };
@@ -83,26 +69,23 @@ export const AuthProvider = ({ children }) => {
       return { success: true, message };
     } catch (error) {
       let errorMessage = 'Kayıt başarısız';
-      
-      if (error.response?.data?.error) {
-        if (typeof error.response.data.error === 'string') {
-          errorMessage = error.response.data.error;
-        } else if (error.response.data.error.message) {
-          errorMessage = error.response.data.error.message;
-          if (error.response.data.error.details && Array.isArray(error.response.data.error.details) && error.response.data.error.details.length > 0) {
-            errorMessage += ': ' + error.response.data.error.details.join(', ');
+      // 409 Conflict için özel Türkçe mesaj
+      if (error.response?.status === 409) {
+        errorMessage = 'Bu e-posta adresiyle zaten bir hesap mevcut. Lütfen farklı bir e-posta kullanın veya giriş yapın.';
+      } else {
+        const errorData = error.response?.data?.error;
+        if (errorData) {
+          if (typeof errorData === 'string') {
+            errorMessage = errorData;
+          } else if (typeof errorData === 'object') {
+            if (errorData.details && Array.isArray(errorData.details)) {
+              errorMessage = errorData.details.join(', ');
+            } else {
+              errorMessage = errorData.message || JSON.stringify(errorData);
+            }
           }
-        } else if (error.response.data.error.details && Array.isArray(error.response.data.error.details)) {
-          errorMessage = error.response.data.error.details.join(', ');
         }
-      } else if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.response?.data?.details && Array.isArray(error.response.data.details)) {
-        errorMessage = error.response.data.details.join(', ');
-      } else if (error.message) {
-        errorMessage = error.message;
       }
-      
       return {
         success: false,
         error: errorMessage
