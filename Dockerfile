@@ -1,19 +1,28 @@
-# Build stage
-FROM node:18-alpine
+# Multi-stage production image for React app
 
+# 1) Build stage
+FROM node:18-alpine AS builder
 WORKDIR /app
-
-# Copy package files
 COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy project files
+RUN npm ci
 COPY . .
+# Build static assets (API URL is injected via env at build time)
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=${REACT_APP_API_URL}
+RUN npm run build
 
-# Expose port
+# 2) Runtime stage - lightweight static file server
+FROM nginx:1.27-alpine
+# Copy built assets
+COPY --from=builder /app/build /usr/share/nginx/html
+# Basic nginx config (serve index.html for SPA routes)
+RUN printf 'server { \
+  listen 3000; \
+  server_name _; \
+  root /usr/share/nginx/html; \
+  index index.html; \
+  location / { try_files $uri /index.html; } \
+  location /static/ { try_files $uri =404; } \
+}\n' > /etc/nginx/conf.d/default.conf
 EXPOSE 3000
-
-# Start the application
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off;"]
