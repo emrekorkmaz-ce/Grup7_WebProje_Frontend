@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useAuth } from '../context/AuthContext';
-import api from '../services/api';
+import api, { BACKEND_BASE_URL } from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import TextInput from '../components/TextInput';
@@ -141,7 +141,7 @@ const Profile = () => {
                         <div className='profile-picture-section'>
                             {profilePicture && !imageError ? (
                                 <img 
-                                    src={`http://localhost:5000${profilePicture}`} 
+                                    src={`${BACKEND_BASE_URL}${profilePicture}`} 
                                     alt='Profile' 
                                     className='profile-picture'
                                     onError={(e) => {

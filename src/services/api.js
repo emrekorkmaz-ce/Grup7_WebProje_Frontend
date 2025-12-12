@@ -1,6 +1,9 @@
 import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
+// Backend base URL for static files (uploads, images, etc.)
+// Remove /api/v1 from API_BASE_URL to get backend base URL
+export const BACKEND_BASE_URL = API_BASE_URL.replace('/api/v1', '') || 'http://localhost:5000';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
