@@ -20,6 +20,12 @@ const Sidebar = () => {
         <Link to="/profile" className={`sidebar-link ${isActive('/profile')}`}>
           Profil
         </Link>
+        <Link to="/my-courses" className={`sidebar-link ${isActive('/my-courses')}`}>
+          Derslerim
+        </Link>
+        <Link to="/grades" className={`sidebar-link ${isActive('/grades')}`}>
+          Notlar
+        </Link>
         {user?.role === 'admin' && (
           <Link to="/users" className={`sidebar-link ${isActive('/users')}`}>
             Kullanıcılar

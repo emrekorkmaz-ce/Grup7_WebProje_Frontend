@@ -24,6 +24,13 @@ const Dashboard = () => {
   const handleAction = (action) => {
     if (action === 'settings') {
       navigate('/profile');
+    } else if (action === 'courses') {
+      navigate('/my-courses');
+    } else if (action === 'grades') {
+      navigate('/grades');
+    } else if (action === 'schedule') {
+      // Eğer bir ders programı sayfanız varsa route'u ekleyin, yoksa alert bırakabilirsiniz
+      alert('Ders Programı sayfası yapım aşamasında.');
     } else {
       alert('Bu özellik yapım aşamasındadır.');
     }

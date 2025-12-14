@@ -1,0 +1,64 @@
+.excuse-requests-page {
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.excuse-requests-page h2 {
+  margin-bottom: 24px;
+  color: #2d3a4b;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.loading, .error, .no-requests {
+  text-align: center;
+  margin: 32px 0;
+  font-size: 1.1em;
+  color: #b03a2e;
+}
+
+.requests-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  background: #f7fafd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.requests-table th, .requests-table td {
+  padding: 10px 14px;
+  text-align: left;
+}
+.requests-table th {
+  background: #e3e8f7;
+  color: #2d3a4b;
+  font-weight: 600;
+}
+.requests-table tr:nth-child(even) {
+  background: #f2f2f2;
+}
+.requests-table tr:hover {
+  background: #fbeee6;
+}
+.approve-btn, .reject-btn {
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.98em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-right: 8px;
+}
+.approve-btn:hover {
+  background: #27ae60;
+}
+.reject-btn:hover {
+  background: #a93226;
+}

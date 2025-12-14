@@ -11,6 +11,14 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Users from './pages/Users';
 import NotFound from './pages/NotFound';
+import MyCoursesPage from './pages/MyCoursesPage';
+import GradesPage from './pages/GradesPage';
+import GradebookPage from './pages/GradebookPage';
+import StartAttendancePage from './pages/StartAttendancePage';
+import GiveAttendancePage from './pages/GiveAttendancePage';
+import MyAttendancePage from './pages/MyAttendancePage';
+import AttendanceReportPage from './pages/AttendanceReportPage';
+import ExcuseRequestsPage from './pages/ExcuseRequestsPage';
 import './App.css';
 
 function App() {
@@ -48,7 +56,64 @@ function App() {
             replace /> }
         /> <Route path = "*"
         element = { <NotFound /> }
-        /> </Routes> </AuthProvider> </Router>
+                />
+                <Route path="/my-courses"
+                    element={
+                        <ProtectedRoute>
+                            <MyCoursesPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/grades"
+                    element={
+                        <ProtectedRoute>
+                            <GradesPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/gradebook/:sectionId"
+                    element={
+                        <ProtectedRoute>
+                            <GradebookPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/attendance/start"
+                    element={
+                        <ProtectedRoute>
+                            <StartAttendancePage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/attendance/give/:sessionId"
+                    element={
+                        <ProtectedRoute>
+                            <GiveAttendancePage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/my-attendance"
+                    element={
+                        <ProtectedRoute>
+                            <MyAttendancePage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/attendance/report/:sectionId"
+                    element={
+                        <ProtectedRoute>
+                            <AttendanceReportPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/excuse-requests"
+                    element={
+                        <ProtectedRoute>
+                            <ExcuseRequestsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                </Routes> </AuthProvider> </Router>
     );
 }
 

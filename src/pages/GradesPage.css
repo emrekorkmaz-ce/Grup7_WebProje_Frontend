@@ -1,0 +1,77 @@
+.grades-page {
+  max-width: 950px;
+  margin: 32px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.grades-page h2 {
+  margin-bottom: 24px;
+  color: #2d3a4b;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.gpa-summary {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+.gpa-summary div {
+  font-size: 1.1em;
+  color: #1a2233;
+  font-weight: 500;
+}
+.gpa-summary span {
+  font-weight: 700;
+  color: #c0392b;
+  margin-left: 6px;
+}
+.transcript-btn {
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.transcript-btn:hover {
+  background: #a93226;
+}
+
+.loading, .error, .no-grades {
+  text-align: center;
+  margin: 32px 0;
+  font-size: 1.1em;
+  color: #b03a2e;
+}
+
+.grades-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  background: #f7fafd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.grades-table th, .grades-table td {
+  padding: 10px 14px;
+  text-align: left;
+}
+.grades-table th {
+  background: #e3e8f7;
+  color: #2d3a4b;
+  font-weight: 600;
+}
+.grades-table tr:nth-child(even) {
+  background: #f2f2f2;
+}
+.grades-table tr:hover {
+  background: #fbeee6;
+}
