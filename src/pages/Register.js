@@ -69,29 +69,35 @@ const Register = () => {
     const role = watch('role');
 
     useEffect(() => {
-        api.get('/departments').then(res => {
-            if (res.data.data) {
-                setDepartments(res.data.data);
-            } else if (Array.isArray(res.data)) {
-                setDepartments(res.data);
-            } else {
+        console.log('Fetching departments from:', process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1');
+        api.get('/departments')
+            .then(res => {
+                console.log('Departments response:', res);
+                console.log('Response data:', res.data);
+                // Backend returns: { success: true, data: [...] }
+                if (res.data.success && res.data.data && Array.isArray(res.data.data)) {
+                    console.log('Setting departments:', res.data.data.length);
+                    setDepartments(res.data.data);
+                } else if (Array.isArray(res.data)) {
+                    console.log('Setting departments (array):', res.data.length);
+                    setDepartments(res.data);
+                } else if (res.data.data && Array.isArray(res.data.data)) {
+                    console.log('Setting departments (data array):', res.data.data.length);
+                    setDepartments(res.data.data);
+                } else {
+                    console.error('Unexpected response format:', res.data);
+                    setDepartments([]);
+                    setError('Bölümler yüklenemedi. Lütfen sayfayı yenileyin.');
+                }
+            })
+            .catch((err) => {
+                console.error('Failed to load departments:', err);
+                console.error('Error response:', err.response);
+                console.error('Error message:', err.message);
                 setDepartments([]);
-            }
-        }).catch(() => {
-            setDepartments([
-                { id: '1', name: 'Bilgisayar Mühendisliği', code: 'CENG' },
-                { id: '2', name: 'Elektrik-Elektronik Mühendisliği', code: 'EEE' },
-                { id: '3', name: 'Matematik', code: 'MATH' },
-                { id: '4', name: 'Makine Mühendisliği', code: 'ME' },
-                { id: '5', name: 'İnşaat Mühendisliği', code: 'CE' },
-                { id: '6', name: 'Endüstri Mühendisliği', code: 'IE' },
-                { id: '7', name: 'Mimarlık', code: 'ARCH' },
-                { id: '8', name: 'Tıp', code: 'MED' },
-                { id: '9', name: 'Hukuk', code: 'LAW' },
-                { id: '10', name: 'Psikoloji', code: 'PSY' },
-                { id: '11', name: 'İşletme', code: 'BUS' }
-            ]);
-        });
+                const errorMsg = err.response?.data?.error?.message || err.message || 'Backend servisinin çalıştığından emin olun.';
+                setError(`Bölümler yüklenemedi. ${errorMsg}`);
+            });
     }, []);
 
     const onSubmit = async (data) => {
