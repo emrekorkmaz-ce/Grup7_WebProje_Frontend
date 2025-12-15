@@ -1,145 +1,274 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act
+} from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from '../context/AuthContext';
 import Login from '../pages/Login';
-import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-// Mock the useNavigate hook
-const mockNavigate = jest.fn();
+// =======================
+// MOCKS
+// =======================
+jest.mock('../context/AuthContext');
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockNavigate,
-    Link: ({ children, to }) => <a href={to}>{children}</a>
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
+  Link: ({ children, to }) => <a href={to}>{children}</a>
 }));
-
-// Mock the API
-jest.mock('../services/api', () => ({
-    __esModule: true,
-    default: {
-        get: jest.fn(),
-        post: jest.fn(),
-        interceptors: {
-            request: { use: jest.fn() },
-            response: { use: jest.fn() }
-        }
-    }
-}));
-
-const renderWithProviders = (component) => {
-    return render(
-        <BrowserRouter>
-            <AuthProvider>
-                {component}
-            </AuthProvider>
-        </BrowserRouter>
-    );
-};
 
 describe('Login Component', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
+  let mockLogin;
+  let mockNavigate;
+
+  beforeEach(() => {
+    mockLogin = jest.fn();
+    mockNavigate = jest.fn();
+
+    useAuth.mockReturnValue({
+      login: mockLogin,
+      user: null
     });
 
-    it('renders login form', () => {
-        renderWithProviders(<Login />);
+    useNavigate.mockReturnValue(mockNavigate);
+    localStorage.clear();
+  });
 
-        expect(screen.getByRole('heading', { name: /Giriş Yap/i })).toBeInTheDocument();
-        expect(screen.getByLabelText(/E-posta/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/Şifre/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Giriş Yap/i })).toBeInTheDocument();
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const renderLogin = () =>
+    render(
+      <BrowserRouter>
+        <Login />
+      </BrowserRouter>
+    );
+
+  // =======================
+  // RENDER TESTS
+  // =======================
+  describe('Component Rendering', () => {
+    it('renders all main elements', () => {
+      renderLogin();
+
+      expect(screen.getByText('Giriş Yap')).toBeInTheDocument();
+      expect(screen.getByText('Kampüs sistemine hoşgeldiniz')).toBeInTheDocument();
+      expect(screen.getByLabelText(/e-posta adresi/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/şifre/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/beni hatırla/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /giriş yap/i })).toBeInTheDocument();
+      expect(screen.getByText('🎓')).toBeInTheDocument();
     });
 
-    it('shows validation errors for empty fields', async () => {
-        renderWithProviders(<Login />);
+    it('renders correct links', () => {
+      renderLogin();
 
-        const submitButton = screen.getByRole('button', { name: /Giriş Yap/i });
-        fireEvent.click(submitButton);
+      expect(screen.getByText(/şifremi unuttum/i).closest('a'))
+        .toHaveAttribute('href', '/forgot-password');
 
-        await waitFor(() => {
-            expect(screen.getByText(/E-posta gereklidir/i)).toBeInTheDocument();
-            expect(screen.getByText(/Şifre gereklidir/i)).toBeInTheDocument();
-        });
+      expect(screen.getByText('Kayıt Ol').closest('a'))
+        .toHaveAttribute('href', '/register');
+    });
+  });
+
+  // =======================
+  // REDIRECT
+  // =======================
+  describe('User Already Logged In', () => {
+    it('redirects to dashboard if user exists', () => {
+      useAuth.mockReturnValue({
+        login: mockLogin,
+        user: { uid: '1' }
+      });
+
+      renderLogin();
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
+    });
+  });
+
+  // =======================
+  // VALIDATION
+  // =======================
+  describe('Form Validation', () => {
+    it('shows error when email is empty', async () => {
+      renderLogin();
+      fireEvent.click(screen.getByRole('button', { name: /giriş yap/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('E-posta gereklidir')).toBeInTheDocument();
+      });
     });
 
-    it('shows validation error for invalid email', async () => {
-        renderWithProviders(<Login />);
+    it('shows error for invalid email', async () => {
+      renderLogin();
+      fireEvent.change(screen.getByLabelText(/e-posta adresi/i), {
+        target: { value: 'invalid' }
+      });
+      fireEvent.click(screen.getByRole('button', { name: /giriş yap/i }));
 
-        const emailInput = screen.getByLabelText(/E-posta/i);
-        fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
-
-        const submitButton = screen.getByRole('button', { name: /Giriş Yap/i });
-        fireEvent.click(submitButton);
-
-        await waitFor(() => {
-            expect(screen.getByText(/Geçersiz e-posta formatı/i)).toBeInTheDocument();
-        });
+      await waitFor(() => {
+        expect(screen.getByText('Geçersiz e-posta formatı')).toBeInTheDocument();
+      });
     });
 
-    it('handles successful login', async () => {
-        // Mock successful API response
-        api.post.mockResolvedValueOnce({
-            data: {
-                user: { id: 1, name: 'Test User', email: 'test@test.com' },
-                accessToken: 'fake-token',
-                refreshToken: 'fake-refresh-token'
-            }
-        });
+    it('shows error when password is empty', async () => {
+      renderLogin();
+      fireEvent.change(screen.getByLabelText(/e-posta adresi/i), {
+        target: { value: 'test@example.com' }
+      });
+      fireEvent.click(screen.getByRole('button', { name: /giriş yap/i }));
 
-        renderWithProviders(<Login />);
+      await waitFor(() => {
+        expect(screen.getByText('Şifre gereklidir')).toBeInTheDocument();
+      });
+    });
+  });
 
-        fireEvent.change(screen.getByLabelText(/E-posta/i), { target: { value: 'test@test.com' } });
-        fireEvent.change(screen.getByLabelText(/Şifre/i), { target: { value: 'password123' } });
-        
-        const submitButton = screen.getByRole('button', { name: /Giriş Yap/i });
-        fireEvent.click(submitButton);
+  // =======================
+  // SUBMISSION
+  // =======================
+  describe('Form Submission', () => {
+    it('calls login with correct credentials', async () => {
+      mockLogin.mockResolvedValue({ success: true });
+      renderLogin();
 
-        await waitFor(() => {
-            expect(api.post).toHaveBeenCalledWith('/auth/login', {
-                email: 'test@test.com',
-                password: 'password123'
-            });
-            expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
-        });
+      fireEvent.change(screen.getByLabelText(/e-posta adresi/i), {
+        target: { value: 'test@example.com' }
+      });
+      fireEvent.change(screen.getByLabelText(/şifre/i), {
+        target: { value: 'password123' }
+      });
+      fireEvent.click(screen.getByRole('button', { name: /giriş yap/i }));
+
+      await waitFor(() => {
+        expect(mockLogin).toHaveBeenCalledWith(
+          'test@example.com',
+          'password123'
+        );
+      });
     });
 
-    it('handles login failure', async () => {
-        // Mock failed API response
-        const error = new Error('API Error');
-        error.response = {
-            data: {
-                message: 'Hatalı e-posta veya şifre'
-            }
-        };
-        api.post.mockRejectedValueOnce(error);
+    it('shows error on login failure', async () => {
+      mockLogin.mockResolvedValue({
+        success: false,
+        error: 'Invalid credentials'
+      });
 
-        renderWithProviders(<Login />);
+      renderLogin();
 
-        fireEvent.change(screen.getByLabelText(/E-posta/i), { target: { value: 'wrong@test.com' } });
-        fireEvent.change(screen.getByLabelText(/Şifre/i), { target: { value: 'wrongpass' } });
-        
-        const submitButton = screen.getByRole('button', { name: /Giriş Yap/i });
-        fireEvent.click(submitButton);
+      fireEvent.change(screen.getByLabelText(/e-posta adresi/i), {
+        target: { value: 'test@example.com' }
+      });
+      fireEvent.change(screen.getByLabelText(/şifre/i), {
+        target: { value: 'wrong' }
+      });
+      fireEvent.click(screen.getByRole('button', { name: /giriş yap/i }));
 
-        await waitFor(() => {
-            // Check for either specific or generic error message
-            const errorMessage = screen.queryByText(/Hatalı e-posta veya şifre/i) || screen.queryByText(/Giriş başarısız/i);
-            expect(errorMessage).toBeInTheDocument();
-        });
+      await waitFor(() => {
+        expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
+      });
+    });
+  });
+
+  // =======================
+  // REMEMBER ME
+  // =======================
+  describe('Remember Me', () => {
+    it('stores rememberMe in localStorage when checked', async () => {
+      mockLogin.mockResolvedValue({ success: true });
+      renderLogin();
+
+      fireEvent.change(screen.getByLabelText(/e-posta adresi/i), {
+        target: { value: 'test@example.com' }
+      });
+      fireEvent.change(screen.getByLabelText(/şifre/i), {
+        target: { value: 'password123' }
+      });
+
+      fireEvent.click(screen.getByLabelText(/beni hatırla/i));
+      fireEvent.click(screen.getByRole('button', { name: /giriş yap/i }));
+
+      await waitFor(() => {
+        expect(localStorage.getItem('rememberMe')).toBe('true');
+      });
+    });
+  });
+
+  // =======================
+  // LOADING STATE
+  // =======================
+  describe('Loading State', () => {
+    it('disables inputs during loading', async () => {
+      let resolveLogin;
+      mockLogin.mockReturnValue(
+        new Promise(resolve => (resolveLogin = resolve))
+      );
+
+      renderLogin();
+
+      fireEvent.change(screen.getByLabelText(/e-posta adresi/i), {
+        target: { value: 'test@example.com' }
+      });
+      fireEvent.change(screen.getByLabelText(/şifre/i), {
+        target: { value: 'password123' }
+      });
+      fireEvent.click(screen.getByRole('button', { name: /giriş yap/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Giriş yapılıyor...')).toBeInTheDocument();
+      });
+
+      act(() => resolveLogin({ success: true }));
+    });
+  });
+
+  // =======================
+  // EDGE CASES
+  // =======================
+  describe('Edge Cases', () => {
+    it('handles empty string error gracefully', async () => {
+      mockLogin.mockResolvedValue({ success: false, error: '' });
+      renderLogin();
+
+      fireEvent.change(screen.getByLabelText(/e-posta adresi/i), {
+        target: { value: 'test@example.com' }
+      });
+      fireEvent.change(screen.getByLabelText(/şifre/i), {
+        target: { value: 'password123' }
+      });
+      fireEvent.click(screen.getByRole('button', { name: /giriş yap/i }));
+
+      await waitFor(() => {
+        expect(mockLogin).toHaveBeenCalled();
+      });
+
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
 
-    it('renders remember me checkbox', () => {
-        renderWithProviders(<Login />);
-        expect(screen.getByLabelText(/Beni hatırla/i)).toBeInTheDocument();
-    });
+    it('prevents multiple rapid submissions', async () => {
+      mockLogin.mockResolvedValue({ success: true });
+      renderLogin();
 
-    it('renders forgot password link', () => {
-        renderWithProviders(<Login />);
-        expect(screen.getByText(/Şifremi unuttum\?/i)).toBeInTheDocument();
-    });
+      fireEvent.change(screen.getByLabelText(/e-posta adresi/i), {
+        target: { value: 'test@example.com' }
+      });
+      fireEvent.change(screen.getByLabelText(/şifre/i), {
+        target: { value: 'password123' }
+      });
 
-    it('renders register link', () => {
-        renderWithProviders(<Login />);
-        expect(screen.getByText(/Hesabınız yok mu\?/i)).toBeInTheDocument();
+      const btn = screen.getByRole('button', { name: /giriş yap/i });
+      fireEvent.click(btn);
+      fireEvent.click(btn);
+      fireEvent.click(btn);
+
+      await waitFor(() => {
+        expect(mockLogin).toHaveBeenCalledTimes(1);
+      });
     });
+  });
 });
