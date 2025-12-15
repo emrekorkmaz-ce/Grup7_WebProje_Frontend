@@ -7,7 +7,7 @@ export const BACKEND_BASE_URL = API_BASE_URL.replace('/api/v1', '') || 'http://l
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true,
+  withCredentials: false,
   headers: {
     'Content-Type': 'application/json'
   }

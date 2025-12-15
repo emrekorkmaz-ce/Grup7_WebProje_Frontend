@@ -1,6 +1,9 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 import './MyCoursesPage.css';
 
 const MyCoursesPage = () => {
@@ -30,32 +33,40 @@ const MyCoursesPage = () => {
   };
 
   return (
-    <div className="my-courses-page">
-      <h2>Kayıtlı Derslerim</h2>
-      {loading ? (
-        <div className="loading">Yükleniyor...</div>
-      ) : error ? (
-        <div className="error">{error}</div>
-      ) : courses.length === 0 ? (
-        <div className="no-courses">Kayıtlı dersiniz yok.</div>
-      ) : (
-        <div className="courses-list">
-          {courses.map((course) => (
-            <div
-              key={course.id}
-              className={`course-card status-${course.status}`}
-              onClick={() => handleCourseClick(course.id)}
-            >
-              <div className="course-title">{course.code} - {course.name}</div>
-              <div className="course-status">
-                Durum: <span className={`status-label status-${course.status}`}>{course.statusText || course.status}</span>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #121212 0%, #1a1a1a 100%)' }}>
+      <Navbar />
+      <div style={{ display: 'flex' }}>
+        <Sidebar />
+        <main style={{ flex: 1, padding: '2rem', marginLeft: 250 }}>
+          <div className="my-courses-page">
+            <h2>Kayıtlı Derslerim</h2>
+            {loading ? (
+              <div className="loading">Yükleniyor...</div>
+            ) : error ? (
+              <div className="error">{error}</div>
+            ) : courses.length === 0 ? (
+              <div className="no-courses">Kayıtlı dersiniz yok.</div>
+            ) : (
+              <div className="courses-list">
+                {courses.map((course) => (
+                  <div
+                    key={course.id}
+                    className={`course-card status-${course.status}`}
+                    onClick={() => handleCourseClick(course.id)}
+                  >
+                    <div className="course-title">{course.code} - {course.name}</div>
+                    <div className="course-status">
+                      Durum: <span className={`status-label status-${course.status}`}>{course.statusText || course.status}</span>
+                    </div>
+                    <div className="course-instructor">Öğretim Üyesi: {course.instructorName}</div>
+                    <div className="course-section">Şube: {course.sectionName}</div>
+                  </div>
+                ))}
               </div>
-              <div className="course-instructor">Öğretim Üyesi: {course.instructorName}</div>
-              <div className="course-section">Şube: {course.sectionName}</div>
-            </div>
-          ))}
-        </div>
-      )}
+            )}
+          </div>
+        </main>
+      </div>
     </div>
   );
 };

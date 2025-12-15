@@ -1,5 +1,8 @@
+
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 import './GradesPage.css';
 
 const GradesPage = () => {
@@ -43,45 +46,53 @@ const GradesPage = () => {
   };
 
   return (
-    <div className="grades-page">
-      <h2>Notlarım</h2>
-      <div className="gpa-summary">
-        <div>GNO: <span>{gpa !== null ? gpa : '-'}</span></div>
-        <div>AGNO: <span>{cgpa !== null ? cgpa : '-'}</span></div>
-        <button className="transcript-btn" onClick={handleTranscriptDownload}>Transkript İndir</button>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #121212 0%, #1a1a1a 100%)' }}>
+      <Navbar />
+      <div style={{ display: 'flex' }}>
+        <Sidebar />
+        <main style={{ flex: 1, padding: '2rem', marginLeft: 250 }}>
+          <div className="grades-page">
+            <h2>Notlarım</h2>
+            <div className="gpa-summary">
+              <div>GNO: <span>{gpa !== null ? gpa : '-'}</span></div>
+              <div>AGNO: <span>{cgpa !== null ? cgpa : '-'}</span></div>
+              <button className="transcript-btn" onClick={handleTranscriptDownload}>Transkript İndir</button>
+            </div>
+            {loading ? (
+              <div className="loading">Yükleniyor...</div>
+            ) : error ? (
+              <div className="error">{error}</div>
+            ) : grades.length === 0 ? (
+              <div className="no-grades">Henüz notunuz bulunmamaktadır.</div>
+            ) : (
+              <table className="grades-table">
+                <thead>
+                  <tr>
+                    <th>Ders Kodu</th>
+                    <th>Ders Adı</th>
+                    <th>Kredi</th>
+                    <th>Harf Notu</th>
+                    <th>Puan</th>
+                    <th>Dönem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {grades.map((grade) => (
+                    <tr key={grade.sectionId}>
+                      <td>{grade.courseCode}</td>
+                      <td>{grade.courseName}</td>
+                      <td>{grade.credits}</td>
+                      <td>{grade.letterGrade}</td>
+                      <td>{grade.score}</td>
+                      <td>{grade.semesterName}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </main>
       </div>
-      {loading ? (
-        <div className="loading">Yükleniyor...</div>
-      ) : error ? (
-        <div className="error">{error}</div>
-      ) : grades.length === 0 ? (
-        <div className="no-grades">Henüz notunuz bulunmamaktadır.</div>
-      ) : (
-        <table className="grades-table">
-          <thead>
-            <tr>
-              <th>Ders Kodu</th>
-              <th>Ders Adı</th>
-              <th>Kredi</th>
-              <th>Harf Notu</th>
-              <th>Puan</th>
-              <th>Dönem</th>
-            </tr>
-          </thead>
-          <tbody>
-            {grades.map((grade) => (
-              <tr key={grade.sectionId}>
-                <td>{grade.courseCode}</td>
-                <td>{grade.courseName}</td>
-                <td>{grade.credits}</td>
-                <td>{grade.letterGrade}</td>
-                <td>{grade.score}</td>
-                <td>{grade.semesterName}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
     </div>
   );
 };
