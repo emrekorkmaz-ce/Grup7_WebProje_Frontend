@@ -8,7 +8,7 @@ import './Dashboard.css';
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  
+
   const getInitials = (name) => {
     if (!name) return 'U';
     const parts = name.trim().split(/\s+/);
@@ -36,179 +36,119 @@ const Dashboard = () => {
     }
   };
 
-  const currentDate = new Date().toLocaleDateString('tr-TR', { 
-    weekday: 'long', 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
+  const currentDate = new Date().toLocaleDateString('tr-TR', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   });
 
   return (
-    <div className="dashboard-container">
+    <div className="app-container">
       <Navbar />
-      <div className="dashboard-content">
-        <Sidebar />
-        <main className="dashboard-main">
-          <header className="dashboard-header">
-            <div className="header-text">
-              <h1>Tekrar hoşgeldiniz, {formatName(user?.full_name) || 'Kullanıcı'}</h1>
-              <p className="date-text">{currentDate}</p>
+      <Sidebar />
+      <main>
+        <header className="mb-8 p-6 card" style={{
+          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(30, 41, 59, 0.4) 100%)',
+          borderLeft: '4px solid var(--accent-color)',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+        }}>
+          <div>
+            <h1 style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>Hoş geldin, {formatName(user?.full_name)} 👋</h1>
+            <p style={{ color: 'var(--text-secondary)' }}>{currentDate}</p>
+          </div>
+          <div className="hidden md:block">
+            <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'var(--accent-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>
+              {getInitials(user?.full_name || user?.email)}
             </div>
-            <div className="user-badge">
-              <div className="avatar-circle">
-                {getInitials(user?.full_name || user?.email)}
-              </div>
-              <div className="user-info-mini">
-                <span className="user-name-mini">{formatName(user?.full_name)}</span>
-                <span className="user-role-mini">{user?.role}</span>
-              </div>
-            </div>
-          </header>
+          </div>
+        </header>
 
-          <div className="dashboard-grid">
-            {/* Profile Summary Card */}
-            <div className="dashboard-card profile-card">
-              <div className="card-header">
-                <h3>Profil Özeti</h3>
-              </div>
-              <div className="card-body">
-                <div className="info-row">
-                  <span className="label">Ad Soyad:</span>
-                  <span className="value">{formatName(user?.full_name)}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">E-posta:</span>
-                  <span className="value">{user?.email}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Telefon:</span>
-                  <span className="value">{user?.phone || 'Belirlenmedi'}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Durum:</span>
-                  <span className={`status-badge ${user?.is_verified ? 'verified' : 'pending'}`}>
-                    {user?.is_verified ? 'Doğrulanmış' : 'Doğrulama Bekliyor'}
-                  </span>
-                </div>
-              </div>
-            </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
 
-            {/* Academic/Faculty Info Card */}
-            {user?.student && (
-              <div className="dashboard-card academic-card">
-                <div className="card-header">
-                  <h3>Akademik Bilgiler</h3>
-                </div>
-                <div className="card-body">
-                  <div className="info-block">
-                    <span className="label-block">Öğrenci Numarası</span>
-                    <span className="value-block highlight">{user.student.student_number}</span>
-                  </div>
-                  <div className="info-block">
-                    <span className="label-block">Bölüm</span>
-                    <span className="value-block">{user.student.department?.name || 'Mevcut Değil'}</span>
-                  </div>
-                  <div className="stats-grid">
-                    <div className="stat-item">
-                      <span className="stat-label">GNO</span>
-                      <span className="stat-value">{user.student.gpa || '0.00'}</span>
-                    </div>
-                    <div className="stat-item">
-                      <span className="stat-label">AGNO</span>
-                      <span className="stat-value">{user.student.cgpa || '0.00'}</span>
-                    </div>
-                  </div>
-                </div>
+          {/* Profile Summary Card */}
+          <div className="card">
+            <h3 className="mb-4 text-base font-semibold text-gray-400 uppercase tracking-wider">Profil Özeti</h3>
+            <div className="flex flex-col gap-3">
+              <div>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block' }}>E-posta</span>
+                <span style={{ fontWeight: 500 }}>{user?.email}</span>
               </div>
-            )}
-
-            {user?.faculty && (
-              <div className="dashboard-card faculty-card">
-                <div className="card-header">
-                  <h3>Fakülte Detayları</h3>
-                </div>
-                <div className="card-body">
-                  <div className="info-block">
-                    <span className="label-block">Personel No</span>
-                    <span className="value-block highlight">{user.faculty.employee_number}</span>
-                  </div>
-                  <div className="info-block">
-                    <span className="label-block">Ünvan</span>
-                    <span className="value-block">{user.faculty.title}</span>
-                  </div>
-                  <div className="info-block">
-                    <span className="label-block">Bölüm</span>
-                    <span className="value-block">{user.faculty.department?.name || 'Mevcut Değil'}</span>
-                  </div>
-                </div>
+              <div>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block' }}>Telefon</span>
+                <span style={{ fontWeight: 500 }}>{user?.phone || '-'}</span>
               </div>
-            )}
-
-            {/* Quick Actions Card */}
-            <div className="dashboard-card actions-card">
-              <div className="card-header">
-                <h3>Hızlı İşlemler</h3>
-              </div>
-              <div className="card-body actions-grid">
-                <button className="action-btn" onClick={() => handleAction('schedule')}>
-                  <svg className="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  Ders Programı
-                </button>
-                <button className="action-btn" onClick={() => handleAction('courses')}>
-                  <svg className="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                  </svg>
-                  Derslerim
-                </button>
-                <button className="action-btn" onClick={() => handleAction('grades')}>
-                  <svg className="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <polyline points="10 9 9 9 8 9"></polyline>
-                  </svg>
-                  Notlar
-                </button>
-                <button className="action-btn" onClick={() => handleAction('settings')}>
-                  <svg className="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                  </svg>
-                  Ayarlar
-                </button>
-              </div>
-            </div>
-
-            {/* University Announcements Card */}
-            <div className="dashboard-card announcements-card">
-              <div className="card-header">
-                <h3>Üniversite Duyuruları</h3>
-              </div>
-              <div className="card-body">
-                <div className="announcement-item">
-                  <span className="announcement-date">10 Ara</span>
-                  <p className="announcement-text">Final Sınav Programı Açıklandı</p>
-                </div>
-                <div className="announcement-item">
-                  <span className="announcement-date">15 Ara</span>
-                  <p className="announcement-text">Kampüs Kütüphanesi Tatil Saatleri</p>
-                </div>
-                <div className="announcement-item">
-                  <span className="announcement-date">05 Oca</span>
-                  <p className="announcement-text">Bahar Dönemi Kayıtları Başlıyor</p>
-                </div>
+              <div style={{ marginTop: '0.5rem' }}>
+                <span style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem', background: user?.is_verified ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)', color: user?.is_verified ? 'var(--success)' : 'var(--warning)' }}>
+                  {user?.is_verified ? '✅ Doğrulanmış Hesap' : '⏳ Doğrulama Bekliyor'}
+                </span>
               </div>
             </div>
           </div>
-        </main>
-      </div>
+
+          {/* Academic/Faculty Info Card */}
+          {user?.student && (
+            <div className="card">
+              <h3 className="mb-4 text-base font-semibold text-gray-400 uppercase tracking-wider">Akademik Durum</h3>
+              <div className="flex flex-col gap-4">
+                <div>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Bölüm</span>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 600 }}>{user.student.department?.name || 'Bilgisayar Programcılığı'}</div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>GNO</div>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent-color)' }}>{user.student.gpa || '0.00'}</div>
+                  </div>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>AGNO</div>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--success)' }}>{user.student.cgpa || '0.00'}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Quick Actions Card */}
+          <div className="card">
+            <h3 className="mb-4 text-base font-semibold text-gray-400 uppercase tracking-wider">Hızlı Erişim</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <button className="btn btn-secondary" onClick={() => handleAction('courses')} style={{ justifyContent: 'start', gap: '0.5rem' }}>
+                📚 Derslerim
+              </button>
+              <button className="btn btn-secondary" onClick={() => handleAction('grades')} style={{ justifyContent: 'start', gap: '0.5rem' }}>
+                🎓 Notlarım
+              </button>
+              <button className="btn btn-secondary" onClick={() => handleAction('schedule')} style={{ justifyContent: 'start', gap: '0.5rem' }}>
+                📅 Program
+              </button>
+              <button className="btn btn-secondary" onClick={() => handleAction('settings')} style={{ justifyContent: 'start', gap: '0.5rem' }}>
+                ⚙️ Ayarlar
+              </button>
+            </div>
+          </div>
+
+          {/* Announcements Card */}
+          <div className="card">
+            <h3 className="mb-4 text-base font-semibold text-gray-400 uppercase tracking-wider">Duyurular</h3>
+            <div className="flex flex-col gap-3">
+              <div style={{ borderLeft: '3px solid var(--warning)', paddingLeft: '1rem' }}>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>10 Ara</div>
+                <div>Final Sınav Programı Açıklandı</div>
+              </div>
+              <div style={{ borderLeft: '3px solid var(--accent-color)', paddingLeft: '1rem' }}>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>15 Ara</div>
+                <div>Kütüphane Çalışma Saatleri</div>
+              </div>
+              <div style={{ borderLeft: '3px solid var(--success)', paddingLeft: '1rem' }}>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>05 Oca</div>
+                <div>Bahar Dönemi Kayıtları</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
     </div>
   );
 };

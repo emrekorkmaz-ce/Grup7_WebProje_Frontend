@@ -1,61 +1,89 @@
+/* Modern Navbar */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: 60px;
-  background: linear-gradient(90deg, #000000 0%, #8B0000 100%); /* Black to Dark Red Gradient */
-  color: white;
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  padding: 0 1.5rem;
   z-index: 1000;
+  box-shadow: var(--shadow-sm);
 }
 
 .navbar-brand h2 {
   margin: 0;
-  font-size: 22px;
+  font-size: 1.25rem;
   font-weight: 700;
-  letter-spacing: 1px;
-  background: linear-gradient(45deg, #ffffff, #ff8a80, #ffffff);
-  background-size: 200% auto;
+  letter-spacing: -0.025em;
+  background: white;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  animation: shine 3s linear infinite;
+  -webkit-text-fill-color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-@keyframes shine {
-  to {
-    background-position: 200% center;
-  }
+.navbar-logo-icon {
+  font-size: 1.5rem;
 }
 
 .navbar-menu {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 1.5rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.4rem 1rem;
+  border-radius: 2rem;
+  border: 1px solid var(--glass-border);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--accent-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .user-name {
+  font-size: 0.9rem;
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .logout-button {
-  padding: 8px 20px;
+  padding: 0.5rem 1rem;
   background: transparent;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 4px;
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.85rem;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .logout-button:hover {
-  background: white;
-  color: #D32F2F;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  border-color: rgba(239, 68, 68, 0.3);
 }
-

@@ -20,14 +20,19 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <h2>Kampüs Yönetim Sistemi</h2>
+        <h2><span className="navbar-logo-icon">🎓</span> Kampüs Yönetim Sistemi</h2>
       </div>
       <div className="navbar-menu">
         {user && (
           <>
-            <span className="user-name">{formatName(user.full_name) || user.email}</span>
+            <div className="user-info">
+              <div className="user-avatar">
+                {user.full_name ? user.full_name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+              </div>
+              <span className="user-name">{formatName(user.full_name) || user.email}</span>
+            </div>
             <button onClick={handleLogout} className="logout-button">
-              Çıkış Yap
+              <span>Çıkış</span> 🚪
             </button>
           </>
         )}

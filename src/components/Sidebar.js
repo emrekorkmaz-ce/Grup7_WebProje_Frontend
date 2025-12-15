@@ -15,35 +15,54 @@ const Sidebar = () => {
     <aside className="sidebar">
       <nav className="sidebar-nav">
         <Link to="/dashboard" className={`sidebar-link ${isActive('/dashboard')}`}>
-          Ana Sayfa
+          <span className="sidebar-icon">🏠</span> Ana Sayfa
         </Link>
         <Link to="/profile" className={`sidebar-link ${isActive('/profile')}`}>
-          Profil
+          <span className="sidebar-icon">👤</span> Profil
         </Link>
         <Link to="/my-courses" className={`sidebar-link ${isActive('/my-courses')}`}>
-          Derslerim
+          <span className="sidebar-icon">📚</span> Derslerim
         </Link>
         <Link to="/grades" className={`sidebar-link ${isActive('/grades')}`}>
-          Notlar
+          <span className="sidebar-icon">🎓</span> Notlar
         </Link>
-        {/* Yoklama Menüsü - Her rol için göster */}
+
+        {/* Yoklama Menüsü */}
         <div className="sidebar-section">
-          <div className="sidebar-section-title" style={{marginLeft: 20, marginTop: 20, color: '#fff', fontWeight: 600, fontSize: 15}}>Yoklama</div>
-          <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
-            <li>
-              <Link to="/attendance/start" className={`sidebar-link ${isActive('/attendance/start')}`}>Yoklama Başlat</Link>
-            </li>
-            <li>
-              <Link to="/attendance/report/1" className={`sidebar-link ${isActive('/attendance/report/1')}`}>Yoklama Raporu</Link>
-            </li>
-            <li>
-              <Link to="/my-attendance" className={`sidebar-link ${isActive('/my-attendance')}`}>Yoklama Geçmişim</Link>
-            </li>
-          </ul>
+          <div className="sidebar-section-title">Yoklama</div>
+
+          {/* Yoklama Başlat - Sadece Admin ve Faculty */}
+          {(user?.role === 'admin' || user?.role === 'faculty') && (
+            <Link to="/attendance/start" className={`sidebar-link ${isActive('/attendance/start')}`}>
+              <span className="sidebar-icon">📢</span> Yoklama Başlat
+            </Link>
+          )}
+
+          {/* Yoklama Raporu - Sadece Admin ve Faculty */}
+          {(user?.role === 'admin' || user?.role === 'faculty') && (
+            <Link to="/attendance/report/11111111-aaaa-bbbb-cccc-111111111111" className={`sidebar-link ${isActive('/attendance/report/11111111-aaaa-bbbb-cccc-111111111111')}`}>
+              <span className="sidebar-icon">📊</span> Yoklama Raporu
+            </Link>
+          )}
+
+          {/* Yoklama Geçmişim - Sadece Öğrenci */}
+          {user?.role === 'student' && (
+            <Link to="/my-attendance" className={`sidebar-link ${isActive('/my-attendance')}`}>
+              <span className="sidebar-icon">📅</span> Yoklama Geçmişim
+            </Link>
+          )}
         </div>
+
+        {/* Ders Seçme - Sadece Öğrenci */}
+        {user?.role === 'student' && (
+          <Link to="/enroll-courses" className={`sidebar-link ${isActive('/enroll-courses')}`}>
+            <span className="sidebar-icon">✍️</span> Ders Seç
+          </Link>
+        )}
+
         {user?.role === 'admin' && (
           <Link to="/users" className={`sidebar-link ${isActive('/users')}`}>
-            Kullanıcılar
+            <span className="sidebar-icon">👥</span> Kullanıcılar
           </Link>
         )}
       </nav>

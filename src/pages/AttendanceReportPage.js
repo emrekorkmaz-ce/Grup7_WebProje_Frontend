@@ -17,7 +17,7 @@ const AttendanceReportPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await api.get(`/faculty/attendance/report/${sectionId}`);
+        const response = await api.get(`/attendance/report/${sectionId}`);
         setReport(response.data || []);
       } catch (err) {
         setError('Yoklama raporu yüklenemedi.');
@@ -30,7 +30,7 @@ const AttendanceReportPage = () => {
 
   const handleExportExcel = async () => {
     try {
-      const response = await api.get(`/faculty/attendance/report/${sectionId}/export`, { responseType: 'blob' });
+      const response = await api.get(`/attendance/report/${sectionId}/export`, { responseType: 'blob' });
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -44,47 +44,80 @@ const AttendanceReportPage = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #121212 0%, #1a1a1a 100%)' }}>
+    <div className="app-container">
       <Navbar />
-      <div style={{ display: 'flex' }}>
-        <Sidebar />
-        <main style={{ flex: 1, padding: '2rem', marginLeft: 250 }}>
-          <div className="attendance-report-page">
+      <Sidebar />
+      <main>
+        <div className="card">
+          <div className="flex justify-between items-center mb-4">
             <h2>Yoklama Raporu</h2>
-            <button className="export-btn" onClick={handleExportExcel}>Excel Olarak Dışa Aktar</button>
-            {loading ? (
-              <div className="loading">Yükleniyor...</div>
-            ) : error ? (
-              <div className="error">{error}</div>
-            ) : report.length === 0 ? (
-              <div className="no-report">Henüz yoklama verisi yok.</div>
-            ) : (
-              <table className="report-table">
+            <button className="export-btn" onClick={handleExportExcel}>
+              <span style={{ marginRight: '8px' }}>📥</span> Excel İndir
+            </button>
+          </div>
+
+          {loading ? (
+            <div className="loading">Veriler yükleniyor...</div>
+          ) : error ? (
+            <div className="error">{error}</div>
+          ) : report.length === 0 ? (
+            <div className="text-center p-4">Henüz kayıt bulunamadı.</div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table>
                 <thead>
                   <tr>
                     <th>Öğrenci No</th>
                     <th>Ad Soyad</th>
-                    <th>Toplam Devam</th>
-                    <th>Toplam Yoklama</th>
-                    <th>Devamsızlık (%)</th>
+                    <th>Katılım</th>
+                    <th>Toplam</th>
+                    <th>Devamsızlık</th>
                   </tr>
                 </thead>
                 <tbody>
                   {report.map((item) => (
                     <tr key={item.studentId}>
-                      <td>{item.studentNumber}</td>
-                      <td>{item.fullName}</td>
-                      <td>{item.presentCount}</td>
+                      <td style={{ fontFamily: 'monospace' }}>{item.studentNumber}</td>
+                      <td style={{ fontWeight: 500 }}>{item.fullName}</td>
+                      <td>
+                        <span style={{
+                          padding: '2px 8px',
+                          borderRadius: '4px',
+                          background: 'rgba(16, 185, 129, 0.1)',
+                          color: '#10b981'
+                        }}>
+                          {item.presentCount}
+                        </span>
+                      </td>
                       <td>{item.totalCount}</td>
-                      <td>{item.absencePercent}%</td>
+                      <td>
+                        <div style={{
+                          width: '100%',
+                          background: 'rgba(255,255,255,0.1)',
+                          height: '6px',
+                          borderRadius: '3px',
+                          marginTop: '5px',
+                          position: 'relative'
+                        }}>
+                          <div style={{
+                            width: `${Math.min(item.absencePercent, 100)}%`,
+                            background: item.absencePercent > 30 ? '#ef4444' : '#10b981',
+                            height: '100%',
+                            borderRadius: '3px'
+                          }}></div>
+                        </div>
+                        <span style={{ fontSize: '0.8em', color: item.absencePercent > 30 ? '#ef4444' : '#94a3b8' }}>
+                          %{item.absencePercent}
+                        </span>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            )}
-          </div>
-        </main>
-      </div>
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 };

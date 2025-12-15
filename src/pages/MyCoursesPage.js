@@ -33,40 +33,67 @@ const MyCoursesPage = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #121212 0%, #1a1a1a 100%)' }}>
+    <div className="app-container">
       <Navbar />
-      <div style={{ display: 'flex' }}>
-        <Sidebar />
-        <main style={{ flex: 1, padding: '2rem', marginLeft: 250 }}>
-          <div className="my-courses-page">
-            <h2>Kayıtlı Derslerim</h2>
-            {loading ? (
-              <div className="loading">Yükleniyor...</div>
-            ) : error ? (
-              <div className="error">{error}</div>
-            ) : courses.length === 0 ? (
-              <div className="no-courses">Kayıtlı dersiniz yok.</div>
-            ) : (
-              <div className="courses-list">
-                {courses.map((course) => (
-                  <div
-                    key={course.id}
-                    className={`course-card status-${course.status}`}
-                    onClick={() => handleCourseClick(course.id)}
-                  >
-                    <div className="course-title">{course.code} - {course.name}</div>
-                    <div className="course-status">
-                      Durum: <span className={`status-label status-${course.status}`}>{course.statusText || course.status}</span>
-                    </div>
-                    <div className="course-instructor">Öğretim Üyesi: {course.instructorName}</div>
-                    <div className="course-section">Şube: {course.sectionName}</div>
+      <Sidebar />
+      <main>
+        <h2 className="mb-4">Kayıtlı Derslerim</h2>
+
+        {loading ? (
+          <div className="loading">Dersler yükleniyor...</div>
+        ) : error ? (
+          <div className="error">{error}</div>
+        ) : courses.length === 0 ? (
+          <div className="card text-center p-4">Henüz kayıtlı dersiniz bulunmamaktadır.</div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+            {courses.map((course) => (
+              <div
+                key={course.id}
+                className="card"
+                onClick={() => handleCourseClick(course.id)}
+                style={{ cursor: 'pointer', position: 'relative', overflow: 'hidden' }}
+              >
+                <div style={{
+                  position: 'absolute', top: 0, left: 0, right: 0, height: '4px',
+                  background: 'var(--accent-color)'
+                }}></div>
+
+                <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
+                  {course.code}
+                </h3>
+                <div style={{ fontSize: '1rem', color: 'var(--text-secondary)', marginBottom: '1rem', height: '3rem', overflow: 'hidden' }}>
+                  {course.name}
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                  <div className="flex items-center gap-2">
+                    <span>👨‍🏫</span> {course.instructorName}
                   </div>
-                ))}
+                  <div className="flex items-center gap-2">
+                    <span>📑</span> Şube: {course.sectionName || course.sectionNumber}
+                  </div>
+                </div>
+
+                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)' }}>
+                  <span style={{
+                    display: 'inline-block',
+                    padding: '0.25rem 0.75rem',
+                    borderRadius: '2rem',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    background: course.status === 'active' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                    color: course.status === 'active' ? 'var(--success)' : 'var(--warning)',
+                    textTransform: 'uppercase'
+                  }}>
+                    {course.statusText || course.status || 'Aktif'}
+                  </span>
+                </div>
               </div>
-            )}
+            ))}
           </div>
-        </main>
-      </div>
+        )}
+      </main>
     </div>
   );
 };

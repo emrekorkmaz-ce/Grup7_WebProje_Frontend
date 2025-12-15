@@ -127,133 +127,142 @@ const Profile = () => {
     };
 
     return (
-        <div className='profile-container'>
+        <div className="app-container">
             <Navbar />
-            <div className='profile-content'>
-                <Sidebar />
-                <main className='profile-main'>
-                    <h1>Profil</h1>
-                    {error && <div className='error-message'>{error}</div>}
-                    {success && <div className='success-message'>{success}</div>}
+            <Sidebar />
+            <main>
+                <h2 className="mb-4">Profil Ayarları</h2>
 
-                    <div className='profile-section'>
-                        <h2>Profil Resmi</h2>
-                        <div className='profile-picture-section'>
+                {error && <div className="error mb-4">{error}</div>}
+                {success && <div className="card p-4 mb-4" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', border: '1px solid var(--success)' }}>{success}</div>}
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeaet(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+
+                    {/* Sol Kolon: Profil Resmi */}
+                    <div className="card" style={{ height: 'fit-content', textAlign: 'center' }}>
+                        <h3 className="mb-4">Profil Fotoğrafı</h3>
+                        <div style={{
+                            width: '150px', height: '150px', margin: '0 auto 1.5rem',
+                            borderRadius: '50%', overflow: 'hidden',
+                            border: '4px solid var(--accent-color)',
+                            background: 'var(--secondary-bg)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}>
                             {profilePicture && !imageError ? (
-                                <img 
-                                    src={`${BACKEND_BASE_URL}${profilePicture}`} 
-                                    alt='Profile' 
-                                    className='profile-picture'
+                                <img
+                                    src={`${BACKEND_BASE_URL}${profilePicture}`}
+                                    alt='Profile'
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                     onError={(e) => {
                                         console.error('Image load error:', e);
                                         setImageError(true);
                                     }}
                                 />
                             ) : (
-                                <div className='profile-picture-placeholder'>
+                                <div style={{ fontSize: '4rem', fontWeight: 600, color: 'var(--text-muted)' }}>
                                     {getInitials(user?.full_name || user?.email)}
                                 </div>
                             )}
-                            <div className='upload-section'>
-                                <label htmlFor='profile-picture-upload' className='upload-button'>
-                                    {uploading ? 'Yükleniyor...' : 'Resim Yükle'}
-                                </label>
-                                <input
-                                    type='file'
-                                    id='profile-picture-upload'
-                                    accept='image/jpeg,image/jpg,image/png'
-                                    onChange={handleFileUpload}
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor='profile-picture-upload' className='btn btn-primary' style={{ cursor: 'pointer', display: 'inline-block' }}>
+                                {uploading ? 'Yükleniyor...' : '📷 Fotoğraf Değiştir'}
+                            </label>
+                            <input
+                                type='file'
+                                id='profile-picture-upload'
+                                accept='image/jpeg,image/jpg,image/png'
+                                onChange={handleFileUpload}
+                                disabled={uploading}
+                                style={{ display: 'none' }}
+                            />
+                            {profilePicture && (
+                                <button
+                                    type="button"
+                                    onClick={handleDeleteProfilePicture}
+                                    className="btn btn-secondary"
                                     disabled={uploading}
-                                    style={{ display: 'none' }}
-                                />
-                                {profilePicture && (
-                                    <button 
-                                        type="button" 
-                                        onClick={handleDeleteProfilePicture}
-                                        className="delete-photo-button"
-                                        disabled={uploading}
-                                        style={{ marginTop: '10px', backgroundColor: '#d32f2f', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', display: 'block' }}
-                                    >
-                                        Resmi Kaldır
-                                    </button>
-                                )}
-                                <small>Maks 5 MB, sadece JPG / PNG</small>
-                            </div>
+                                    style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}
+                                >
+                                    🗑️ Fotoğrafı Kaldır
+                                </button>
+                            )}
+                            <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '0.5rem' }}>Maks 5 MB (JPG/PNG)</small>
                         </div>
                     </div>
 
-                    <div className='profile-section'>
-                        <h2>Kişisel Bilgiler</h2>
+                    {/* Sağ Kolon: Bilgiler */}
+                    <div className="card">
+                        <h3 className="mb-4">Kişisel Bilgiler</h3>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className='form-group'>
-                                <label htmlFor='email'>E-posta</label>
+                            <div className="mb-4">
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>E-posta</label>
                                 <input
                                     type='email'
-                                    id='email'
                                     value={user?.email || ''}
                                     disabled
-                                    className='disabled-input'
+                                    style={{ opacity: 0.7 }}
                                 />
-                                <small>E-posta değiştirilemez</small>
                             </div>
-                            <TextInput
-                                label='Ad Soyad'
-                                type='text'
-                                id='full_name'
-                                {...register('full_name')}
-                                error={errors.full_name?.message}
-                                disabled={loading}
-                            />
-                            <TextInput
-                                label='Telefon'
-                                type='tel'
-                                id='phone'
-                                {...register('phone')}
-                                error={errors.phone?.message}
-                                disabled={loading}
-                            />
-                            <div className='form-group'>
-                                <label>Rol</label>
+
+                            <div className="mb-4">
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Ad Soyad</label>
                                 <input
                                     type='text'
-                                    value={user?.role || ''}
+                                    {...register('full_name')}
+                                    disabled={loading}
+                                />
+                                {errors.full_name && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '0.25rem' }}>{errors.full_name.message}</p>}
+                            </div>
+
+                            <div className="mb-4">
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Telefon</label>
+                                <input
+                                    type='tel'
+                                    {...register('phone')}
+                                    disabled={loading}
+                                />
+                                {errors.phone && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '0.25rem' }}>{errors.phone.message}</p>}
+                            </div>
+
+                            <div className="mb-4">
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Rol</label>
+                                <input
+                                    type='text'
+                                    value={user?.role === 'student' ? 'Öğrenci' : user?.role === 'admin' ? 'Yönetici' : 'Akademisyen'}
                                     disabled
-                                    className='disabled-input'
+                                    style={{ opacity: 0.7 }}
                                 />
                             </div>
+
                             {user?.student && (
-                                <div className='form-group'>
-                                    <label>Öğrenci Numarası</label>
-                                    <input 
-                                        type='text' 
-                                        value={user.student.student_number || ''} 
-                                        disabled 
-                                        className='disabled-input' 
-                                    />
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                    <div className="mb-4">
+                                        <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Öğrenci No</label>
+                                        <input value={user.student.student_number || ''} disabled style={{ opacity: 0.7 }} />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>AGNO</label>
+                                        <input value={user.student.cgpa ? parseFloat(user.student.cgpa).toFixed(2) : '-'} disabled style={{ opacity: 0.7 }} />
+                                    </div>
                                 </div>
                             )}
-                            {user?.faculty && (
-                                <div className='form-group'>
-                                    <label>Personel Numarası</label>
-                                    <input 
-                                        type='text' 
-                                        value={user.faculty.employee_number || ''} 
-                                        disabled 
-                                        className='disabled-input' 
-                                    />
-                                </div>
-                            )}
-                            <button 
-                                type='submit' 
-                                className='submit-button' 
-                                disabled={loading}
-                            >
-                                {loading ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
-                            </button>
+
+                            <div style={{ marginTop: '2rem', textAlign: 'right' }}>
+                                <button
+                                    type='submit'
+                                    className='btn btn-primary'
+                                    disabled={loading}
+                                    style={{ padding: '0.75rem 2rem' }}
+                                >
+                                    {loading ? 'Kaydediliyor...' : '💾 Değişiklikleri Kaydet'}
+                                </button>
+                            </div>
                         </form>
                     </div>
-                </main>
-            </div>
+                </div>
+            </main>
         </div>
     );
 };

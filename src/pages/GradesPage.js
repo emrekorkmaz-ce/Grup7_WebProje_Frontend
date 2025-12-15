@@ -46,26 +46,38 @@ const GradesPage = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #121212 0%, #1a1a1a 100%)' }}>
+    <div className="app-container">
       <Navbar />
-      <div style={{ display: 'flex' }}>
-        <Sidebar />
-        <main style={{ flex: 1, padding: '2rem', marginLeft: 250 }}>
-          <div className="grades-page">
+      <Sidebar />
+      <main>
+        <div className="card">
+          <div className="flex justify-between items-center mb-4">
             <h2>Notlarım</h2>
-            <div className="gpa-summary">
-              <div>GNO: <span>{gpa !== null ? gpa : '-'}</span></div>
-              <div>AGNO: <span>{cgpa !== null ? cgpa : '-'}</span></div>
-              <button className="transcript-btn" onClick={handleTranscriptDownload}>Transkript İndir</button>
+            <button className="btn btn-secondary" onClick={handleTranscriptDownload}>
+              <span style={{ marginRight: '8px' }}>📄</span> Transkript İndir
+            </button>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+            <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Dönem Ortalaması (GNO)</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--accent-color)' }}>{gpa !== null ? gpa : '-'}</div>
             </div>
-            {loading ? (
-              <div className="loading">Yükleniyor...</div>
-            ) : error ? (
-              <div className="error">{error}</div>
-            ) : grades.length === 0 ? (
-              <div className="no-grades">Henüz notunuz bulunmamaktadır.</div>
-            ) : (
-              <table className="grades-table">
+            <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Genel Ortalama (AGNO)</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--success)' }}>{cgpa !== null ? cgpa : '-'}</div>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="loading">Notlar yükleniyor...</div>
+          ) : error ? (
+            <div className="error">{error}</div>
+          ) : grades.length === 0 ? (
+            <div className="text-center p-4">Henüz not girişi yapılmamış.</div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table>
                 <thead>
                   <tr>
                     <th>Ders Kodu</th>
@@ -79,20 +91,28 @@ const GradesPage = () => {
                 <tbody>
                   {grades.map((grade) => (
                     <tr key={grade.sectionId}>
-                      <td>{grade.courseCode}</td>
+                      <td style={{ fontFamily: 'monospace', fontWeight: 600 }}>{grade.courseCode}</td>
                       <td>{grade.courseName}</td>
                       <td>{grade.credits}</td>
-                      <td>{grade.letterGrade}</td>
+                      <td>
+                        <span style={{
+                          fontWeight: 700,
+                          color: grade.letterGrade?.startsWith('A') ? 'var(--success)' :
+                            grade.letterGrade?.startsWith('F') ? 'var(--danger)' : 'var(--text-primary)'
+                        }}>
+                          {grade.letterGrade}
+                        </span>
+                      </td>
                       <td>{grade.score}</td>
-                      <td>{grade.semesterName}</td>
+                      <td style={{ color: 'var(--text-muted)' }}>{grade.semesterName}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            )}
-          </div>
-        </main>
-      </div>
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 };
