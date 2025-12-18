@@ -4,11 +4,11 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useAuth } from '../context/AuthContext';
-// import TextInput from '../components/TextInput'; // Removed
-// import Checkbox from '../components/Checkbox'; // Removed
+import { GraduationCapIcon, UserIcon, ShieldIcon } from '../components/Icons';
+import bgImage from '../assets/university_bg.png';
 
 const loginSchema = yup.object().shape({
-    email: yup.string().email('Geçersiz e-posta formatı').required('E-posta gereklidir'),
+    email: yup.string().email('Geçersiz e-posta formatı').required('E-posta adresi gereklidir'),
     password: yup.string().required('Şifre gereklidir'),
     rememberMe: yup.boolean()
 });
@@ -19,7 +19,6 @@ const Login = () => {
     const { login, user } = useAuth();
     const navigate = useNavigate();
 
-    // Kullanıcı zaten giriş yapmışsa dashboard'a yönlendir
     React.useEffect(() => {
         if (user) {
             navigate('/dashboard');
@@ -33,8 +32,6 @@ const Login = () => {
         }
     });
 
-    // import './Login.css'; // Removed legacy CSS
-
     const onSubmit = async (data) => {
         setError('');
         setLoading(true);
@@ -45,13 +42,12 @@ const Login = () => {
             if (data.rememberMe) {
                 localStorage.setItem('rememberMe', 'true');
             }
-            // Yönlendirmeyi useEffect yapacak
         } else {
             let errorMsg = typeof result.error === 'object'
                 ? (result.error.message || JSON.stringify(result.error))
                 : result.error;
             if (errorMsg && errorMsg.toLowerCase().includes('verify your email')) {
-                errorMsg = 'Hesabınızı kullanabilmek için önce e-posta adresinizi onaylamanız gerekiyor.';
+                errorMsg = 'Hesabınızı kullanabilmek için doğrulama yapmanız gerekmektedir.';
             }
             setError(errorMsg);
             setLoading(false);
@@ -62,95 +58,100 @@ const Login = () => {
         <div style={{
             minHeight: '100vh',
             width: '100%',
-            background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)',
+            backgroundImage: `url(${bgImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             padding: '1rem'
         }}>
-            <div className="card" style={{
-                maxWidth: '420px',
+            <div className="login-card" style={{
+                maxWidth: '400px',
                 width: '100%',
                 padding: '2.5rem',
-                backdropFilter: 'blur(20px)',
-                background: 'rgba(15, 23, 42, 0.6)',
-                border: '1px solid rgba(255, 255, 255, 0.1)'
+                background: 'white',
+                borderRadius: '8px',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                border: '1px solid #e2e8f0'
             }}>
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎓</div>
-                    <h2 style={{ fontSize: '2rem', fontWeight: 700, background: 'linear-gradient(to right, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>Giriş Yap</h2>
-                    <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}>Kampüs sistemine hoşgeldiniz</p>
+                    <div style={{
+                        margin: '0 auto 1.5rem auto',
+                        width: '64px',
+                        height: '64px',
+                        background: 'var(--accent-color)',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white'
+                    }}>
+                        <GraduationCapIcon size={32} />
+                    </div>
+                    <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.5rem', border: 'none' }}>
+                        Öğrenci Girişi
+                    </h2>
+                    <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+                        Kampüs Bilgi Sistemi'ne erişmek için bilgilerinizi giriniz.
+                    </p>
                 </div>
 
                 {error && (
-                    <div style={{
-                        background: 'rgba(239, 68, 68, 0.1)',
-                        color: '#ef4444',
-                        padding: '1rem',
-                        borderRadius: '8px',
-                        marginBottom: '1.5rem',
-                        fontSize: '0.9rem',
-                        border: '1px solid rgba(239, 68, 68, 0.2)'
-                    }}>
+                    <div className="error" style={{ textAlign: 'center' }}>
                         {error}
                     </div>
                 )}
 
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'block', color: 'var(--text-secondary)', marginBottom: '0.5rem', fontSize: '0.9rem' }}>E-posta Adresi</label>
-                        <input
-                            type="email"
-                            {...register('email')}
-                            disabled={loading}
-                            placeholder="ornek@uni.edu.tr"
-                            style={{
-                                width: '100%',
-                                padding: '0.75rem 1rem',
-                                background: 'rgba(255, 255, 255, 0.05)',
-                                border: '1px solid rgba(255, 255, 255, 0.1)',
-                                borderRadius: '8px',
-                                color: 'white',
-                                outline: 'none',
-                                fontSize: '1rem'
-                            }}
-                        />
-                        {errors.email && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem' }}>{errors.email.message}</div>}
+                    <div style={{ marginBottom: '1.25rem' }}>
+                        <label style={{ display: 'block', color: '#475569', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 500 }}>
+                            E-posta Adresi
+                        </label>
+                        <div style={{ position: 'relative' }}>
+                            <input
+                                type="email"
+                                {...register('email')}
+                                disabled={loading}
+                                placeholder="ad.soyad@uni.edu.tr"
+                                style={{ paddingLeft: '2.5rem' }}
+                            />
+                            <div style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>
+                                <UserIcon size={18} />
+                            </div>
+                        </div>
+                        {errors.email && <div style={{ color: '#dc2626', fontSize: '0.8rem', marginTop: '0.25rem' }}>{errors.email.message}</div>}
                     </div>
 
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'block', color: 'var(--text-secondary)', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Şifre</label>
-                        <input
-                            type="password"
-                            {...register('password')}
-                            disabled={loading}
-                            placeholder="••••••••"
-                            style={{
-                                width: '100%',
-                                padding: '0.75rem 1rem',
-                                background: 'rgba(255, 255, 255, 0.05)',
-                                border: '1px solid rgba(255, 255, 255, 0.1)',
-                                borderRadius: '8px',
-                                color: 'white',
-                                outline: 'none',
-                                fontSize: '1rem'
-                            }}
-                        />
-                        {errors.password && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem' }}>{errors.password.message}</div>}
+                    <div style={{ marginBottom: '1.25rem' }}>
+                        <div style={{ marginBottom: '0.5rem' }}>
+                            <label style={{ color: '#475569', fontSize: '0.9rem', fontWeight: 500 }}>Şifre</label>
+                        </div>
+                        <div style={{ position: 'relative' }}>
+                            <input
+                                type="password"
+                                {...register('password')}
+                                disabled={loading}
+                                placeholder="••••••••"
+                                style={{ paddingLeft: '2.5rem' }}
+                            />
+                            <div style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>
+                                <ShieldIcon size={18} />
+                            </div>
+                        </div>
+                        {errors.password && <div style={{ color: '#dc2626', fontSize: '0.8rem', marginTop: '0.25rem' }}>{errors.password.message}</div>}
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
-                        <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                    <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#64748b', fontSize: '0.9rem' }}>
                             <input
                                 type="checkbox"
                                 {...register('rememberMe')}
-                                style={{ marginRight: '0.5rem', width: '16px', height: '16px' }}
+                                style={{ width: 'auto', marginRight: '0.5rem' }}
                             />
                             Beni Hatırla
                         </label>
-                        <Link to='/forgot-password' style={{ color: 'var(--accent-color)', textDecoration: 'none', fontSize: '0.9rem' }}>
-                            Şifremi unuttum?
-                        </Link>
+                        <Link to='/forgot-password' style={{ color: 'var(--accent-color)', fontSize: '0.85rem', textDecoration: 'none' }}>Unuttum?</Link>
                     </div>
 
                     <button
@@ -159,27 +160,27 @@ const Login = () => {
                         disabled={loading}
                         style={{
                             width: '100%',
-                            padding: '1rem',
+                            padding: '0.75rem',
                             fontSize: '1rem',
-                            fontWeight: 600,
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            gap: '0.5rem'
+                            justifyContent: 'center'
                         }}
                     >
-                        {loading ? 'Giriş yapılıyor...' : <><span>Giriş Yap</span> <span>➜</span></>}
+                        {loading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
                     </button>
                 </form>
 
-                <div style={{ marginTop: '2rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                        Hesabınız yok mu?{' '}
+                <div style={{ marginTop: '1.5rem', textAlign: 'center', borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem' }}>
+                    <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+                        Yeni kayıt mı yaptıracaksınız?{' '}
                         <Link to='/register' style={{ color: 'var(--accent-color)', fontWeight: 600, textDecoration: 'none' }}>
                             Kayıt Ol
                         </Link>
                     </p>
                 </div>
+            </div>
+
+            <div style={{ position: 'absolute', bottom: '1rem', color: '#94a3b8', fontSize: '0.8rem' }}>
+                &copy; {new Date().getFullYear()} Kampüs Bilgi Sistemi v1.0
             </div>
         </div>
     );

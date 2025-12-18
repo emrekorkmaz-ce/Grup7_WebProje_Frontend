@@ -7,7 +7,8 @@ import api, { BACKEND_BASE_URL } from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import TextInput from '../components/TextInput';
-import './Profile.css';
+import { CameraIcon, TrashIcon, SaveIcon } from '../components/Icons';
+// import './Profile.css';
 
 const profileSchema = yup.object().shape({
     full_name: yup.string().required('Ad soyad gereklidir'),
@@ -167,7 +168,7 @@ const Profile = () => {
 
                         <div className="flex flex-col gap-2">
                             <label htmlFor='profile-picture-upload' className='btn btn-primary' style={{ cursor: 'pointer', display: 'inline-block' }}>
-                                {uploading ? 'Yükleniyor...' : '📷 Fotoğraf Değiştir'}
+                                {uploading ? 'Yükleniyor...' : <><CameraIcon size={18} /> Fotoğraf Değiştir</>}
                             </label>
                             <input
                                 type='file'
@@ -185,7 +186,7 @@ const Profile = () => {
                                     disabled={uploading}
                                     style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}
                                 >
-                                    🗑️ Fotoğrafı Kaldır
+                                    <TrashIcon size={18} /> Fotoğrafı Kaldır
                                 </button>
                             )}
                             <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '0.5rem' }}>Maks 5 MB (JPG/PNG)</small>
@@ -256,14 +257,14 @@ const Profile = () => {
                                     disabled={loading}
                                     style={{ padding: '0.75rem 2rem' }}
                                 >
-                                    {loading ? 'Kaydediliyor...' : '💾 Değişiklikleri Kaydet'}
+                                    {loading ? 'Kaydediliyor...' : <><SaveIcon size={18} /> Değişiklikleri Kaydet</>}
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
-            </main>
-        </div>
+            </main >
+        </div >
     );
 };
 

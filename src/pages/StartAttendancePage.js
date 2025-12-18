@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-import './StartAttendancePage.css';
+import { MegaphoneIcon, CheckCircleIcon, CopyIcon, BookIcon } from '../components/Icons';
+// import './StartAttendancePage.css';
 
 const StartAttendancePage = () => {
   const [qrCode, setQrCode] = useState(null);
@@ -108,7 +109,7 @@ const StartAttendancePage = () => {
             disabled={loading || !selectedSection}
             style={{ padding: '0.8rem 2rem', fontSize: '1.1rem' }}
           >
-            {loading ? 'Başlatılıyor...' : '📢 Oturumu Başlat'}
+            {loading ? 'Başlatılıyor...' : <><MegaphoneIcon size={18} /> Oturumu Başlat</>}
           </button>
 
           {error && <div className="error mt-4">{error}</div>}
@@ -122,7 +123,9 @@ const StartAttendancePage = () => {
                 borderRadius: 'var(--radius-lg)',
                 marginBottom: '2rem'
               }}>
-                <h3 style={{ color: '#10b981', marginBottom: '0' }}>✅ Oturum Aktif</h3>
+                <h3 style={{ color: '#10b981', marginBottom: '0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <CheckCircleIcon size={24} /> Oturum Aktif
+                </h3>
               </div>
 
               {/* QR CODE - Tahtaya yansıtılacak */}
@@ -184,7 +187,7 @@ const StartAttendancePage = () => {
                     className="btn btn-secondary"
                     onClick={copyToClipboard}
                   >
-                    📋 Kopyala
+                    <CopyIcon size={16} /> Kopyala
                   </button>
                 </div>
               </div>
@@ -195,7 +198,9 @@ const StartAttendancePage = () => {
                 padding: '1.5rem',
                 borderRadius: '0 var(--radius-md) var(--radius-md) 0'
               }}>
-                <h4 style={{ color: 'var(--accent-color)', marginBottom: '0.5rem' }}>💡 Bilgi</h4>
+                <h4 style={{ color: 'var(--accent-color)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <BookIcon size={18} /> Bilgi
+                </h4>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
                   1. Bu sayfayı projektör ile tahtaya yansıtın.
                 </p>

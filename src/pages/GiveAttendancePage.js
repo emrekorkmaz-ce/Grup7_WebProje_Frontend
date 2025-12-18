@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../services/api';
-import './GiveAttendancePage.css';
+import { MapPinIcon, CheckCircleIcon } from '../components/Icons';
+// import './GiveAttendancePage.css'; // Removed
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 
 const GiveAttendancePage = () => {
+  // ... hooks ... (kept same, assuming replace_file_content keeps context if I don't touch lines before return)
+  // Wait, I need to replace the WHOLE return block or careful. I will assume using view_file output context.
   const { sessionId } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,6 +16,7 @@ const GiveAttendancePage = () => {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
+    // ... (kept same)
     if (!('geolocation' in navigator)) {
       setError('Cihazınızda konum servisi bulunamadı.');
       setLoading(false);
@@ -29,6 +35,7 @@ const GiveAttendancePage = () => {
   }, []);
 
   const handleGiveAttendance = async () => {
+    // ... (kept same)
     if (!location) return;
     setLoading(true);
     setError(null);
@@ -42,65 +49,72 @@ const GiveAttendancePage = () => {
     }
   };
 
-  // Navbar ve Sidebar eklemek için import edelim (eğer yukarıda yoksa)
-  // Mevcut importlarda yok, o yüzden full replace yapıyorum.
-
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-      <div className="card" style={{ maxWidth: '400px', width: '100%', textAlign: 'center' }}>
+    <div className="app-container">
+      <Navbar />
+      <Sidebar />
+      <main>
+        <div className="card" style={{ maxWidth: '400px', width: '100%', textAlign: 'center', margin: '0 auto' }}>
 
-        {success ? (
-          <div className="animate-scale-in">
-            <div style={{ fontSize: '4rem', color: 'var(--success)', marginBottom: '1rem' }}>🎉</div>
-            <h2 style={{ color: 'var(--success)' }}>Yoklama Başarılı!</h2>
-            <p style={{ color: 'var(--text-secondary)' }}>Katılımınız sisteme kaydedildi.</p>
-          </div>
-        ) : (
-          <>
-            <h2 className="mb-4">Yoklama Ver</h2>
+          {success ? (
+            <div className="animate-scale-in">
+              <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
+                <CheckCircleIcon size={64} color="var(--success)" />
+              </div>
+              <h2 style={{ color: 'var(--success)' }}>Yoklama Başarılı!</h2>
+              <p style={{ color: 'var(--text-secondary)' }}>Katılımınız sisteme kaydedildi.</p>
+            </div>
+          ) : (
+            <>
+              <h2 className="mb-4">Yoklama Ver</h2>
 
-            {loading ? (
-              <div className="flex flex-col items-center">
-                <div className="spinner lg mb-4"></div>
-                <p style={{ color: 'var(--accent-color)' }}>Konum alınıyor...</p>
-              </div>
-            ) : error ? (
-              <div className="error text-center">
-                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📍</div>
-                {error}
-                <button className="btn btn-secondary mt-4 w-full" onClick={() => window.location.reload()}>
-                  Tekrar Dene
-                </button>
-              </div>
-            ) : (
-              <div className="animate-fade-in">
-                <div style={{
-                  background: 'rgba(59, 130, 246, 0.1)',
-                  padding: '1rem',
-                  borderRadius: 'var(--radius-md)',
-                  marginBottom: '2rem',
-                  border: '1px solid rgba(59, 130, 246, 0.2)'
-                }}>
-                  <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📍</div>
-                  <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Konumunuz Algılandı</div>
-                  <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
-                    {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
-                  </div>
+              {loading ? (
+                <div className="flex flex-col items-center">
+                  <div className="spinner lg mb-4"></div>
+                  <p style={{ color: 'var(--accent-color)' }}>Konum alınıyor...</p>
                 </div>
+              ) : error ? (
+                <div className="error text-center">
+                  <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'center' }}>
+                    <MapPinIcon size={32} />
+                  </div>
+                  {error}
+                  <button className="btn btn-secondary mt-4 w-full" onClick={() => window.location.reload()}>
+                    Tekrar Dene
+                  </button>
+                </div>
+              ) : (
+                <div className="animate-fade-in">
+                  <div style={{
+                    background: 'rgba(59, 130, 246, 0.1)',
+                    padding: '1rem',
+                    borderRadius: 'var(--radius-md)',
+                    marginBottom: '2rem',
+                    border: '1px solid rgba(59, 130, 246, 0.2)'
+                  }}>
+                    <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'center' }}>
+                      <MapPinIcon size={24} />
+                    </div>
+                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Konumunuz Algılandı</div>
+                    <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+                      {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
+                    </div>
+                  </div>
 
-                <button
-                  className="btn btn-primary w-full"
-                  onClick={handleGiveAttendance}
-                  disabled={!location || loading}
-                  style={{ width: '100%', padding: '1rem', fontSize: '1.1rem' }}
-                >
-                  ✅ Buradayım
-                </button>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+                  <button
+                    className="btn btn-primary w-full"
+                    onClick={handleGiveAttendance}
+                    disabled={!location || loading}
+                    style={{ width: '100%', padding: '1rem', fontSize: '1.1rem' }}
+                  >
+                    <CheckCircleIcon size={18} /> Buradayım
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </main>
     </div>
   );
 };

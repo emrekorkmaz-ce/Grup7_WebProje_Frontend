@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { LogOutIcon, GraduationCapIcon } from './Icons';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -20,7 +21,10 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <h2><span className="navbar-logo-icon">🎓</span> Kampüs Yönetim Sistemi</h2>
+        <div className="brand-logo">
+          <GraduationCapIcon size={28} color="var(--accent-color)" />
+        </div>
+        <h2>Kampüs Bilgi Sistemi</h2>
       </div>
       <div className="navbar-menu">
         {user && (
@@ -31,8 +35,9 @@ const Navbar = () => {
               </div>
               <span className="user-name">{formatName(user.full_name) || user.email}</span>
             </div>
-            <button onClick={handleLogout} className="logout-button">
-              <span>Çıkış</span> 🚪
+            <button onClick={handleLogout} className="logout-button" title="Çıkış Yap">
+              <LogOutIcon size={18} />
+              <span>Çıkış</span>
             </button>
           </>
         )}

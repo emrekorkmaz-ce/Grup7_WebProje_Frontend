@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { SaveIcon } from '../components/Icons';
 
 const GradebookPage = () => {
   const { sectionId } = useParams();
@@ -69,7 +70,7 @@ const GradebookPage = () => {
               disabled={saving}
               style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.5rem' }}
             >
-              {saving ? 'Kaydediliyor...' : '💾 Kaydet'}
+              {saving ? 'Kaydediliyor...' : <><SaveIcon size={18} /> Kaydet</>}
             </button>
           </div>
 
@@ -99,9 +100,9 @@ const GradebookPage = () => {
                           onChange={e => handleGradeChange(student.studentId, e.target.value)}
                           placeholder="AA"
                           style={{
-                            background: 'rgba(255,255,255,0.05)',
-                            border: '1px solid rgba(255,255,255,0.1)',
-                            color: 'white',
+                            background: 'white',
+                            border: '1px solid var(--border-color)',
+                            color: 'var(--text-primary)',
                             padding: '0.5rem',
                             borderRadius: '4px',
                             width: '80px',
@@ -125,8 +126,8 @@ const GradebookPage = () => {
             </div>
           )}
         </div>
-      </main>
-    </div>
+      </main >
+    </div >
   );
 };
 

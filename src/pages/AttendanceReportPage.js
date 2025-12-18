@@ -4,7 +4,8 @@ import { useParams } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-import './AttendanceReportPage.css';
+import { DownloadIcon } from '../components/Icons';
+// import './AttendanceReportPage.css';
 
 const AttendanceReportPage = () => {
   const { sectionId } = useParams();
@@ -52,7 +53,7 @@ const AttendanceReportPage = () => {
           <div className="flex justify-between items-center mb-4">
             <h2>Yoklama Raporu</h2>
             <button className="export-btn" onClick={handleExportExcel}>
-              <span style={{ marginRight: '8px' }}>📥</span> Excel İndir
+              <DownloadIcon size={16} /> Excel İndir
             </button>
           </div>
 
@@ -93,7 +94,7 @@ const AttendanceReportPage = () => {
                       <td>
                         <div style={{
                           width: '100%',
-                          background: 'rgba(255,255,255,0.1)',
+                          background: '#e2e8f0',
                           height: '6px',
                           borderRadius: '3px',
                           marginTop: '5px',

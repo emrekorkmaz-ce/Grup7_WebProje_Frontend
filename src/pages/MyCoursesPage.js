@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-import './MyCoursesPage.css';
+import { UserIcon, BookIcon, CheckCircleIcon, ClockIcon } from '../components/Icons';
+// import './MyCoursesPage.css';
 
 const MyCoursesPage = () => {
   const [courses, setCourses] = useState([]);
@@ -68,10 +69,10 @@ const MyCoursesPage = () => {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
                   <div className="flex items-center gap-2">
-                    <span>👨‍🏫</span> {course.instructorName}
+                    <UserIcon size={16} /> {course.instructorName}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span>📑</span> Şube: {course.sectionName || course.sectionNumber}
+                    <BookIcon size={16} /> Şube: {course.sectionName || course.sectionNumber}
                   </div>
                 </div>
 

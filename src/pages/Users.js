@@ -61,7 +61,7 @@ const Users = () => {
       <main>
         <div className="card">
           <div style={{ marginBottom: '2rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '1rem' }}>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: 700, margin: 0, background: 'linear-gradient(to right, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
               Kullanıcı Yönetimi
             </h1>
             <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}>Sistemdeki tüm kayıtlı kullanıcıları buradan yönetebilirsiniz.</p>
@@ -85,7 +85,7 @@ const Users = () => {
                 </thead>
                 <tbody>
                   {users.map((user) => (
-                    <tr key={user.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.2s' }}>
+                    <tr key={user.id} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background 0.2s' }}>
                       <td style={{ padding: '1rem', fontWeight: 500 }}>{formatName(user.full_name)}</td>
                       <td style={{ padding: '1rem', color: 'var(--text-secondary)' }}>{user.email}</td>
                       <td style={{ padding: '1rem' }}>

@@ -8,7 +8,9 @@ import api from '../services/api';
 import TextInput from '../components/TextInput';
 import Select from '../components/Select';
 import Checkbox from '../components/Checkbox';
-import './Register.css';
+import { GraduationCapIcon } from '../components/Icons';
+import bgImage from '../assets/university_bg.png';
+// import './Register.css';
 
 const registerSchema = yup.object().shape({
     email: yup.string()
@@ -182,7 +184,9 @@ const Register = () => {
         <div style={{
             minHeight: '100vh',
             width: '100%',
-            background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)',
+            backgroundImage: `url(${bgImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -192,110 +196,123 @@ const Register = () => {
                 maxWidth: '600px',
                 width: '100%',
                 padding: '2.5rem',
-                backdropFilter: 'blur(20px)',
-                background: 'rgba(15, 23, 42, 0.8)',
-                border: '1px solid rgba(255, 255, 255, 0.1)'
+                background: 'white',
+                borderRadius: '8px',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                border: '1px solid #e2e8f0'
             }}>
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📝</div>
-                    <h2 style={{ fontSize: '2rem', fontWeight: 700, background: 'linear-gradient(to right, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>Kayıt Ol</h2>
-                    <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}>Kampüs ailesine katılın</p>
+                    <div style={{
+                        margin: '0 auto 1.5rem auto',
+                        width: '64px',
+                        height: '64px',
+                        background: 'var(--accent-color)',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white'
+                    }}>
+                        <GraduationCapIcon size={32} />
+                    </div>
+                    <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.5rem' }}>Aramıza Katılın</h2>
+                    <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Kampüs Bilgi Sistemi'ne kaydolun</p>
                 </div>
 
-                {error && <div style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid rgba(239,68,68,0.2)' }}>{error}</div>}
-                {success && <div style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid rgba(16,185,129,0.2)' }}>{success}</div>}
+                {error && <div className="error">{error}</div>}
+                {success && <div className="card" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', padding: '1rem', marginBottom: '1.5rem', border: '1px solid var(--success)' }}>{success}</div>}
 
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <div>
-                        <label style={labelStyle}>Ad Soyad *</label>
-                        <input type='text' {...register('full_name')} style={inputStyle} disabled={loading} />
-                        {errors.full_name && <div style={errorStyle}>{errors.full_name.message}</div>}
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Ad Soyad *</label>
+                        <input type='text' {...register('full_name')} disabled={loading} placeholder="Ad Soyad" />
+                        {errors.full_name && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.full_name.message}</div>}
                     </div>
 
-                    <div>
-                        <label style={labelStyle}>E-posta *</label>
-                        <input type='email' {...register('email')} style={inputStyle} disabled={loading} placeholder="ornek@uni.edu.tr" />
-                        {errors.email && <div style={errorStyle}>{errors.email.message}</div>}
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-slate-700 mb-1">E-posta *</label>
+                        <input type='email' {...register('email')} disabled={loading} placeholder="ornek@uni.edu.tr" />
+                        {errors.email && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.email.message}</div>}
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="mb-4">
                         <div>
-                            <label style={labelStyle}>Şifre *</label>
-                            <input type='password' {...register('password')} style={inputStyle} disabled={loading} />
-                            {errors.password && <div style={errorStyle}>{errors.password.message}</div>}
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Şifre *</label>
+                            <input type='password' {...register('password')} disabled={loading} placeholder="••••••••" />
+                            {errors.password && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.password.message}</div>}
                         </div>
                         <div>
-                            <label style={labelStyle}>Şifreyi Onayla *</label>
-                            <input type='password' {...register('confirmPassword')} style={inputStyle} disabled={loading} />
-                            {errors.confirmPassword && <div style={errorStyle}>{errors.confirmPassword.message}</div>}
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Şifreyi Onayla *</label>
+                            <input type='password' {...register('confirmPassword')} disabled={loading} placeholder="••••••••" />
+                            {errors.confirmPassword && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.confirmPassword.message}</div>}
                         </div>
                     </div>
-                    <small style={{ display: 'block', color: 'var(--text-muted)', marginBottom: '1.5rem', marginTop: '-0.5rem' }}>
-                        En az 8 karakter, büyük/küçük harf ve rakam içermeli.
+                    <small style={{ display: 'block', color: 'var(--text-muted)', marginBottom: '1.5rem', marginTop: '-0.5rem', fontSize: '0.8rem' }}>
+                        En az 8 karakter, büyük/küçük harf ve rakam.
                     </small>
 
-                    <div>
-                        <label style={labelStyle}>Kullanıcı Tipi *</label>
-                        <select {...register('role')} style={{ ...inputStyle, cursor: 'pointer' }} disabled={loading}>
-                            <option value="student" style={{ color: 'black' }}>Öğrenci</option>
-                            <option value="faculty" style={{ color: 'black' }}>Akademisyen</option>
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Kullanıcı Tipi *</label>
+                        <select {...register('role')} disabled={loading}>
+                            <option value="student">Öğrenci</option>
+                            <option value="faculty">Akademisyen</option>
                         </select>
-                        {errors.role && <div style={errorStyle}>{errors.role.message}</div>}
+                        {errors.role && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.role.message}</div>}
                     </div>
 
                     {role === 'student' && (
-                        <div>
-                            <label style={labelStyle}>Öğrenci Numarası *</label>
-                            <input type='text' {...register('student_number')} style={inputStyle} disabled={loading} />
-                            {errors.student_number && <div style={errorStyle}>{errors.student_number.message}</div>}
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Öğrenci Numarası *</label>
+                            <input type='text' {...register('student_number')} disabled={loading} placeholder="Öğrenci No" />
+                            {errors.student_number && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.student_number.message}</div>}
                         </div>
                     )}
 
                     {role === 'faculty' && (
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="mb-4">
                             <div>
-                                <label style={labelStyle}>Personel No *</label>
-                                <input type='text' {...register('employee_number')} style={inputStyle} disabled={loading} />
-                                {errors.employee_number && <div style={errorStyle}>{errors.employee_number.message}</div>}
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Personel No *</label>
+                                <input type='text' {...register('employee_number')} disabled={loading} />
+                                {errors.employee_number && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.employee_number.message}</div>}
                             </div>
                             <div>
-                                <label style={labelStyle}>Ünvan *</label>
-                                <input type='text' {...register('title')} style={inputStyle} disabled={loading} placeholder="örn. Prof. Dr." />
-                                {errors.title && <div style={errorStyle}>{errors.title.message}</div>}
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Ünvan *</label>
+                                <input type='text' {...register('title')} disabled={loading} placeholder="örn. Prof. Dr." />
+                                {errors.title && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.title.message}</div>}
                             </div>
                         </div>
                     )}
 
-                    <div>
-                        <label style={labelStyle}>Bölüm *</label>
-                        <select {...register('department_id')} style={{ ...inputStyle, cursor: 'pointer' }} disabled={loading}>
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Bölüm *</label>
+                        <select {...register('department_id')} disabled={loading}>
                             {departmentOptions.map(opt => (
-                                <option key={opt.value} value={opt.value} style={{ color: 'black' }}>{opt.label}</option>
+                                <option key={opt.value} value={opt.value}>{opt.label}</option>
                             ))}
                         </select>
-                        {errors.department_id && <div style={errorStyle}>{errors.department_id.message}</div>}
+                        {errors.department_id && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.department_id.message}</div>}
                     </div>
 
                     <div style={{ marginBottom: '2rem' }}>
-                        <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                            <input type="checkbox" {...register('terms')} style={{ marginRight: '0.5rem', width: '16px', height: '16px' }} disabled={loading} />
+                        <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#64748b', fontSize: '0.9rem' }}>
+                            <input type="checkbox" {...register('terms')} style={{ marginRight: '0.5rem', width: 'auto' }} disabled={loading} />
                             Şartlar ve koşulları kabul ediyorum *
                         </label>
-                        {errors.terms && <div style={errorStyle}>{errors.terms.message}</div>}
+                        {errors.terms && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.terms.message}</div>}
                     </div>
 
                     <button
                         type='submit'
                         className='btn-primary'
                         disabled={loading}
-                        style={{ width: '100%', padding: '1rem', fontSize: '1.1rem', fontWeight: 600 }}
+                        style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', fontWeight: 600, justifyContent: 'center' }}
                     >
                         {loading ? 'Kaydediliyor...' : 'Kayıt Ol'}
                     </button>
                 </form>
 
-                <div style={{ marginTop: '2rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                <div style={{ marginTop: '2rem', textAlign: 'center', borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem' }}>
+                    <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
                         Zaten hesabınız var mı?{' '}
                         <Link to='/login' style={{ color: 'var(--accent-color)', fontWeight: 600, textDecoration: 'none' }}>
                             Giriş Yap

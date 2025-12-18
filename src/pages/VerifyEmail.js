@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { CheckCircleIcon, XCircleIcon } from '../components/Icons';
 import './VerifyEmail.css';
 
 const VerifyEmail = () => {
@@ -26,7 +27,7 @@ const VerifyEmail = () => {
 
     const verifyEmail = async () => {
       console.log('🔍 VerifyEmail: Token from URL:', token);
-      
+
       try {
         await api.post('/auth/verify-email', { token });
         setStatus('success');
@@ -37,7 +38,7 @@ const VerifyEmail = () => {
       } catch (error) {
         console.error('❌ Verification error:', error);
         console.error('❌ Error response:', error.response?.data);
-        
+
         // Only show error if we have a response (not a network error)
         // Network errors might be temporary, so we'll keep showing "verifying"
         if (isMounted && error.response) {
@@ -45,10 +46,10 @@ const VerifyEmail = () => {
           // Only show error for client errors (4xx), not server errors (5xx) or network errors
           if (statusCode >= 400 && statusCode < 500) {
             setStatus('error');
-            const errorMessage = error.response?.data?.error?.message || 
-                                error.response?.data?.error || 
-                                error.response?.data?.message ||
-                                'Doğrulama başarısız. Bağlantı geçersiz veya süresi dolmuş olabilir.';
+            const errorMessage = error.response?.data?.error?.message ||
+              error.response?.data?.error ||
+              error.response?.data?.message ||
+              'Doğrulama başarısız. Bağlantı geçersiz veya süresi dolmuş olabilir.';
             setMessage(errorMessage);
           }
           // For 5xx or network errors, keep showing "verifying" state
@@ -74,14 +75,18 @@ const VerifyEmail = () => {
         )}
         {status === 'success' && (
           <>
-            <div className="success-icon">✓</div>
+            <div className="success-icon" style={{ display: 'flex', justifyContent: 'center' }}>
+              <CheckCircleIcon size={64} color="var(--success)" />
+            </div>
             <h2>E-posta Doğrulandı!</h2>
             <p>{message}</p>
           </>
         )}
         {status === 'error' && (
           <>
-            <div className="error-icon">✗</div>
+            <div className="error-icon" style={{ display: 'flex', justifyContent: 'center' }}>
+              <XCircleIcon size={64} color="var(--danger)" />
+            </div>
             <h2>Doğrulama Başarısız</h2>
             <p>{message}</p>
             <button onClick={() => navigate('/login')} className="back-button">

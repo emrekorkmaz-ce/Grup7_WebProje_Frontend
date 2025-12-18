@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-// import './MyAttendancePage.css'; // Removed
+// // import './MyAttendancePage.css'; // Removed
 
 
 const MyAttendancePage = () => {
@@ -78,17 +78,17 @@ const MyAttendancePage = () => {
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: '0.25rem 0 0 0' }}>{item.courseCode}</p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '1.5rem', fontWeight: 800, color: item.remaining === 0 ? '#ef4444' : 'white' }}>{item.remaining}</span>
+                  <span style={{ fontSize: '1.5rem', fontWeight: 800, color: item.remaining === 0 ? '#ef4444' : 'var(--text-primary)' }}>{item.remaining}</span>
                   <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>Kalan Hak</p>
                 </div>
               </div>
 
               <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                <span>Devamsızlık: <b style={{ color: 'white' }}>{item.absent}</b> / {item.limit}</span>
+                <span>Devamsızlık: <b style={{ color: 'var(--text-primary)' }}>{item.absent}</b> / {item.limit}</span>
                 <span>Toplam Ders: {item.totalSessions}</span>
               </div>
 
-              <div style={{ height: '8px', width: '100%', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }}>
+              <div style={{ height: '8px', width: '100%', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
                 <div style={{
                   height: '100%',
                   width: `${Math.min(100, (item.absent / item.limit) * 100)}% `,
@@ -107,14 +107,14 @@ const MyAttendancePage = () => {
           ) : error ? (
             <div style={{ padding: '1rem', background: 'rgba(239,68,68,0.1)', color: '#ef4444', borderRadius: '8px' }}>{error}</div>
           ) : attendance.length === 0 ? (
-            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)', border: '1px dashed var(--glass-border)', borderRadius: '8px' }}>
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)', border: '1px dashed var(--border-color)', borderRadius: '8px' }}>
               Henüz yoklama veriniz yok.
             </div>
           ) : (
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid var(--glass-border)', textAlign: 'left' }}>
+                  <tr style={{ borderBottom: '1px solid var(--border-color)', textAlign: 'left' }}>
                     <th style={{ padding: '1rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Ders</th>
                     <th style={{ padding: '1rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Tarih</th>
                     <th style={{ padding: '1rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Durum</th>
@@ -123,7 +123,7 @@ const MyAttendancePage = () => {
                 </thead>
                 <tbody>
                   {attendance.map((item) => (
-                    <tr key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <tr key={item.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                       <td style={{ padding: '1rem', fontWeight: 500 }}>{item.courseName}</td>
                       <td style={{ padding: '1rem', color: 'var(--text-secondary)' }}>{new Date(item.date).toLocaleDateString()}</td>
                       <td style={{ padding: '1rem' }}>
@@ -132,7 +132,7 @@ const MyAttendancePage = () => {
                           borderRadius: '999px',
                           fontSize: '0.85rem',
                           fontWeight: 500,
-                          background: item.status === 'present' ? 'rgba(16,185,129,0.2)' : item.status === 'flagged' ? 'rgba(245,158,11,0.2)' : 'rgba(239,68,68,0.2)',
+                          background: item.status === 'present' ? 'rgba(16,185,129,0.1)' : item.status === 'flagged' ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)',
                           color: item.status === 'present' ? '#10b981' : item.status === 'flagged' ? '#f59e0b' : '#ef4444'
                         }}>
                           {item.status === 'present' ? 'Katıldı' : item.status === 'flagged' ? 'Şüpheli' : 'Katılmadı'}
@@ -153,20 +153,20 @@ const MyAttendancePage = () => {
           {excuseModal.open && (
             <div style={{
               position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-              background: 'rgba(0,0,0,0.8)',
+              background: 'rgba(0,0,0,0.5)',
               zIndex: 1100,
-              backdropFilter: 'blur(5px)',
+              backdropFilter: 'blur(4px)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               animation: 'fadeIn 0.2s ease-out'
             }}>
               <div style={{
-                background: '#1e293b',
+                background: 'white',
                 padding: '2rem',
                 borderRadius: '12px',
                 width: '100%',
                 maxWidth: '500px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+                border: '1px solid var(--border-color)',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
               }}>
                 <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem', marginTop: 0 }}>Mazeret Talep Et</h3>
                 <div style={{ marginBottom: '1.5rem' }}>
@@ -178,11 +178,11 @@ const MyAttendancePage = () => {
                     style={{
                       width: '100%',
                       resize: 'vertical',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: '1px solid rgba(255,255,255,0.1)',
+                      background: 'white',
+                      border: '1px solid var(--border-color)',
                       borderRadius: '8px',
                       padding: '1rem',
-                      color: 'white',
+                      color: 'var(--text-primary)',
                       outline: 'none',
                       lineHeight: 1.5
                     }}
@@ -193,10 +193,11 @@ const MyAttendancePage = () => {
                   <button
                     onClick={() => setExcuseModal({ open: false, sessionId: null })}
                     disabled={excuseLoading}
+                    className="btn btn-secondary"
                     style={{
                       background: 'transparent',
-                      border: '1px solid rgba(255,255,255,0.2)',
-                      color: 'white',
+                      border: '1px solid var(--border-color)',
+                      color: 'var(--text-secondary)',
                       padding: '0.5rem 1.5rem',
                       borderRadius: '6px',
                       cursor: 'pointer'

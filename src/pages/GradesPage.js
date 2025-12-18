@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-import './GradesPage.css';
+import { DownloadIcon } from '../components/Icons';
+// import './GradesPage.css';
 
 const GradesPage = () => {
   const [grades, setGrades] = useState([]);
@@ -54,7 +55,7 @@ const GradesPage = () => {
           <div className="flex justify-between items-center mb-4">
             <h2>Notlarım</h2>
             <button className="btn btn-secondary" onClick={handleTranscriptDownload}>
-              <span style={{ marginRight: '8px' }}>📄</span> Transkript İndir
+              <DownloadIcon size={16} /> Transkript İndir
             </button>
           </div>
 
