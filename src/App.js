@@ -20,6 +20,16 @@ import MyAttendancePage from './pages/MyAttendancePage';
 import AttendanceReportPage from './pages/AttendanceReportPage';
 import ExcuseRequestsPage from './pages/ExcuseRequestsPage';
 import EnrollCoursesPage from './pages/EnrollCoursesPage';
+import MealMenuPage from './pages/MealMenuPage';
+import MyReservationsPage from './pages/MyReservationsPage';
+import MealScanPage from './pages/MealScanPage';
+import WalletPage from './pages/WalletPage';
+import EventsPage from './pages/EventsPage';
+import EventDetailPage from './pages/EventDetailPage';
+import MyEventsPage from './pages/MyEventsPage';
+import EventCheckInPage from './pages/EventCheckInPage';
+import MySchedulePage from './pages/MySchedulePage';
+import ClassroomReservationsPage from './pages/ClassroomReservationsPage';
 import './App.css';
 
 function App() {
@@ -118,6 +128,81 @@ function App() {
                         element={
                             <ProtectedRoute roles={['student']}>
                                 <EnrollCoursesPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* Part 3: Meal Service Routes */}
+                    <Route path="/meals/menu"
+                        element={
+                            <ProtectedRoute>
+                                <MealMenuPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/meals/reservations"
+                        element={
+                            <ProtectedRoute>
+                                <MyReservationsPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/meals/scan"
+                        element={
+                            <ProtectedRoute roles={['admin', 'faculty']}>
+                                <MealScanPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* Part 3: Wallet Routes */}
+                    <Route path="/wallet"
+                        element={
+                            <ProtectedRoute>
+                                <WalletPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* Part 3: Event Management Routes */}
+                    <Route path="/events"
+                        element={
+                            <ProtectedRoute>
+                                <EventsPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/events/:id"
+                        element={
+                            <ProtectedRoute>
+                                <EventDetailPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/my-events"
+                        element={
+                            <ProtectedRoute>
+                                <MyEventsPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/events/checkin"
+                        element={
+                            <ProtectedRoute roles={['admin']}>
+                                <EventCheckInPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* Part 3: Scheduling Routes */}
+                    <Route path="/schedule"
+                        element={
+                            <ProtectedRoute>
+                                <MySchedulePage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* Part 3: Classroom Reservations Routes */}
+                    <Route path="/reservations"
+                        element={
+                            <ProtectedRoute>
+                                <ClassroomReservationsPage />
                             </ProtectedRoute>
                         }
                     />

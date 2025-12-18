@@ -1,0 +1,163 @@
+.meal-scan-page {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.meal-scan-page h1 {
+  margin-bottom: 10px;
+  color: #333;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.scan-container {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-section label {
+  font-weight: bold;
+  color: #333;
+}
+
+.input-section input {
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: monospace;
+  transition: border-color 0.3s;
+}
+
+.input-section input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.scan-btn {
+  padding: 12px 24px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.scan-btn:hover:not(:disabled) {
+  background: #229954;
+}
+
+.scan-btn:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+.error-message {
+  margin-top: 20px;
+  padding: 15px;
+  background: #fee;
+  color: #c33;
+  border-radius: 4px;
+  border-left: 4px solid #e74c3c;
+}
+
+.success-message {
+  margin-top: 20px;
+  padding: 20px;
+  background: #efe;
+  border-radius: 4px;
+  border-left: 4px solid #27ae60;
+}
+
+.success-message h3 {
+  margin: 0 0 10px 0;
+  color: #27ae60;
+}
+
+.success-message p {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.reservation-info {
+  background: white;
+  padding: 15px;
+  border-radius: 4px;
+  margin: 15px 0;
+}
+
+.info-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-item strong {
+  color: #2c3e50;
+  margin-right: 10px;
+}
+
+.clear-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.clear-btn:hover {
+  background: #2980b9;
+}
+
+.instructions {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.instructions h3 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.instructions ul {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.instructions li {
+  margin: 8px 0;
+  color: #555;
+  line-height: 1.6;
+}
+
+

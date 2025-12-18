@@ -30,7 +30,15 @@ const Dashboard = () => {
     } else if (action === 'grades') {
       navigate('/grades');
     } else if (action === 'schedule') {
-      alert('Ders Programı modülü yapım aşamasındadır.');
+      navigate('/schedule');
+    } else if (action === 'meals') {
+      navigate('/meals/menu');
+    } else if (action === 'wallet') {
+      navigate('/wallet');
+    } else if (action === 'events') {
+      navigate('/events');
+    } else if (action === 'reservations') {
+      navigate('/reservations');
     } else {
       alert('Bu özellik yapım aşamasındadır.');
     }
@@ -154,12 +162,50 @@ const Dashboard = () => {
                 <span>Not Listesi</span>
               </button>
               <button className="btn btn-secondary" onClick={() => handleAction('schedule')} style={{ justifyContent: 'start', height: '100%' }}>
-                <CalendarIcon size={18} color="var(--text-secondary)" />
+                <CalendarIcon size={18} color="var(--accent-color)" />
                 <span>Ders Programı</span>
               </button>
               <button className="btn btn-secondary" onClick={() => handleAction('settings')} style={{ justifyContent: 'start', height: '100%' }}>
                 <SettingsIcon size={18} color="var(--text-secondary)" />
                 <span>Hesap Ayarları</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Part 3: Meal Service Card */}
+          <div className="card">
+            <h3 className="mb-4">Yemek Servisi</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <button className="btn btn-secondary" onClick={() => handleAction('meals')} style={{ justifyContent: 'start', height: '100%' }}>
+                <span style={{ fontSize: '20px', marginRight: '8px' }}>🍽️</span>
+                <span>Yemek Menüsü</span>
+              </button>
+              <button className="btn btn-secondary" onClick={() => navigate('/meals/reservations')} style={{ justifyContent: 'start', height: '100%' }}>
+                <span style={{ fontSize: '20px', marginRight: '8px' }}>📋</span>
+                <span>Rezervasyonlarım</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Part 3: Wallet & Events Card */}
+          <div className="card">
+            <h3 className="mb-4">Kampüs Yaşamı</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <button className="btn btn-secondary" onClick={() => handleAction('wallet')} style={{ justifyContent: 'start', height: '100%' }}>
+                <span style={{ fontSize: '20px', marginRight: '8px' }}>💳</span>
+                <span>Cüzdan</span>
+              </button>
+              <button className="btn btn-secondary" onClick={() => handleAction('events')} style={{ justifyContent: 'start', height: '100%' }}>
+                <span style={{ fontSize: '20px', marginRight: '8px' }}>🎉</span>
+                <span>Etkinlikler</span>
+              </button>
+              <button className="btn btn-secondary" onClick={() => navigate('/my-events')} style={{ justifyContent: 'start', height: '100%' }}>
+                <span style={{ fontSize: '20px', marginRight: '8px' }}>📅</span>
+                <span>Etkinliklerim</span>
+              </button>
+              <button className="btn btn-secondary" onClick={() => handleAction('reservations')} style={{ justifyContent: 'start', height: '100%' }}>
+                <span style={{ fontSize: '20px', marginRight: '8px' }}>🏫</span>
+                <span>Derslik Rezervasyonu</span>
               </button>
             </div>
           </div>

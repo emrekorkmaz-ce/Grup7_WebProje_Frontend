@@ -1,0 +1,197 @@
+.events-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.events-page h1 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.filters-section {
+  margin-bottom: 30px;
+}
+
+.search-box {
+  margin-bottom: 15px;
+}
+
+.search-box input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.category-filters button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.category-filters button:hover {
+  background: #f8f9fa;
+}
+
+.category-filters button.active {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.event-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.category-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.category-conference {
+  background: #3498db;
+  color: white;
+}
+
+.category-workshop {
+  background: #9b59b6;
+  color: white;
+}
+
+.category-social {
+  background: #e74c3c;
+  color: white;
+}
+
+.category-sports {
+  background: #27ae60;
+  color: white;
+}
+
+.category-academic {
+  background: #f39c12;
+  color: white;
+}
+
+.category-cultural {
+  background: #16a085;
+  color: white;
+}
+
+.paid-badge {
+  padding: 4px 8px;
+  background: #e74c3c;
+  color: white;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.event-card h3 {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
+  font-size: 20px;
+}
+
+.event-date,
+.event-time,
+.event-location,
+.event-capacity,
+.event-price {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.event-description {
+  margin: 15px 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.event-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.status-upcoming {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.status-past {
+  color: #95a5a6;
+}
+
+.status-full {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.error-message {
+  background: #fee;
+  color: #c33;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.no-events {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+  font-size: 18px;
+  grid-column: 1 / -1;
+}
+
+

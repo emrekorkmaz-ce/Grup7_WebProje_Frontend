@@ -1,0 +1,274 @@
+.wallet-page {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.wallet-page h1 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.wallet-balance-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.balance-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.topup-btn {
+  padding: 10px 20px;
+  background: white;
+  color: #667eea;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.topup-btn:hover {
+  transform: scale(1.05);
+}
+
+.balance-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.amount {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.currency {
+  font-size: 24px;
+  opacity: 0.9;
+}
+
+.inactive-warning {
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.topup-section {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.topup-section h3 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.topup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.topup-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.topup-form input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.topup-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.confirm-topup-btn, .cancel-topup-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.confirm-topup-btn {
+  background: #27ae60;
+  color: white;
+}
+
+.confirm-topup-btn:hover {
+  background: #229954;
+}
+
+.cancel-topup-btn {
+  background: #95a5a6;
+  color: white;
+}
+
+.cancel-topup-btn:hover {
+  background: #7f8c8d;
+}
+
+.transactions-section {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.transactions-section h2 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.transaction-item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  transition: box-shadow 0.3s;
+}
+
+.transaction-item:hover {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.transaction-credit {
+  border-left: 4px solid #27ae60;
+}
+
+.transaction-debit {
+  border-left: 4px solid #e74c3c;
+}
+
+.transaction-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.transaction-type {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.transaction-amount {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.transaction-credit .transaction-amount {
+  color: #27ae60;
+}
+
+.transaction-debit .transaction-amount {
+  color: #e74c3c;
+}
+
+.transaction-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.transaction-reference {
+  font-weight: bold;
+  color: #555;
+}
+
+.transaction-description {
+  color: #7f8c8d;
+}
+
+.transaction-date {
+  color: #95a5a6;
+}
+
+.transaction-balance {
+  color: #34495e;
+  font-weight: bold;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #f8f9fa;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background: #fee;
+  color: #c33;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.no-transactions {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+  font-size: 18px;
+}
+
+

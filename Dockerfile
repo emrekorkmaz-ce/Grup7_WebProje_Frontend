@@ -4,7 +4,7 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 COPY . .
 # Build static assets (API URL is injected via env at build time)
 ARG REACT_APP_API_URL

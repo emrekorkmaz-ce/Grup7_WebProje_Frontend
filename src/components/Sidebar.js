@@ -85,6 +85,62 @@ const Sidebar = () => {
             <span>Kullanıcı Yönetimi</span>
           </Link>
         )}
+
+        {/* Part 3: Meal Service */}
+        <div className="sidebar-section">
+          <div className="sidebar-section-title">YEMEK SERVİSİ</div>
+          <Link to="/meals/menu" className={`sidebar-link ${isActive('/meals/menu')}`}>
+            <span className="sidebar-icon">🍽️</span>
+            <span>Yemek Menüsü</span>
+          </Link>
+          <Link to="/meals/reservations" className={`sidebar-link ${isActive('/meals/reservations')}`}>
+            <span className="sidebar-icon">📋</span>
+            <span>Rezervasyonlarım</span>
+          </Link>
+          {(user?.role === 'admin' || user?.role === 'faculty') && (
+            <Link to="/meals/scan" className={`sidebar-link ${isActive('/meals/scan')}`}>
+              <span className="sidebar-icon">📷</span>
+              <span>QR Kod Tarayıcı</span>
+            </Link>
+          )}
+        </div>
+
+        {/* Part 3: Wallet */}
+        <Link to="/wallet" className={`sidebar-link ${isActive('/wallet')}`}>
+          <span className="sidebar-icon">💳</span>
+          <span>Cüzdan</span>
+        </Link>
+
+        {/* Part 3: Events */}
+        <div className="sidebar-section">
+          <div className="sidebar-section-title">ETKİNLİKLER</div>
+          <Link to="/events" className={`sidebar-link ${isActive('/events')}`}>
+            <span className="sidebar-icon">🎉</span>
+            <span>Etkinlikler</span>
+          </Link>
+          <Link to="/my-events" className={`sidebar-link ${isActive('/my-events')}`}>
+            <span className="sidebar-icon">📅</span>
+            <span>Etkinliklerim</span>
+          </Link>
+          {user?.role === 'admin' && (
+            <Link to="/events/checkin" className={`sidebar-link ${isActive('/events/checkin')}`}>
+              <span className="sidebar-icon">✓</span>
+              <span>Check-in</span>
+            </Link>
+          )}
+        </div>
+
+        {/* Part 3: Schedule */}
+        <Link to="/schedule" className={`sidebar-link ${isActive('/schedule')}`}>
+          <CalendarIcon size={20} className="sidebar-icon" />
+          <span>Ders Programı</span>
+        </Link>
+
+        {/* Part 3: Classroom Reservations */}
+        <Link to="/reservations" className={`sidebar-link ${isActive('/reservations')}`}>
+          <span className="sidebar-icon">🏫</span>
+          <span>Derslik Rezervasyonu</span>
+        </Link>
       </nav>
     </aside>
   );

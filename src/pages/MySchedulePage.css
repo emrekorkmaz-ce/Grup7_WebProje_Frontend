@@ -1,0 +1,155 @@
+.my-schedule-page {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.schedule-header h1 {
+  margin: 0;
+  color: #333;
+}
+
+.export-btn {
+  padding: 10px 20px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.export-btn:hover {
+  background: #2980b9;
+}
+
+.schedule-container {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 15px;
+}
+
+.schedule-day {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 10px;
+  background: #f8f9fa;
+}
+
+.schedule-day h3 {
+  margin: 0 0 10px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #3498db;
+  color: #2c3e50;
+  font-size: 16px;
+  text-align: center;
+}
+
+.schedule-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.schedule-item {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.schedule-time {
+  font-weight: bold;
+  color: #3498db;
+  margin-bottom: 5px;
+  font-size: 11px;
+}
+
+.schedule-course {
+  margin-bottom: 5px;
+}
+
+.schedule-course strong {
+  color: #2c3e50;
+  font-size: 13px;
+}
+
+.course-name {
+  color: #666;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.schedule-section {
+  color: #7f8c8d;
+  font-size: 10px;
+  margin: 3px 0;
+}
+
+.schedule-classroom {
+  color: #95a5a6;
+  font-size: 10px;
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid #eee;
+}
+
+.no-class {
+  text-align: center;
+  color: #bdc3c7;
+  font-size: 12px;
+  padding: 20px 0;
+}
+
+.no-schedule {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+  font-size: 18px;
+}
+
+.error-message {
+  background: #fee;
+  color: #c33;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+
+@media (max-width: 1200px) {
+  .schedule-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .schedule-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
