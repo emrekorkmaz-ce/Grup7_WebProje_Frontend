@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { BookIcon, GraduationCapIcon, CalendarIcon, SettingsIcon, CheckCircleIcon, ClockIcon } from '../components/Icons';
-// import './Dashboard.css'; // Removed to fix dark mode override
 
 const Dashboard = () => {
   const { user } = useAuth();
