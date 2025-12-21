@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { QRCodeSVG } from 'qrcode.react';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 import './MyEventsPage.css';
 
 const MyEventsPage = () => {
@@ -79,8 +81,12 @@ const MyEventsPage = () => {
     pastRegistrations;
 
   return (
-    <div className="my-events-page">
-      <h1>Etkinliklerim</h1>
+    <div className="app-container">
+      <Navbar />
+      <Sidebar />
+      <main>
+        <div className="my-events-page">
+          <h1>Etkinliklerim</h1>
 
       <div className="filter-tabs">
         <button
@@ -130,6 +136,8 @@ const MyEventsPage = () => {
           onClose={() => setSelectedQR(null)}
         />
       )}
+        </div>
+      </main>
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 import './MealMenuPage.css';
 
 const MealMenuPage = () => {
@@ -68,8 +70,12 @@ const MealMenuPage = () => {
   const breakfastMenus = menus.filter(m => m.meal_type === 'breakfast');
 
   return (
-    <div className="meal-menu-page">
-      <h1>Yemek Menüsü</h1>
+    <div className="app-container">
+      <Navbar />
+      <Sidebar />
+      <main>
+        <div className="meal-menu-page">
+          <h1>Yemek Menüsü</h1>
 
       <div className="date-selector">
         <label>Tarih Seçin:</label>
@@ -127,6 +133,8 @@ const MealMenuPage = () => {
           onClose={() => setReservingMenu(null)}
         />
       )}
+        </div>
+      </main>
     </div>
   );
 };

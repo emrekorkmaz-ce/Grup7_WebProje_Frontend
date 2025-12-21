@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { QRCodeSVG } from 'qrcode.react';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 import './MyReservationsPage.css';
 
 const MyReservationsPage = () => {
@@ -78,8 +80,12 @@ const MyReservationsPage = () => {
     cancelledReservations;
 
   return (
-    <div className="my-reservations-page">
-      <h1>Rezervasyonlarım</h1>
+    <div className="app-container">
+      <Navbar />
+      <Sidebar />
+      <main>
+        <div className="my-reservations-page">
+          <h1>Rezervasyonlarım</h1>
 
       <div className="filter-tabs">
         <button
@@ -136,6 +142,8 @@ const MyReservationsPage = () => {
           onClose={() => setSelectedQR(null)}
         />
       )}
+        </div>
+      </main>
     </div>
   );
 };

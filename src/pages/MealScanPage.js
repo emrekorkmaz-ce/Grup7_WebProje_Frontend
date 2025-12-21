@@ -146,3 +146,4 @@ const MealScanPage = () => {
 export default MealScanPage;
 
 
+

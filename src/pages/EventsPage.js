@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 import './EventsPage.css';
 
 const EventsPage = () => {
@@ -48,8 +50,12 @@ const EventsPage = () => {
   ];
 
   return (
-    <div className="events-page">
-      <h1>Etkinlikler</h1>
+    <div className="app-container">
+      <Navbar />
+      <Sidebar />
+      <main>
+        <div className="events-page">
+          <h1>Etkinlikler</h1>
 
       <div className="filters-section">
         <div className="search-box">
@@ -92,6 +98,8 @@ const EventsPage = () => {
           )}
         </div>
       )}
+        </div>
+      </main>
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 import './EventDetailPage.css';
 
 const EventDetailPage = () => {
@@ -87,9 +89,13 @@ const EventDetailPage = () => {
   const remainingSpots = event.capacity - event.registered_count;
 
   return (
-    <div className="event-detail-page">
-      <button className="back-btn" onClick={() => navigate('/events')}>
-        ← Geri
+    <div className="app-container">
+      <Navbar />
+      <Sidebar />
+      <main>
+        <div className="event-detail-page">
+          <button className="back-btn" onClick={() => navigate('/events')}>
+            ← Geri
       </button>
 
       <div className="event-detail-header">
@@ -173,6 +179,8 @@ const EventDetailPage = () => {
           )}
         </div>
       </div>
+        </div>
+      </main>
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 import './MySchedulePage.css';
 
 const MySchedulePage = () => {
@@ -59,11 +61,23 @@ const MySchedulePage = () => {
   }
 
   if (error) {
-    return <div className="error-message">{error}</div>;
+    return (
+      <div className="app-container">
+        <Navbar />
+        <Sidebar />
+        <main>
+          <div className="error-message">{error}</div>
+        </main>
+      </div>
+    );
   }
 
   return (
-    <div className="my-schedule-page">
+    <div className="app-container">
+      <Navbar />
+      <Sidebar />
+      <main>
+        <div className="my-schedule-page">
       <div className="schedule-header">
         <h1>Ders Programım</h1>
         <button onClick={handleExportICal} className="export-btn">
@@ -111,6 +125,8 @@ const MySchedulePage = () => {
           Henüz programınız oluşturulmamış.
         </div>
       )}
+        </div>
+      </main>
     </div>
   );
 };
