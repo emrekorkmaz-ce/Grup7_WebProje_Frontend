@@ -35,12 +35,12 @@ const EventDetailPage = () => {
   const handleRegister = async () => {
     if (!event) return;
 
-    if (event.registered_count >= event.capacity) {
+    if (event.registeredCount >= event.capacity) {
       alert('Etkinlik dolu.');
       return;
     }
 
-    if (new Date() > new Date(event.registration_deadline)) {
+    if (new Date() > new Date(event.registrationDeadline)) {
       alert('Kayıt süresi dolmuş.');
       return;
     }
@@ -61,8 +61,8 @@ const EventDetailPage = () => {
 
   const canRegister = () => {
     if (!event) return false;
-    if (event.registered_count >= event.capacity) return false;
-    if (new Date() > new Date(event.registration_deadline)) return false;
+    if (event.registeredCount >= event.capacity) return false;
+    if (new Date() > new Date(event.registrationDeadline)) return false;
     return true;
   };
 
@@ -86,7 +86,7 @@ const EventDetailPage = () => {
     return <div className="error-message">{error || 'Etkinlik bulunamadı.'}</div>;
   }
 
-  const remainingSpots = event.capacity - event.registered_count;
+  const remainingSpots = event.capacity - event.registeredCount;
 
   return (
     <div className="app-container">
@@ -103,7 +103,7 @@ const EventDetailPage = () => {
           <span className={`category-badge category-${event.category}`}>
             {getCategoryLabel(event.category)}
           </span>
-          {event.is_paid && (
+          {event.isPaid && (
             <span className="paid-badge">Ücretli</span>
           )}
         </div>
@@ -124,22 +124,22 @@ const EventDetailPage = () => {
               })}
             </div>
             <div className="info-item">
-              <strong>Saat:</strong> {event.start_time} - {event.end_time}
+              <strong>Saat:</strong> {event.startTime} - {event.endTime}
             </div>
             <div className="info-item">
               <strong>Konum:</strong> {event.location}
             </div>
             <div className="info-item">
-              <strong>Kapasite:</strong> {event.registered_count} / {event.capacity} kayıtlı
+              <strong>Kapasite:</strong> {event.registeredCount} / {event.capacity} kayıtlı
             </div>
-            {event.is_paid && event.price && (
+            {event.isPaid && event.price && (
               <div className="info-item">
                 <strong>Ücret:</strong> {event.price} TRY
               </div>
             )}
             <div className="info-item">
               <strong>Kayıt Son Tarihi:</strong>{' '}
-              {new Date(event.registration_deadline).toLocaleDateString('tr-TR')}
+              {new Date(event.registrationDeadline).toLocaleDateString('tr-TR')}
             </div>
           </div>
 
@@ -170,7 +170,7 @@ const EventDetailPage = () => {
 
           {!canRegister() && (
             <div className="registration-closed">
-              {event.registered_count >= event.capacity ? (
+              {event.registeredCount >= event.capacity ? (
                 <p>Etkinlik dolu. Kayıt yapılamaz.</p>
               ) : (
                 <p>Kayıt süresi dolmuş.</p>

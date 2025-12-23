@@ -39,16 +39,11 @@ const ClassroomReservationsPage = () => {
 
   const fetchClassrooms = async () => {
     try {
-      // Assuming there's a classrooms endpoint
-      // For now, we'll use a mock or get from reservations
-      const response = await api.get('/reservations');
-      // Extract unique classrooms from reservations
-      const uniqueClassrooms = [...new Set(
-        (response.data.data || []).map(r => r.classroom)
-      )];
-      setClassrooms(uniqueClassrooms);
+      const response = await api.get('/reservations/classrooms');
+      setClassrooms(response.data.data || []);
     } catch (err) {
       console.error('Error fetching classrooms:', err);
+      setError('Derslikler yüklenemedi.');
     }
   };
 

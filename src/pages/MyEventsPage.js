@@ -19,34 +19,19 @@ const MyEventsPage = () => {
   const fetchRegistrations = async () => {
     try {
       setLoading(true);
-      // Get all events and check which ones user is registered
-      const eventsResponse = await api.get('/events', { params: { status: 'published' } });
-      const events = eventsResponse.data.data || [];
-      
-      // For each event, check if user is registered
-      const userRegistrations = [];
-      for (const event of events) {
-        try {
-          const regResponse = await api.get(`/events/${event.id}/registrations`);
-          const registrations = regResponse.data.data || [];
-          const userReg = registrations.find(r => {
-            // Check if current user is registered (would need user context)
-            return true; // Simplified - in production, filter by actual user
-          });
-          if (userReg) {
-            userRegistrations.push({ ...userReg, event });
-          }
-        } catch (err) {
-          // User might not be registered or not admin
-        }
-      }
-      
-      setRegistrations(userRegistrations);
+      console.log('🔍 [MyEventsPage] Fetching registrations...');
+      // Get current user's event registrations
+      const response = await api.get('/events/my-registrations');
+      console.log('✅ [MyEventsPage] Response:', response.data);
+      const registrations = response.data.data || [];
+      console.log('📋 [MyEventsPage] Registrations:', registrations);
+      setRegistrations(registrations);
       setError('');
     } catch (err) {
-      // Alternative: Get from user's registrations if endpoint exists
       setError('Etkinlik kayıtları yüklenemedi.');
-      console.error('Error fetching registrations:', err);
+      console.error('❌ [MyEventsPage] Error fetching registrations:', err);
+      console.error('❌ [MyEventsPage] Error response:', err.response?.data);
+      console.error('❌ [MyEventsPage] Error status:', err.response?.status);
     } finally {
       setLoading(false);
     }
@@ -68,12 +53,12 @@ const MyEventsPage = () => {
 
   const upcomingRegistrations = registrations.filter(r => {
     const eventDate = new Date(r.event?.date);
-    return eventDate >= new Date() && !r.checked_in;
+    return eventDate >= new Date() && !r.checkedIn;
   });
 
   const pastRegistrations = registrations.filter(r => {
     const eventDate = new Date(r.event?.date);
-    return eventDate < new Date() || r.checked_in;
+    return eventDate < new Date() || r.checkedIn;
   });
 
   const filteredRegistrations = filter === 'all' ? registrations :
@@ -161,7 +146,7 @@ const RegistrationCard = ({ registration, onCancel, onShowQR }) => {
           </span>
         </div>
         <div className="status-badges">
-          {registration.checked_in ? (
+          {registration.checkedIn ? (
             <span className="status-badge status-checked-in">Giriş Yapıldı</span>
           ) : isUpcoming ? (
             <span className="status-badge status-upcoming">Yaklaşan</span>
@@ -173,26 +158,26 @@ const RegistrationCard = ({ registration, onCancel, onShowQR }) => {
 
       <div className="registration-details">
         <div className="detail-item">
-          <strong>Saat:</strong> {event?.start_time} - {event?.end_time}
+          <strong>Saat:</strong> {event?.startTime} - {event?.endTime}
         </div>
         <div className="detail-item">
           <strong>Konum:</strong> {event?.location}
         </div>
-        {registration.checked_in_at && (
+        {registration.checkedInAt && (
           <div className="detail-item">
             <strong>Giriş Tarihi:</strong>{' '}
-            {new Date(registration.checked_in_at).toLocaleString('tr-TR')}
+            {new Date(registration.checkedInAt).toLocaleString('tr-TR')}
           </div>
         )}
       </div>
 
       <div className="registration-actions">
-        {isUpcoming && !registration.checked_in && (
+        {isUpcoming && !registration.checkedIn && (
           <button className="qr-btn" onClick={onShowQR}>
             QR Kod Göster
           </button>
         )}
-        {isUpcoming && !registration.checked_in && (
+        {isUpcoming && !registration.checkedIn && (
           <button
             className="cancel-btn"
             onClick={() => onCancel(event?.id, registration.id)}
@@ -213,10 +198,10 @@ const QRModal = ({ registration, onClose }) => {
       <div className="qr-modal-content" onClick={(e) => e.stopPropagation()}>
         <h2>QR Kod</h2>
         <div className="qr-code-container">
-          <QRCodeSVG value={registration.qr_code} size={300} />
+          <QRCodeSVG value={registration.qrCode} size={300} />
         </div>
         <div className="qr-code-text">
-          <strong>Kod:</strong> {registration.qr_code}
+          <strong>Kod:</strong> {registration.qrCode}
         </div>
         <div className="qr-info">
           <p>Bu QR kodu etkinlik girişinde göstererek katılımınızı onaylatabilirsiniz.</p>
@@ -226,7 +211,7 @@ const QRModal = ({ registration, onClose }) => {
             {new Date(event?.date).toLocaleDateString('tr-TR')}
           </p>
           <p>
-            <strong>Saat:</strong> {event?.start_time} - {event?.end_time}
+            <strong>Saat:</strong> {event?.startTime} - {event?.endTime}
           </p>
         </div>
         <button className="close-btn" onClick={onClose}>Kapat</button>

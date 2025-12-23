@@ -122,7 +122,7 @@ const EventCard = ({ event, onClick }) => {
   };
 
   const isUpcoming = new Date(event.date) >= new Date();
-  const remainingSpots = event.capacity - event.registered_count;
+  const remainingSpots = event.capacity - event.registeredCount;
 
   return (
     <div className="event-card" onClick={onClick}>
@@ -130,7 +130,7 @@ const EventCard = ({ event, onClick }) => {
         <span className={getCategoryClass(event.category)}>
           {getCategoryLabel(event.category)}
         </span>
-        {event.is_paid && (
+        {event.isPaid && (
           <span className="paid-badge">Ücretli</span>
         )}
       </div>
@@ -145,7 +145,7 @@ const EventCard = ({ event, onClick }) => {
         })}
       </div>
       <div className="event-time">
-        <strong>Saat:</strong> {event.start_time} - {event.end_time}
+        <strong>Saat:</strong> {event.startTime} - {event.endTime}
       </div>
       <div className="event-location">
         <strong>Konum:</strong> {event.location}
@@ -153,7 +153,7 @@ const EventCard = ({ event, onClick }) => {
       <div className="event-capacity">
         <strong>Kapasite:</strong> {remainingSpots} / {event.capacity} kalan
       </div>
-      {event.is_paid && event.price && (
+      {event.isPaid && event.price && (
         <div className="event-price">
           <strong>Ücret:</strong> {event.price} TRY
         </div>
