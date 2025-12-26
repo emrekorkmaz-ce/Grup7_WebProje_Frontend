@@ -90,11 +90,32 @@ const Dashboard = () => {
           </div>
         </header>
 
+        {/* Admin Quick Access */}
+        {user?.role === 'admin' && (
+          <div className="card" style={{ marginBottom: '1.5rem', backgroundColor: '#eff6ff', borderLeft: '4px solid var(--accent-color)' }}>
+            <h3 className="mb-4">Admin Paneli</h3>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <button className="btn btn-primary" onClick={() => navigate('/admin/dashboard')}>
+                📊 Admin Dashboard
+              </button>
+              <button className="btn btn-primary" onClick={() => navigate('/admin/analytics/academic')}>
+                📈 Akademik Analitik
+              </button>
+              <button className="btn btn-primary" onClick={() => navigate('/admin/analytics/attendance')}>
+                📉 Yoklama Analitik
+              </button>
+              <button className="btn btn-primary" onClick={() => navigate('/admin/iot')}>
+                📡 IoT Dashboard
+              </button>
+            </div>
+          </div>
+        )}
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
 
           {/* Profile Summary Card */}
           <div className="card">
-            <h3 className="mb-4">Öğrenci Bilgileri</h3>
+            <h3 className="mb-4">{user?.role === 'admin' ? 'Admin Bilgileri' : user?.role === 'faculty' ? 'Öğretim Üyesi Bilgileri' : 'Öğrenci Bilgileri'}</h3>
             <div className="flex flex-col gap-3">
               <div style={{ paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-color)' }}>
                 <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>E-posta Adresi</span>

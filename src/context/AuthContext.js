@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import api from '../services/api';
+import socketService from '../services/socketService';
 
 const AuthContext = createContext();
 
@@ -19,12 +20,19 @@ export const AuthProvider = ({ children }) => {
     // Check if user is logged in on mount
     const token = localStorage.getItem('accessToken');
     if (token && token !== 'undefined' && token !== 'null') {
-      fetchCurrentUser();
+      fetchCurrentUser().then(() => {
+        // Connect socket after user is fetched
+        socketService.connect(token);
+      });
     } else {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       setLoading(false);
     }
+    
+    return () => {
+      socketService.disconnect();
+    };
   }, []);
 
   const fetchCurrentUser = async () => {
@@ -52,6 +60,10 @@ export const AuthProvider = ({ children }) => {
       }
       
       setUser(user);
+      
+      // Connect WebSocket
+      socketService.connect(accessToken);
+      
       return { success: true, user };
     } catch (error) {
       const errorMessage = error.response?.data?.error?.message || error.response?.data?.message || error.response?.data?.error || 'Giriş başarısız';
@@ -101,6 +113,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+      socketService.disconnect();
       setUser(null);
     }
   };

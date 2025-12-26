@@ -80,10 +80,40 @@ const Sidebar = () => {
         )}
 
         {user?.role === 'admin' && (
-          <Link to="/users" className={`sidebar-link ${isActive('/users')}`}>
-            <UsersIcon size={20} className="sidebar-icon" />
-            <span>Kullanıcı Yönetimi</span>
-          </Link>
+          <>
+            <Link to="/users" className={`sidebar-link ${isActive('/users')}`}>
+              <UsersIcon size={20} className="sidebar-icon" />
+              <span>Kullanıcı Yönetimi</span>
+            </Link>
+            {/* Part 4: Admin Dashboard */}
+            <div className="sidebar-section">
+              <div className="sidebar-section-title">YÖNETİM</div>
+              <Link to="/admin/dashboard" className={`sidebar-link ${isActive('/admin/dashboard')}`}>
+                <ChartIcon size={20} className="sidebar-icon" />
+                <span>Admin Dashboard</span>
+              </Link>
+              <Link to="/admin/analytics/academic" className={`sidebar-link ${isActive('/admin/analytics/academic')}`}>
+                <span className="sidebar-icon">📊</span>
+                <span>Akademik Analitik</span>
+              </Link>
+              <Link to="/admin/analytics/attendance" className={`sidebar-link ${isActive('/admin/analytics/attendance')}`}>
+                <span className="sidebar-icon">📈</span>
+                <span>Yoklama Analitik</span>
+              </Link>
+              <Link to="/admin/analytics/meal" className={`sidebar-link ${isActive('/admin/analytics/meal')}`}>
+                <span className="sidebar-icon">🍽️</span>
+                <span>Yemek Analitik</span>
+              </Link>
+              <Link to="/admin/analytics/events" className={`sidebar-link ${isActive('/admin/analytics/events')}`}>
+                <span className="sidebar-icon">🎉</span>
+                <span>Etkinlik Analitik</span>
+              </Link>
+              <Link to="/admin/iot" className={`sidebar-link ${isActive('/admin/iot')}`}>
+                <span className="sidebar-icon">📡</span>
+                <span>IoT Dashboard</span>
+              </Link>
+            </div>
+          </>
         )}
 
         {/* Part 3: Meal Service */}
@@ -141,6 +171,19 @@ const Sidebar = () => {
           <span className="sidebar-icon">🏫</span>
           <span>Derslik Rezervasyonu</span>
         </Link>
+
+        {/* Part 4: Notifications */}
+        <div className="sidebar-section">
+          <div className="sidebar-section-title">BİLDİRİMLER</div>
+          <Link to="/notifications" className={`sidebar-link ${isActive('/notifications')}`}>
+            <span className="sidebar-icon">🔔</span>
+            <span>Bildirimler</span>
+          </Link>
+          <Link to="/settings/notifications" className={`sidebar-link ${isActive('/settings/notifications')}`}>
+            <span className="sidebar-icon">⚙️</span>
+            <span>Bildirim Ayarları</span>
+          </Link>
+        </div>
       </nav>
     </aside>
   );

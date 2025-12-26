@@ -1,7 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import VerifyEmail from './pages/VerifyEmail';
@@ -30,13 +34,23 @@ import MyEventsPage from './pages/MyEventsPage';
 import EventCheckInPage from './pages/EventCheckInPage';
 import MySchedulePage from './pages/MySchedulePage';
 import ClassroomReservationsPage from './pages/ClassroomReservationsPage';
+import AdminDashboard from './pages/AdminDashboard';
+import NotificationsPage from './pages/NotificationsPage';
+import AcademicAnalyticsPage from './pages/AcademicAnalyticsPage';
+import AttendanceAnalyticsPage from './pages/AttendanceAnalyticsPage';
+import MealAnalyticsPage from './pages/MealAnalyticsPage';
+import EventAnalyticsPage from './pages/EventAnalyticsPage';
+import NotificationSettingsPage from './pages/NotificationSettingsPage';
+import IoTDashboardPage from './pages/IoTDashboardPage';
 import './App.css';
 
 function App() {
     return (
-        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <AuthProvider>
-                <Routes>
+        <ErrorBoundary>
+            <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                <AuthProvider>
+                    <NotificationProvider>
+                        <Routes>
                     <Route path="/login"
                         element={<Login />}
                     /> <Route path="/register"
@@ -206,7 +220,81 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
-                </Routes> </AuthProvider> </Router>
+                    {/* Part 4: Admin Dashboard and Analytics Routes */}
+                    <Route path="/admin/dashboard"
+                        element={
+                            <ProtectedRoute roles={['admin']}>
+                                <AdminDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/admin/analytics/academic"
+                        element={
+                            <ProtectedRoute roles={['admin']}>
+                                <AcademicAnalyticsPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/admin/analytics/attendance"
+                        element={
+                            <ProtectedRoute roles={['admin']}>
+                                <AttendanceAnalyticsPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/admin/analytics/meal"
+                        element={
+                            <ProtectedRoute roles={['admin']}>
+                                <MealAnalyticsPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/admin/analytics/events"
+                        element={
+                            <ProtectedRoute roles={['admin']}>
+                                <EventAnalyticsPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* Part 4: Notifications Routes */}
+                    <Route path="/notifications"
+                        element={
+                            <ProtectedRoute>
+                                <NotificationsPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/settings/notifications"
+                        element={
+                            <ProtectedRoute>
+                                <NotificationSettingsPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* Part 4: IoT Dashboard (Bonus) */}
+                    <Route path="/admin/iot"
+                        element={
+                            <ProtectedRoute roles={['admin']}>
+                                <IoTDashboardPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                </Routes>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
+                        </NotificationProvider>
+                    </AuthProvider>
+                </Router>
+        </ErrorBoundary>
     );
 }
 

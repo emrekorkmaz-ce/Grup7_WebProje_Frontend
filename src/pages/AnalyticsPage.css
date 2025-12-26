@@ -1,0 +1,163 @@
+.analytics-page {
+  padding: 2rem;
+}
+
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.analytics-header h1 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.summary-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card h3 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+.chart-card,
+.table-card,
+.filters-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.chart-card h2,
+.table-card h2,
+.filters-card h3 {
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.filters-card {
+  margin-bottom: 1.5rem;
+}
+
+.filter-inputs {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.filter-inputs > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.filter-inputs label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.filter-inputs input[type="date"] {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.analytics-table thead {
+  background-color: #f9fafb;
+}
+
+.analytics-table th {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.analytics-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: var(--text-secondary);
+}
+
+.analytics-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.risk-value {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.peak-hours-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.peak-hour-card {
+  background: #f9fafb;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.peak-hour-card h3 {
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.peak-hour-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-color);
+  margin-bottom: 0.25rem;
+}
+
+.peak-hour-count {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.loading,
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+}
+
+.error-message {
+  color: #ef4444;
+}
+

@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOutIcon, GraduationCapIcon } from './Icons';
+import NotificationBell from './NotificationBell';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -29,6 +30,7 @@ const Navbar = () => {
       <div className="navbar-menu">
         {user && (
           <>
+            <NotificationBell />
             <div className="user-info">
               <div className="user-avatar">
                 {user.full_name ? user.full_name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
