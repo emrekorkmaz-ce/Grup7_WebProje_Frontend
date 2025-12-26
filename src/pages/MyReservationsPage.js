@@ -44,7 +44,9 @@ const MyReservationsPage = () => {
       alert('Rezervasyon başarıyla iptal edildi.');
       fetchReservations();
     } catch (err) {
-      alert(err.response?.data?.error || 'Rezervasyon iptal edilemedi.');
+      const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || 'Rezervasyon iptal edilemedi.';
+      alert(typeof errorMessage === 'string' ? errorMessage : 'Rezervasyon iptal edilemedi.');
+      console.error('Cancel reservation error:', err);
     }
   };
 
@@ -52,7 +54,8 @@ const MyReservationsPage = () => {
     if (reservation.status !== 'reserved') return false;
     
     const mealDate = new Date(reservation.date);
-    const mealTime = reservation.meal_type === 'lunch' ? 12 : reservation.meal_type === 'dinner' ? 18 : 8;
+    const mealType = reservation.mealType || reservation.meal_type;
+    const mealTime = mealType === 'lunch' ? 12 : mealType === 'dinner' ? 18 : 8;
     mealDate.setHours(mealTime, 0, 0, 0);
     
     const now = new Date();
@@ -155,11 +158,12 @@ const ReservationCard = ({ reservation, onCancel, canCancel, onShowQR }) => {
     cancelled: { text: 'İptal Edildi', class: 'status-cancelled' }
   }[reservation.status] || { text: reservation.status, class: '' };
 
+  const mealType = reservation.mealType || reservation.meal_type;
   const mealTypeLabel = {
     breakfast: 'Kahvaltı',
     lunch: 'Öğle Yemeği',
     dinner: 'Akşam Yemeği'
-  }[reservation.meal_type] || reservation.meal_type;
+  }[mealType] || mealType;
 
   return (
     <div className="reservation-card">
@@ -187,9 +191,9 @@ const ReservationCard = ({ reservation, onCancel, canCancel, onShowQR }) => {
         <div className="detail-item">
           <strong>Konum:</strong> {reservation.menu?.cafeteria?.location}
         </div>
-        {reservation.menu?.items_json?.main && (
+        {(reservation.menu?.itemsJson || reservation.menu?.items_json)?.main && (
           <div className="detail-item">
-            <strong>Ana Yemek:</strong> {reservation.menu.items_json.main}
+            <strong>Ana Yemek:</strong> {(reservation.menu.itemsJson || reservation.menu.items_json).main}
           </div>
         )}
         {reservation.amount > 0 && (
@@ -197,10 +201,10 @@ const ReservationCard = ({ reservation, onCancel, canCancel, onShowQR }) => {
             <strong>Tutar:</strong> {reservation.amount} TRY
           </div>
         )}
-        {reservation.used_at && (
+        {(reservation.usedAt || reservation.used_at) && (
           <div className="detail-item">
             <strong>Kullanım Tarihi:</strong>{' '}
-            {new Date(reservation.used_at).toLocaleString('tr-TR')}
+            {new Date(reservation.usedAt || reservation.used_at).toLocaleString('tr-TR')}
           </div>
         )}
       </div>
@@ -227,10 +231,10 @@ const QRModal = ({ reservation, onClose }) => {
       <div className="qr-modal-content" onClick={(e) => e.stopPropagation()}>
         <h2>QR Kod</h2>
         <div className="qr-code-container">
-          <QRCodeSVG value={reservation.qr_code} size={300} />
+          <QRCodeSVG value={reservation.qrCode || reservation.qr_code} size={300} />
         </div>
         <div className="qr-code-text">
-          <strong>Kod:</strong> {reservation.qr_code}
+          <strong>Kod:</strong> {reservation.qrCode || reservation.qr_code}
         </div>
         <div className="qr-info">
           <p>Bu QR kodu kafeteryada göstererek yemeğinizi alabilirsiniz.</p>
@@ -240,8 +244,8 @@ const QRModal = ({ reservation, onClose }) => {
           </p>
           <p>
             <strong>Öğün:</strong>{' '}
-            {reservation.meal_type === 'lunch' ? 'Öğle Yemeği' :
-             reservation.meal_type === 'dinner' ? 'Akşam Yemeği' : 'Kahvaltı'}
+            {(reservation.mealType || reservation.meal_type) === 'lunch' ? 'Öğle Yemeği' :
+             (reservation.mealType || reservation.meal_type) === 'dinner' ? 'Akşam Yemeği' : 'Kahvaltı'}
           </p>
         </div>
         <button className="close-btn" onClick={onClose}>Kapat</button>

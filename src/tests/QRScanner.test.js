@@ -512,3 +512,8 @@ describe('QR Scanner Component Tests', () => {
 
 
 
+
+
+
+
+

@@ -37,8 +37,8 @@ const MealMenuPage = () => {
     try {
       const response = await api.post('/meals/reservations', {
         menu_id: reservingMenu.id,
-        cafeteria_id: reservingMenu.cafeteria_id,
-        meal_type: reservingMenu.meal_type,
+        cafeteria_id: reservingMenu.cafeteriaId || reservingMenu.cafeteria?.id,
+        meal_type: reservingMenu.mealType || reservingMenu.meal_type,
         date: selectedDate,
         amount: 0 // Will be calculated by backend
       });
@@ -47,7 +47,9 @@ const MealMenuPage = () => {
       setReservingMenu(null);
       fetchMenus();
     } catch (err) {
-      alert(err.response?.data?.error || 'Rezervasyon oluşturulamadı.');
+      const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || 'Rezervasyon oluşturulamadı.';
+      alert(typeof errorMessage === 'string' ? errorMessage : 'Rezervasyon oluşturulamadı.');
+      console.error('Reservation error:', err);
     }
   };
 
@@ -65,9 +67,9 @@ const MealMenuPage = () => {
     return labels[type] || type;
   };
 
-  const lunchMenus = menus.filter(m => m.meal_type === 'lunch');
-  const dinnerMenus = menus.filter(m => m.meal_type === 'dinner');
-  const breakfastMenus = menus.filter(m => m.meal_type === 'breakfast');
+  const lunchMenus = menus.filter(m => (m.mealType || m.meal_type) === 'lunch');
+  const dinnerMenus = menus.filter(m => (m.mealType || m.meal_type) === 'dinner');
+  const breakfastMenus = menus.filter(m => (m.mealType || m.meal_type) === 'breakfast');
 
   return (
     <div className="app-container">
@@ -140,8 +142,8 @@ const MealMenuPage = () => {
 };
 
 const MealCard = ({ menu, onReserve }) => {
-  const items = menu.items_json || {};
-  const nutrition = menu.nutrition_json || {};
+  const items = menu.itemsJson || menu.items_json || {};
+  const nutrition = menu.nutritionJson || menu.nutrition_json || {};
 
   return (
     <div className="meal-card">
@@ -190,9 +192,9 @@ const ReservationModal = ({ menu, date, onConfirm, onClose }) => {
         <h2>Rezervasyon Onayı</h2>
         <div className="reservation-details">
           <p><strong>Tarih:</strong> {new Date(date).toLocaleDateString('tr-TR')}</p>
-          <p><strong>Öğün:</strong> {menu.meal_type === 'lunch' ? 'Öğle Yemeği' : menu.meal_type === 'dinner' ? 'Akşam Yemeği' : 'Kahvaltı'}</p>
+          <p><strong>Öğün:</strong> {(menu.mealType || menu.meal_type) === 'lunch' ? 'Öğle Yemeği' : (menu.mealType || menu.meal_type) === 'dinner' ? 'Akşam Yemeği' : 'Kahvaltı'}</p>
           <p><strong>Kafeterya:</strong> {menu.cafeteria?.name}</p>
-          <p><strong>Ana Yemek:</strong> {menu.items_json?.main}</p>
+          <p><strong>Ana Yemek:</strong> {(menu.itemsJson || menu.items_json)?.main}</p>
         </div>
         <div className="modal-actions">
           <button onClick={onConfirm} className="confirm-btn">Onayla</button>

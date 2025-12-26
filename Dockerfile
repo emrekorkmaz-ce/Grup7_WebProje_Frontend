@@ -21,7 +21,7 @@ RUN printf 'server { \
   server_name _; \
   root /usr/share/nginx/html; \
   index index.html; \
-  location / { try_files $uri /index.html; } \
+  location / { try_files $uri $uri/ /index.html; } \
   location /static/ { try_files $uri =404; } \
   location /api/ { \
     proxy_pass http://campus_backend:5000; \
