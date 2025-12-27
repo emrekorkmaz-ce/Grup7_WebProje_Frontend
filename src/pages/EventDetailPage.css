@@ -171,6 +171,32 @@
   font-size: 18px;
 }
 
+.event-actions {
+  margin-top: 2rem;
+}
+
+.waitlist-info {
+  padding: 1rem;
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.waitlist-message {
+  margin-bottom: 0.5rem;
+  color: #856404;
+}
+
+.waitlist-stats {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #e7f3ff;
+  border-radius: 8px;
+  color: #004085;
+}
+
+
 
 
 

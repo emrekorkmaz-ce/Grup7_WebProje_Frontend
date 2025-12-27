@@ -1,12 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
+import { useTranslation } from '../hooks/useTranslation';
 import { LogOutIcon, GraduationCapIcon } from './Icons';
 import NotificationBell from './NotificationBell';
 import './Navbar.css';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+  const { language, toggleLanguage } = useLanguage();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -25,11 +31,25 @@ const Navbar = () => {
         <div className="brand-logo">
           <GraduationCapIcon size={28} color="var(--accent-color)" />
         </div>
-        <h2>Kampüs Bilgi Sistemi</h2>
+        <h2>{t('navbar.title')}</h2>
       </div>
       <div className="navbar-menu">
         {user && (
           <>
+            <button 
+              onClick={toggleTheme} 
+              className="theme-toggle" 
+              title={theme === 'light' ? t('navbar.darkMode') : t('navbar.lightMode')}
+            >
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
+            <button 
+              onClick={toggleLanguage} 
+              className="language-toggle" 
+              title={language === 'tr' ? 'Switch to English' : 'Türkçe\'ye Geç'}
+            >
+              {language === 'tr' ? '🇬🇧 EN' : '🇹🇷 TR'}
+            </button>
             <NotificationBell />
             <div className="user-info">
               <div className="user-avatar">
@@ -37,9 +57,9 @@ const Navbar = () => {
               </div>
               <span className="user-name">{formatName(user.full_name) || user.email}</span>
             </div>
-            <button onClick={handleLogout} className="logout-button" title="Çıkış Yap">
+            <button onClick={handleLogout} className="logout-button" title={t('auth.logout')}>
               <LogOutIcon size={18} />
-              <span>Çıkış</span>
+              <span>{t('auth.logout')}</span>
             </button>
           </>
         )}

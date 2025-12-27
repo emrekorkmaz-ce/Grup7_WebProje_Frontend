@@ -28,6 +28,7 @@
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 1.5rem;
+  table-layout: fixed;
 }
 
 .preferences-table thead {
@@ -42,10 +43,19 @@
   border-bottom: 2px solid #e5e7eb;
 }
 
+.preferences-table th:first-child {
+  width: 25%;
+}
+
+.preferences-table th:not(:first-child) {
+  text-align: center;
+  width: 25%;
+}
+
 .preferences-table td {
   padding: 1rem;
   border-bottom: 1px solid #e5e7eb;
-  text-align: center;
+  vertical-align: middle;
 }
 
 .preferences-table tbody tr:hover {
@@ -58,16 +68,24 @@
   text-align: left !important;
 }
 
+.preferences-table td:not(.category-label) {
+  text-align: center;
+}
+
 .disabled-cell {
   color: var(--text-secondary);
   opacity: 0.5;
+  text-align: center !important;
 }
 
 .toggle-switch {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 50px;
   height: 24px;
+  margin: 0 auto;
 }
 
 .toggle-switch input {

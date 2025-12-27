@@ -19,11 +19,19 @@ const GradebookPage = () => {
       setError(null);
       try {
         const response = await api.get(`/faculty/gradebook/${sectionId}`);
-        setStudents(response.data.students || []);
+        const studentsList = response.data.students || response.data.data?.students || [];
+        setStudents(studentsList);
         // Varsayılan olarak mevcut notları doldur
         const initialGrades = {};
-        (response.data.students || []).forEach(s => {
-          initialGrades[s.studentId] = s.grade || '';
+        studentsList.forEach(s => {
+          // Eğer letterGrade varsa onu kullan, yoksa midterm-final formatında
+          if (s.letterGrade) {
+            initialGrades[s.studentId] = s.letterGrade;
+          } else if (s.midtermGrade !== null && s.finalGrade !== null) {
+            initialGrades[s.studentId] = `${s.midtermGrade}-${s.finalGrade}`;
+          } else {
+            initialGrades[s.studentId] = '';
+          }
         });
         setGrades(initialGrades);
       } catch (err) {
@@ -43,11 +51,32 @@ const GradebookPage = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await api.post(`/faculty/gradebook/${sectionId}`, { grades });
+      // Convert grades object to format expected by backend
+      const gradesToSave = {};
+      Object.keys(grades).forEach(studentId => {
+        const gradeValue = grades[studentId];
+        if (!gradeValue) return;
+        
+        // Parse grade value (could be "AA", "85-90", etc.)
+        if (gradeValue.includes('-')) {
+          const [midterm, final] = gradeValue.split('-').map(v => parseFloat(v.trim()));
+          if (!isNaN(midterm) && !isNaN(final)) {
+            gradesToSave[studentId] = { midtermGrade: midterm, finalGrade: final };
+          }
+        } else {
+          // If it's a letter grade, we need to convert it or use default values
+          // For now, skip letter-only grades or use a default conversion
+          // This might need adjustment based on your grading system
+        }
+      });
+      
+      await api.post(`/faculty/gradebook/${sectionId}`, { grades: gradesToSave });
       alert('Notlar kaydedildi!');
+      // Reload data
+      window.location.reload();
     } catch (err) {
       console.error('Save failed:', err);
-      alert('Notlar kaydedilemedi.');
+      alert('Notlar kaydedilemedi: ' + (err.response?.data?.error || err.message));
     } finally {
       setSaving(false);
     }

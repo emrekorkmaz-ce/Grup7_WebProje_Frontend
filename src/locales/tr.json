@@ -1,0 +1,42 @@
+{
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Hata",
+    "success": "Başarılı",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "back": "Geri",
+    "next": "İleri",
+    "submit": "Gönder",
+    "search": "Ara",
+    "filter": "Filtrele",
+    "close": "Kapat"
+  },
+  "auth": {
+    "login": "Giriş Yap",
+    "logout": "Çıkış",
+    "register": "Kayıt Ol",
+    "email": "E-posta",
+    "password": "Şifre",
+    "forgotPassword": "Şifremi Unuttum",
+    "resetPassword": "Şifre Sıfırla"
+  },
+  "events": {
+    "title": "Etkinlikler",
+    "register": "Etkinliğe Kaydol",
+    "full": "Etkinlik Dolu",
+    "waitlist": "Bekleme Listesine Ekle",
+    "onWaitlist": "Bekleme listesindesiniz",
+    "position": "Pozisyonunuz",
+    "removeFromWaitlist": "Bekleme Listesinden Çık",
+    "waitlistStats": "Bekleme listesinde {count} kişi var"
+  },
+  "navbar": {
+    "title": "Kampüs Bilgi Sistemi",
+    "darkMode": "Karanlık Moda Geç",
+    "lightMode": "Aydınlık Moda Geç"
+  }
+}
+

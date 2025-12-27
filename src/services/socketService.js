@@ -11,13 +11,16 @@ class SocketService {
       return;
     }
 
-    const backendUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    // Extract base URL from API URL (remove /api/v1)
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
+    const backendUrl = apiUrl.replace('/api/v1', '') || 'http://localhost:5000';
     
     this.socket = io(backendUrl, {
       auth: {
         token
       },
-      transports: ['websocket', 'polling']
+      transports: ['websocket', 'polling'],
+      path: '/socket.io/'
     });
 
     this.socket.on('connect', () => {

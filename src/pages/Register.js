@@ -57,6 +57,7 @@ const Register = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
+    const [verificationInfo, setVerificationInfo] = useState(null);
     const { register: registerUser } = useAuth();
     const navigate = useNavigate();
 
@@ -126,11 +127,22 @@ const Register = () => {
         const result = await registerUser(userData);
 
         if (result.success) {
-            setSuccess('Kayıt başarılı! Hesabınızı kullanabilmek için e-posta adresinize gelen onay linkine tıklayarak hesabınızı doğrulamanız gerekiyor.');
-            // Sayfa hemen yönlenmesin, kullanıcı mesajı görsün
-            setTimeout(() => {
-                navigate('/login');
-            }, 4000);
+            // Check if verification is required
+            if (result.requiresVerification) {
+                setSuccess('Kayıt başarılı! Hesabınızı kullanabilmek için e-posta adresinizi doğrulamanız gerekiyor.');
+                // Show verification URL if provided (development mode)
+                if (result.verificationUrl) {
+                    setVerificationInfo({
+                        url: result.verificationUrl,
+                        token: result.verificationToken
+                    });
+                }
+            } else {
+                setSuccess('Kayıt başarılı! Giriş yapabilirsiniz.');
+                setTimeout(() => {
+                    navigate('/login');
+                }, 2000);
+            }
         } else {
             // Eğer hata mail onay bekliyor ise Türkçeleştir
             let errorMsg = typeof result.error === 'object'
@@ -220,7 +232,33 @@ const Register = () => {
                 </div>
 
                 {error && <div className="error">{error}</div>}
-                {success && <div className="card" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', padding: '1rem', marginBottom: '1.5rem', border: '1px solid var(--success)' }}>{success}</div>}
+                {success && (
+                    <div className="card" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', padding: '1rem', marginBottom: '1.5rem', border: '1px solid var(--success)' }}>
+                        {success}
+                        {verificationInfo && (
+                            <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(0, 0, 0, 0.05)', borderRadius: '8px' }}>
+                                <p style={{ marginBottom: '0.5rem', fontWeight: 600 }}>🔗 Doğrulama Linki (Development):</p>
+                                <a 
+                                    href={verificationInfo.url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    style={{ 
+                                        display: 'block', 
+                                        wordBreak: 'break-all', 
+                                        color: '#007bff', 
+                                        textDecoration: 'underline',
+                                        marginBottom: '0.5rem'
+                                    }}
+                                >
+                                    {verificationInfo.url}
+                                </a>
+                                <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.5rem' }}>
+                                    <strong>Token:</strong> <code style={{ background: '#f0f0f0', padding: '0.2rem 0.4rem', borderRadius: '4px' }}>{verificationInfo.token}</code>
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-4">

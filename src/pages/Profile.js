@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -17,6 +18,7 @@ const profileSchema = yup.object().shape({
 
 const Profile = () => {
     const { user, updateUser } = useAuth();
+    const navigate = useNavigate();
     const [profilePicture, setProfilePicture] = useState(user?.profile_picture_url || '');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -261,6 +263,25 @@ const Profile = () => {
                                 </button>
                             </div>
                         </form>
+                    </div>
+
+                    {/* Güvenlik Bölümü */}
+                    <div className="card" style={{ marginTop: '2rem' }}>
+                        <h3 className="mb-4">Güvenlik</h3>
+                        <div className="security-section">
+                            <div className="security-item">
+                                <div>
+                                    <h3>İki Faktörlü Kimlik Doğrulama (2FA)</h3>
+                                    <p>Hesabınızı ekstra bir güvenlik katmanıyla koruyun</p>
+                                </div>
+                                <button 
+                                    className="btn btn-primary"
+                                    onClick={() => navigate('/settings/2fa')}
+                                >
+                                    2FA Ayarları
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </main >

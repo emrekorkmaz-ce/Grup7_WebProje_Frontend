@@ -1,0 +1,100 @@
+.two-factor-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.two-factor-page h1 {
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.status-enabled {
+  color: var(--success);
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.status-disabled {
+  color: var(--text-secondary);
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.qr-section {
+  margin-top: 2rem;
+}
+
+.qr-code-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+}
+
+.qr-code-container img {
+  max-width: 300px;
+  height: auto;
+}
+
+.manual-entry {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--secondary-bg);
+  border-radius: 8px;
+  font-family: monospace;
+  word-break: break-all;
+}
+
+.token-input {
+  width: 200px;
+  text-align: center;
+  font-size: 1.5rem;
+  letter-spacing: 0.5rem;
+  font-family: monospace;
+  margin: 1rem 0;
+}
+
+.info-card {
+  margin-top: 2rem;
+  background: var(--secondary-bg);
+}
+
+.info-card ul {
+  margin-top: 1rem;
+  padding-left: 2rem;
+}
+
+.info-card li {
+  margin: 0.5rem 0;
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  color: white;
+  border-color: var(--danger);
+}
+
+.btn-danger:hover {
+  background-color: #b91c1c;
+}
+
+.error-message {
+  background-color: var(--danger-bg);
+  color: var(--danger);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  background-color: var(--success-bg);
+  color: var(--success);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+

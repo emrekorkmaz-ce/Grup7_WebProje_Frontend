@@ -20,9 +20,12 @@ const CourseDetailPage = () => {
       const response = await api.get(`/courses/${id}`);
       setCourse(response.data.data);
     } catch (err) {
+      console.error('Error fetching course:', err);
+      console.error('Error response:', err.response?.data);
       setCourse(null);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   if (loading) return (

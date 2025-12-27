@@ -1,21 +1,26 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Loading from './Loading';
 
 const ProtectedRoute = ({ children, roles = [] }) => {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return <Loading />;
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    // Redirect URL'yi query parametresi olarak ekle
+    const redirectUrl = location.pathname + location.search;
+    return <Navigate to={`/login?redirect=${encodeURIComponent(redirectUrl)}`} replace />;
   }
 
   if (roles.length > 0 && !roles.includes(user.role)) {
-    return <Navigate to="/dashboard" replace />;
+    // Yanlış role sahipse, login sayfasına yönlendir (başka hesap ile giriş yapması için)
+    const redirectUrl = location.pathname + location.search;
+    return <Navigate to={`/login?redirect=${encodeURIComponent(redirectUrl)}&error=wrong_role`} replace />;
   }
 
   return children;

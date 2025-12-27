@@ -13,9 +13,12 @@ const EventDetailPage = () => {
   const [error, setError] = useState('');
   const [registering, setRegistering] = useState(false);
   const [customFields, setCustomFields] = useState({});
+  const [waitlistInfo, setWaitlistInfo] = useState(null);
+  const [onWaitlist, setOnWaitlist] = useState(false);
 
   useEffect(() => {
     fetchEvent();
+    fetchWaitlist();
   }, [id]);
 
   const fetchEvent = async () => {
@@ -32,13 +35,21 @@ const EventDetailPage = () => {
     }
   };
 
+  const fetchWaitlist = async () => {
+    try {
+      const response = await api.get(`/events/${id}/waitlist`);
+      if (response.data.success) {
+        setWaitlistInfo(response.data.data);
+        setOnWaitlist(response.data.data.userPosition !== null);
+      }
+    } catch (err) {
+      // Waitlist yoksa veya hata varsa sessizce devam et
+      console.log('Waitlist bilgisi alınamadı:', err);
+    }
+  };
+
   const handleRegister = async () => {
     if (!event) return;
-
-    if (event.registeredCount >= event.capacity) {
-      alert('Etkinlik dolu.');
-      return;
-    }
 
     if (new Date() > new Date(event.registrationDeadline)) {
       alert('Kayıt süresi dolmuş.');
@@ -47,23 +58,54 @@ const EventDetailPage = () => {
 
     try {
       setRegistering(true);
-      await api.post(`/events/${id}/register`, {
+      const response = await api.post(`/events/${id}/register`, {
         custom_fields: Object.keys(customFields).length > 0 ? customFields : undefined
       });
-      alert('Etkinliğe başarıyla kaydoldunuz!');
-      navigate('/my-events');
+      
+      if (response.data.data.waitlist) {
+        alert(`Etkinlik dolu. Bekleme listesine eklendiniz. Pozisyonunuz: ${response.data.data.position}`);
+        await fetchWaitlist();
+      } else {
+        alert('Etkinliğe başarıyla kaydoldunuz!');
+        navigate('/my-events');
+      }
     } catch (err) {
-      alert(err.response?.data?.error || 'Kayıt yapılamadı.');
+      const errorMsg = err.response?.data?.error || 'Kayıt yapılamadı.';
+      if (err.response?.data?.waitlistPosition) {
+        alert(`${errorMsg} Bekleme listesi pozisyonunuz: ${err.response.data.waitlistPosition}`);
+        await fetchWaitlist();
+      } else {
+        alert(errorMsg);
+      }
     } finally {
       setRegistering(false);
     }
   };
 
+  const handleRemoveFromWaitlist = async () => {
+    if (!window.confirm('Bekleme listesinden çıkmak istediğinize emin misiniz?')) {
+      return;
+    }
+
+    try {
+      await api.delete(`/events/${id}/waitlist`);
+      alert('Bekleme listesinden çıkarıldınız.');
+      setOnWaitlist(false);
+      await fetchWaitlist();
+    } catch (err) {
+      alert(err.response?.data?.error || 'İşlem başarısız.');
+    }
+  };
+
   const canRegister = () => {
     if (!event) return false;
-    if (event.registeredCount >= event.capacity) return false;
     if (new Date() > new Date(event.registrationDeadline)) return false;
+    if (onWaitlist) return false; // Already on waitlist
     return true;
+  };
+
+  const isFull = () => {
+    return event && event.registeredCount >= event.capacity;
   };
 
   const getCategoryLabel = (category) => {
@@ -150,12 +192,32 @@ const EventDetailPage = () => {
             </div>
           )}
 
-          {canRegister() && (
+          {onWaitlist ? (
+            <div className="waitlist-info">
+              <h3>Bekleme Listesindesiniz</h3>
+              <p className="waitlist-message">
+                Pozisyonunuz: <strong>#{waitlistInfo?.userPosition}</strong>
+              </p>
+              <p className="waitlist-help">
+                Etkinlikte yer açıldığında size bildirim gönderilecektir.
+              </p>
+              <button 
+                className="btn btn-secondary" 
+                onClick={handleRemoveFromWaitlist}
+              >
+                Bekleme Listesinden Çık
+              </button>
+            </div>
+          ) : canRegister() ? (
             <div className="registration-section">
               <h3>Kayıt Ol</h3>
-              {remainingSpots > 0 && (
+              {remainingSpots > 0 ? (
                 <p className="spots-remaining">
                   {remainingSpots} kontenjan kaldı
+                </p>
+              ) : (
+                <p className="spots-remaining" style={{ color: 'var(--warning)' }}>
+                  Etkinlik dolu - Bekleme listesine ekleneceksiniz
                 </p>
               )}
               <button
@@ -163,18 +225,22 @@ const EventDetailPage = () => {
                 disabled={registering || !canRegister()}
                 className="register-btn"
               >
-                {registering ? 'Kaydediliyor...' : 'Kayıt Ol'}
+                {registering ? 'Kaydediliyor...' : isFull() ? 'Bekleme Listesine Ekle' : 'Kayıt Ol'}
               </button>
+            </div>
+          ) : (
+            <div className="registration-closed">
+              {new Date() > new Date(event.registrationDeadline) ? (
+                <p>Kayıt süresi dolmuş.</p>
+              ) : (
+                <p>Kayıt yapılamıyor.</p>
+              )}
             </div>
           )}
 
-          {!canRegister() && (
-            <div className="registration-closed">
-              {event.registeredCount >= event.capacity ? (
-                <p>Etkinlik dolu. Kayıt yapılamaz.</p>
-              ) : (
-                <p>Kayıt süresi dolmuş.</p>
-              )}
+          {waitlistInfo && waitlistInfo.totalOnWaitlist > 0 && (
+            <div className="waitlist-stats">
+              <p>Bekleme listesinde <strong>{waitlistInfo.totalOnWaitlist}</strong> kişi var.</p>
             </div>
           )}
         </div>

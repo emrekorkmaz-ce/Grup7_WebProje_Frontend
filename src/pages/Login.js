@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -16,14 +16,31 @@ const loginSchema = yup.object().shape({
 const Login = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [requires2FA, setRequires2FA] = useState(false);
+    const [twoFactorToken, setTwoFactorToken] = useState('');
     const { login, user } = useAuth();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const redirectUrl = searchParams.get('redirect');
+    const wrongRole = searchParams.get('error') === 'wrong_role';
+
+    React.useEffect(() => {
+        if (wrongRole) {
+            setError('Bu sayfaya erişmek için öğrenci hesabı ile giriş yapmanız gerekmektedir.');
+        }
+    }, [wrongRole]);
 
     React.useEffect(() => {
         if (user) {
-            navigate('/dashboard');
+            // Redirect URL varsa oraya git, yoksa dashboard'a git
+            // Ama eğer redirect URL yoklama sayfasıysa ve kullanıcı öğrenci değilse, hata göster
+            if (redirectUrl && redirectUrl.includes('/attendance/give/') && user.role !== 'student') {
+                setError('Bu sayfaya erişmek için öğrenci hesabı ile giriş yapmanız gerekmektedir.');
+                return;
+            }
+            navigate(redirectUrl || '/dashboard', { replace: true });
         }
-    }, [user, navigate]);
+    }, [user, navigate, redirectUrl]);
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(loginSchema),
@@ -36,12 +53,17 @@ const Login = () => {
         setError('');
         setLoading(true);
 
-        const result = await login(data.email, data.password);
+        const result = await login(data.email, data.password, requires2FA ? twoFactorToken : null);
 
         if (result.success) {
             if (data.rememberMe) {
                 localStorage.setItem('rememberMe', 'true');
             }
+            setRequires2FA(false);
+            setTwoFactorToken('');
+        } else if (result.requires2FA) {
+            setRequires2FA(true);
+            setLoading(false);
         } else {
             let errorMsg = typeof result.error === 'object'
                 ? (result.error.message || JSON.stringify(result.error))
@@ -131,7 +153,7 @@ const Login = () => {
                             <input
                                 type="password"
                                 {...register('password')}
-                                disabled={loading}
+                                disabled={loading || requires2FA}
                                 placeholder="••••••••"
                                 style={{ paddingLeft: '2.5rem' }}
                             />
@@ -141,6 +163,39 @@ const Login = () => {
                         </div>
                         {errors.password && <div style={{ color: '#dc2626', fontSize: '0.8rem', marginTop: '0.25rem' }}>{errors.password.message}</div>}
                     </div>
+
+                    {requires2FA && (
+                        <div style={{ marginBottom: '1.25rem' }}>
+                            <div style={{ marginBottom: '0.5rem' }}>
+                                <label style={{ color: '#475569', fontSize: '0.9rem', fontWeight: 500 }}>2FA Kodu (6 haneli)</label>
+                            </div>
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    type="text"
+                                    value={twoFactorToken}
+                                    onChange={(e) => setTwoFactorToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                    disabled={loading}
+                                    placeholder="000000"
+                                    maxLength="6"
+                                    style={{ 
+                                        paddingLeft: '2.5rem',
+                                        textAlign: 'center',
+                                        fontSize: '1.5rem',
+                                        letterSpacing: '0.5rem',
+                                        fontFamily: 'monospace',
+                                        fontWeight: 'bold'
+                                    }}
+                                    autoFocus
+                                />
+                                <div style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>
+                                    <ShieldIcon size={18} />
+                                </div>
+                            </div>
+                            <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.5rem', textAlign: 'center' }}>
+                                Authenticator uygulamanızdan gelen 6 haneli kodu girin
+                            </p>
+                        </div>
+                    )}
 
                     <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#64748b', fontSize: '0.9rem' }}>

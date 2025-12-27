@@ -22,8 +22,10 @@ const MealMenuPage = () => {
       setMenus(response.data.data || []);
       setError('');
     } catch (err) {
-      setError('Menüler yüklenemedi. Lütfen tekrar deneyin.');
+      const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || 'Menüler yüklenemedi. Lütfen tekrar deneyin.';
+      setError(errorMessage);
       console.error('Error fetching menus:', err);
+      console.error('Error details:', err.response?.data);
     } finally {
       setLoading(false);
     }

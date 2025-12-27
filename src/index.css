@@ -1,7 +1,8 @@
 /* Modern University Design System - Enterprise Edition */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-:root {
+:root,
+[data-theme="light"] {
   /* Renk Paleti - Resmi & Kurumsal Aydınlık Tema */
 
   /* Ana Arka Plan: Çok açık gri (Neredeyse beyaz) */
@@ -49,6 +50,73 @@
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  /* Dark Arka Plan */
+  --primary-bg: #0f172a;
+  --secondary-bg: #1e293b;
+  --sidebar-bg: #1e293b;
+
+  /* Glass Effect Dark */
+  --glass: rgba(30, 41, 59, 0.9);
+  --glass-border: #334155;
+
+  /* Aksent Renkler */
+  --accent-color: #60a5fa;
+  --accent-hover: #3b82f6;
+
+  /* Metin Renkleri */
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-on-dark: #f1f5f9;
+  --sidebar-text: #f1f5f9;
+  --sidebar-text-muted: #cbd5e1;
+
+  /* Durum Renkleri */
+  --success: #34d399;
+  --success-bg: #065f46;
+  --warning: #fbbf24;
+  --warning-bg: #78350f;
+  --danger: #f87171;
+  --danger-bg: #7f1d1d;
+
+  /* Sınırlar ve Gölgeler */
+  --border-color: #334155;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] th {
+  background-color: #1e293b;
+}
+
+[data-theme="dark"] tr:hover td {
+  background-color: #334155;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background-color: #334155;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] input:disabled {
+  background: #0f172a;
 }
 
 * {

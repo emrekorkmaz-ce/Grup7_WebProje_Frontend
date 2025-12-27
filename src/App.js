@@ -16,6 +16,8 @@ import Profile from './pages/Profile';
 import Users from './pages/Users';
 import NotFound from './pages/NotFound';
 import MyCoursesPage from './pages/MyCoursesPage';
+import CourseDetailPage from './pages/CourseDetailPage';
+import CourseCatalogPage from './pages/CourseCatalogPage';
 import GradesPage from './pages/GradesPage';
 import GradebookPage from './pages/GradebookPage';
 import StartAttendancePage from './pages/StartAttendancePage';
@@ -42,6 +44,8 @@ import MealAnalyticsPage from './pages/MealAnalyticsPage';
 import EventAnalyticsPage from './pages/EventAnalyticsPage';
 import NotificationSettingsPage from './pages/NotificationSettingsPage';
 import IoTDashboardPage from './pages/IoTDashboardPage';
+import CourseAssignmentPage from './pages/CourseAssignmentPage';
+import TwoFactorAuthPage from './pages/TwoFactorAuthPage';
 import './App.css';
 
 function App() {
@@ -76,22 +80,42 @@ function App() {
                             <Users />
                         </ProtectedRoute>
                         }
-                    /> <Route path="/"
+                    />
+                    <Route path="/course-assignment"
+                        element={<ProtectedRoute roles={['admin']}>
+                            <CourseAssignmentPage />
+                        </ProtectedRoute>
+                        }
+                    /> <Route path="/my-courses"
+                        element={
+                            <ProtectedRoute roles={['student', 'faculty']}>
+                                <MyCoursesPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/courses"
+                        element={
+                            <ProtectedRoute>
+                                <CourseCatalogPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/courses/:id"
+                        element={
+                            <ProtectedRoute>
+                                <CourseDetailPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/"
                         element={<Navigate to="/login"
                             replace />}
                     /> <Route path="*"
                         element={<NotFound />}
                     />
-                    <Route path="/my-courses"
-                        element={
-                            <ProtectedRoute>
-                                <MyCoursesPage />
-                            </ProtectedRoute>
-                        }
-                    />
                     <Route path="/grades"
                         element={
-                            <ProtectedRoute>
+                            <ProtectedRoute roles={['faculty']}>
                                 <GradesPage />
                             </ProtectedRoute>
                         }
@@ -105,14 +129,14 @@ function App() {
                     />
                     <Route path="/attendance/start"
                         element={
-                            <ProtectedRoute roles={['admin', 'faculty']}>
+                            <ProtectedRoute roles={['faculty']}>
                                 <StartAttendancePage />
                             </ProtectedRoute>
                         }
                     />
                     <Route path="/attendance/give/:sessionId"
                         element={
-                            <ProtectedRoute>
+                            <ProtectedRoute roles={['student']}>
                                 <GiveAttendancePage />
                             </ProtectedRoute>
                         }

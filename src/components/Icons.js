@@ -169,3 +169,82 @@ export const XCircleIcon = ({ size = 20, color = 'currentColor', ...props }) => 
         <line x1="9" y1="9" x2="15" y2="15"></line>
     </svg>
 );
+
+export const BarChartIcon = ({ size = 20, color = 'currentColor', ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <line x1="12" y1="20" x2="12" y2="10"></line>
+        <line x1="18" y1="20" x2="18" y2="4"></line>
+        <line x1="6" y1="20" x2="6" y2="16"></line>
+    </svg>
+);
+
+export const TrendingUpIcon = ({ size = 20, color = 'currentColor', ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+        <polyline points="17 6 23 6 23 12"></polyline>
+    </svg>
+);
+
+export const UtensilsIcon = ({ size = 20, color = 'currentColor', ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+        <path d="M7 2v20"></path>
+        <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v0"></path>
+        <path d="M21 15v7"></path>
+    </svg>
+);
+
+export const ClipboardIcon = ({ size = 20, color = 'currentColor', ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+    </svg>
+);
+
+export const CreditCardIcon = ({ size = 20, color = 'currentColor', ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+        <line x1="1" y1="10" x2="23" y2="10"></line>
+    </svg>
+);
+
+export const PartyPopperIcon = ({ size = 20, color = 'currentColor', ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M5.8 11.3L2 22l10.7-3.79"></path>
+        <path d="M4 3h.01"></path>
+        <path d="M22 8h.01"></path>
+        <path d="M15 2h.01"></path>
+        <path d="M22 20h.01"></path>
+        <path d="M22 2l-2.24.72a2.5 2.5 0 0 0-1.96 3.12l.34 1.64a2.5 2.5 0 0 1-.72 2.57l-1.06 1.06a2.5 2.5 0 0 0-.68 2.85l.23 1.38a2.5 2.5 0 0 1-.72 2.4l-1.06 1.06a2.5 2.5 0 0 0-1.15 2.4L14 22"></path>
+        <path d="M9 2l1.24.37a2.5 2.5 0 0 1 1.96 3.12l-.34 1.64a2.5 2.5 0 0 0 .72 2.57l1.06 1.06a2.5 2.5 0 0 1 .68 2.85L13 16"></path>
+    </svg>
+);
+
+export const BellIcon = ({ size = 20, color = 'currentColor', ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+    </svg>
+);
+
+export const QrCodeIcon = ({ size = 20, color = 'currentColor', ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <rect x="3" y="3" width="5" height="5"></rect>
+        <rect x="16" y="3" width="5" height="5"></rect>
+        <rect x="3" y="16" width="5" height="5"></rect>
+        <line x1="7" y1="8" x2="7" y2="8"></line>
+        <line x1="20" y1="8" x2="20" y2="8"></line>
+        <line x1="7" y1="20" x2="7" y2="20"></line>
+        <line x1="16" y1="16" x2="16" y2="16"></line>
+        <line x1="12" y1="3" x2="12" y2="8"></line>
+        <line x1="12" y1="16" x2="12" y2="21"></line>
+        <line x1="3" y1="12" x2="8" y2="12"></line>
+        <line x1="16" y1="12" x2="21" y2="12"></line>
+    </svg>
+);
+
+export const CheckIcon = ({ size = 20, color = 'currentColor', ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+);

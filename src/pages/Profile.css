@@ -182,6 +182,31 @@
   border: 1px solid #4CAF50;
 }
 
+.security-section {
+  margin-top: 1rem;
+}
+
+.security-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.security-item h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.security-item p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
 @media (max-width: 768px) {
   .profile-main {
     margin-left: 0;

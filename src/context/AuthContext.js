@@ -49,9 +49,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (email, password, twoFactorToken = null) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const requestBody = { email, password };
+      if (twoFactorToken) {
+        requestBody.twoFactorToken = twoFactorToken;
+      }
+      const response = await api.post('/auth/login', requestBody);
+      
+      // Check if 2FA is required
+      if (response.data.requires2FA) {
+        return {
+          success: false,
+          requires2FA: true,
+          tempUserId: response.data.data?.userId || null
+        };
+      }
+      
       const { user, accessToken, refreshToken } = response.data.data;
       
       localStorage.setItem('accessToken', accessToken);
@@ -77,8 +91,17 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const response = await api.post('/auth/register', userData);
+      console.log('Register response:', response.data); // Debug log
       const message = response.data.message || response.data.data?.message || 'Kayıt başarılı';
-      return { success: true, message };
+      const result = { 
+        success: true, 
+        message,
+        requiresVerification: response.data.requiresVerification || false,
+        verificationUrl: response.data.data?.verificationUrl || null,
+        verificationToken: response.data.data?.verificationToken || null
+      };
+      console.log('Register result:', result); // Debug log
+      return result;
     } catch (error) {
       let errorMessage = 'Kayıt başarısız';
       // 409 Conflict için özel Türkçe mesaj

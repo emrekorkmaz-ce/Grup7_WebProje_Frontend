@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { MapPinIcon, CheckCircleIcon } from '../components/Icons';
-// import './GiveAttendancePage.css'; // Removed
-import Navbar from '../components/Navbar';
-import Sidebar from '../components/Sidebar';
+import { useAuth } from '../context/AuthContext';
+import Loading from '../components/Loading';
 
 const GiveAttendancePage = () => {
-  // ... hooks ... (kept same, assuming replace_file_content keeps context if I don't touch lines before return)
-  // Wait, I need to replace the WHOLE return block or careful. I will assume using view_file output context.
   const { sessionId } = useParams();
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [location, setLocation] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [sessionInfo, setSessionInfo] = useState(null);
 
   useEffect(() => {
-    // ... (kept same)
+    // ProtectedRoute zaten authentication ve role kontrolü yapıyor
+    // Burada sadece konum alıyoruz
+    if (!user || user.role !== 'student') return;
+
     if (!('geolocation' in navigator)) {
       setError('Cihazınızda konum servisi bulunamadı.');
       setLoading(false);
       return;
     }
+    
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
@@ -32,27 +36,35 @@ const GiveAttendancePage = () => {
         setLoading(false);
       }
     );
-  }, []);
+  }, [user]);
 
   const handleGiveAttendance = async () => {
-    // ... (kept same)
-    if (!location) return;
+    if (!location || !user || user.role !== 'student') return;
+    
     setLoading(true);
     setError(null);
     try {
-      await api.post(`/student/attendance/give/${sessionId}`, { location });
+      const response = await api.post(`/student/attendance/give/${sessionId}`, { location });
       setSuccess(true);
+      // Başarılı olduktan sonra 3 saniye sonra kapat
+      setTimeout(() => {
+        // İsteğe bağlı: Ana sayfaya yönlendir
+        // navigate('/dashboard');
+      }, 3000);
     } catch (err) {
-      setError('Yoklama verilemedi.');
+      setError(err.response?.data?.error || 'Yoklama verilemedi.');
     } finally {
       setLoading(false);
     }
   };
 
+  // Loading durumu - ProtectedRoute zaten kontrol ediyor ama ekstra güvenlik için
+  if (authLoading || !user || user.role !== 'student') {
+    return <Loading />;
+  }
+
   return (
     <div className="app-container">
-      <Navbar />
-      <Sidebar />
       <main>
         <div className="card" style={{ maxWidth: '400px', width: '100%', textAlign: 'center', margin: '0 auto' }}>
 
