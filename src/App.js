@@ -32,7 +32,6 @@ import WalletPage from './pages/WalletPage';
 import EventsPage from './pages/EventsPage';
 import EventDetailPage from './pages/EventDetailPage';
 import MyEventsPage from './pages/MyEventsPage';
-import EventCheckInPage from './pages/EventCheckInPage';
 import MySchedulePage from './pages/MySchedulePage';
 import ClassroomReservationsPage from './pages/ClassroomReservationsPage';
 import AdminDashboard from './pages/AdminDashboard';
@@ -213,13 +212,6 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
-                    <Route path="/events/checkin"
-                        element={
-                            <ProtectedRoute roles={['admin']}>
-                                <EventCheckInPage />
-                            </ProtectedRoute>
-                        }
-                    />
                     {/* Part 3: Scheduling Routes */}
                     <Route path="/schedule"
                         element={
@@ -292,6 +284,14 @@ function App() {
                         element={
                             <ProtectedRoute roles={['admin']}>
                                 <IoTDashboardPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* Part 4: Two-Factor Authentication */}
+                    <Route path="/settings/2fa"
+                        element={
+                            <ProtectedRoute>
+                                <TwoFactorAuthPage />
                             </ProtectedRoute>
                         }
                     />

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useTranslation } from '../hooks/useTranslation';
-import { LogOutIcon, GraduationCapIcon } from './Icons';
+import { LogOutIcon, GraduationCapIcon, SunIcon, MoonIcon } from './Icons';
 import NotificationBell from './NotificationBell';
 import './Navbar.css';
 
@@ -40,8 +40,15 @@ const Navbar = () => {
               onClick={toggleTheme} 
               className="theme-toggle" 
               title={theme === 'light' ? t('navbar.darkMode') : t('navbar.lightMode')}
+              aria-label={theme === 'light' ? t('navbar.darkMode') : t('navbar.lightMode')}
             >
-              {theme === 'light' ? '🌙' : '☀️'}
+              <div className="theme-toggle-inner">
+                {theme === 'light' ? (
+                  <MoonIcon size={18} className="theme-icon" />
+                ) : (
+                  <SunIcon size={18} className="theme-icon" />
+                )}
+              </div>
             </button>
             <button 
               onClick={toggleLanguage} 

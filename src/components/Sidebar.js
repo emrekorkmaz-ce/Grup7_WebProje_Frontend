@@ -168,12 +168,6 @@ const Sidebar = () => {
             <CalendarIcon size={20} className="sidebar-icon" />
             <span>{t('sidebar.myEvents')}</span>
           </Link>
-          {user?.role === 'admin' && (
-            <Link to="/events/checkin" className={`sidebar-link ${isActive('/events/checkin')}`}>
-              <CheckIcon size={20} className="sidebar-icon" />
-              <span>{t('sidebar.checkIn')}</span>
-            </Link>
-          )}
         </div>
 
         {/* Part 3: Schedule */}

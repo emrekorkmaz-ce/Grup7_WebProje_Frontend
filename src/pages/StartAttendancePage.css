@@ -54,3 +54,46 @@
   color: #b03a2e;
   margin-top: 18px;
 }
+
+/* Dark Mode Styles */
+[data-theme="dark"] .start-attendance-page {
+  background: transparent;
+}
+
+[data-theme="dark"] .start-attendance-page h2 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .attendance-select {
+  background: var(--input-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .attendance-select:focus {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+}
+
+[data-theme="dark"] .attendance-select option {
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .qr-code-container {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .qr-code-container h3 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .qr-code-container p {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .session-id {
+  color: var(--text-primary);
+}

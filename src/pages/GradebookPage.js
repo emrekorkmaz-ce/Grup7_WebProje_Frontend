@@ -4,6 +4,7 @@ import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { SaveIcon } from '../components/Icons';
+import './GradebookPage.css';
 
 const GradebookPage = () => {
   const { sectionId } = useParams();
@@ -128,8 +129,9 @@ const GradebookPage = () => {
                           value={grades[student.studentId] || ''}
                           onChange={e => handleGradeChange(student.studentId, e.target.value)}
                           placeholder="AA"
+                          className="grade-input"
                           style={{
-                            background: 'white',
+                            background: 'var(--input-bg)',
                             border: '1px solid var(--border-color)',
                             color: 'var(--text-primary)',
                             padding: '0.5rem',

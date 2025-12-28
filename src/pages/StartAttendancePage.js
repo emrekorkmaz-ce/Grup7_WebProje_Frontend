@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { useTranslation } from '../hooks/useTranslation';
 import { MegaphoneIcon, CheckCircleIcon, CopyIcon, BookIcon } from '../components/Icons';
-// import './StartAttendancePage.css';
+import './StartAttendancePage.css';
 
 const StartAttendancePage = () => {
   const { t, language } = useTranslation();
@@ -254,10 +254,11 @@ const StartAttendancePage = () => {
                 <select
                   value={selectedSection}
                   onChange={(e) => setSelectedSection(e.target.value)}
+                  className="attendance-select"
                   style={{
                     width: '100%',
                     padding: '0.875rem 1rem',
-                    background: 'white',
+                    background: 'var(--input-bg)',
                     border: '2px solid var(--border-color)',
                     borderRadius: '8px',
                     color: 'var(--text-primary)',
@@ -341,27 +342,30 @@ const StartAttendancePage = () => {
 
               {/* QR CODE - Tahtaya yansıtılacak */}
               {qrCode && (
-                <div style={{
+                <div className="qr-code-container" style={{
                   textAlign: 'center',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   padding: '2rem',
                   borderRadius: 'var(--radius-lg)',
                   marginBottom: '2rem',
                   maxWidth: '400px',
                   margin: '0 auto 2rem auto',
-                  boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
+                  boxShadow: 'var(--shadow-lg)',
+                  border: '1px solid var(--border-color)'
                 }}>
-                  <h3 style={{ color: '#1e293b', marginBottom: '1.5rem' }}>📱 {language === 'en' ? 'Scan QR Code' : 'QR Kodu Tarayın'}</h3>
+                  <h3 style={{ color: 'var(--text-primary)', marginBottom: '1.5rem' }}>📱 {language === 'en' ? 'Scan QR Code' : 'QR Kodu Tarayın'}</h3>
                   <img
                     src={qrCode}
                     alt={language === 'en' ? 'Attendance QR Code' : 'Yoklama QR Kodu'}
                     style={{
                       width: '100%',
                       maxWidth: '300px',
-                      borderRadius: '8px'
+                      borderRadius: '8px',
+                      background: 'white',
+                      padding: '0.5rem'
                     }}
                   />
-                  <p style={{ color: '#64748b', marginTop: '1rem', fontSize: '0.9rem' }}>
+                  <p style={{ color: 'var(--text-secondary)', marginTop: '1rem', fontSize: '0.9rem' }}>
                     {language === 'en' ? 'Use phone camera' : 'Telefon kamerasını kullanın'}
                   </p>
                 </div>

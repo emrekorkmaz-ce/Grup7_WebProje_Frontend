@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import './TwoFactorAuthPage.css';
 
 const TwoFactorAuthPage = () => {
   const navigate = useNavigate();
+  const { t, language } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [qrCode, setQrCode] = useState(null);
   const [secret, setSecret] = useState(null);
@@ -40,7 +42,7 @@ const TwoFactorAuthPage = () => {
         setSecret(response.data.data.secret);
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Secret oluşturulamadı');
+      setError(err.response?.data?.error || t('profile.twoFactorErrorGenerate'));
     } finally {
       setLoading(false);
     }
@@ -48,7 +50,7 @@ const TwoFactorAuthPage = () => {
 
   const handleVerifyAndEnable = async () => {
     if (!verificationToken || verificationToken.length !== 6) {
-      setError('Geçerli bir 6 haneli kod girin');
+      setError(t('profile.twoFactorErrorInvalidCode'));
       return;
     }
 
@@ -60,7 +62,7 @@ const TwoFactorAuthPage = () => {
       });
       
       if (response.data.success) {
-        setSuccess('2FA başarıyla etkinleştirildi!');
+        setSuccess(t('profile.twoFactorSuccessEnabled'));
         setIsEnabled(true);
         setQrCode(null);
         setSecret(null);
@@ -70,14 +72,14 @@ const TwoFactorAuthPage = () => {
         }, 2000);
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Doğrulama başarısız');
+      setError(err.response?.data?.error || t('profile.twoFactorErrorVerify'));
     } finally {
       setLoading(false);
     }
   };
 
   const handleDisable = async () => {
-    if (!window.confirm('2FA\'yı devre dışı bırakmak istediğinize emin misiniz?')) {
+    if (!window.confirm(t('profile.twoFactorDisableConfirm'))) {
       return;
     }
 
@@ -86,11 +88,11 @@ const TwoFactorAuthPage = () => {
       setError('');
       const response = await api.post('/2fa/disable');
       if (response.data.success) {
-        setSuccess('2FA devre dışı bırakıldı');
+        setSuccess(t('profile.twoFactorSuccessDisabled'));
         setIsEnabled(false);
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Devre dışı bırakma başarısız');
+      setError(err.response?.data?.error || t('profile.twoFactorErrorDisable'));
     } finally {
       setLoading(false);
     }
@@ -102,22 +104,22 @@ const TwoFactorAuthPage = () => {
       <Sidebar />
       <main>
         <div className="two-factor-page">
-          <h1>İki Faktörlü Kimlik Doğrulama (2FA)</h1>
+          <h1>{t('profile.twoFactorTitle')}</h1>
           
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">{success}</div>}
 
           <div className="card">
-            <h2>2FA Durumu</h2>
+            <h2>{t('profile.twoFactorStatus')}</h2>
             <p className={isEnabled ? 'status-enabled' : 'status-disabled'}>
-              {isEnabled ? '✅ 2FA Etkin' : '❌ 2FA Devre Dışı'}
+              {isEnabled ? t('profile.twoFactorEnabled') : t('profile.twoFactorDisabled')}
             </p>
           </div>
 
           {!isEnabled && (
             <div className="card">
-              <h2>2FA'yı Etkinleştir</h2>
-              <p>Hesabınızı daha güvenli hale getirmek için iki faktörlü kimlik doğrulamayı etkinleştirin.</p>
+              <h2>{t('profile.twoFactorEnableTitle')}</h2>
+              <p>{t('profile.twoFactorEnableDesc')}</p>
               
               {!qrCode && (
                 <button 
@@ -125,22 +127,22 @@ const TwoFactorAuthPage = () => {
                   onClick={handleGenerateSecret}
                   disabled={loading}
                 >
-                  {loading ? 'Yükleniyor...' : 'QR Kod Oluştur'}
+                  {loading ? t('profile.twoFactorLoading') : t('profile.twoFactorGenerateQR')}
                 </button>
               )}
 
               {qrCode && (
                 <div className="qr-section">
-                  <h3>1. Authenticator Uygulamanızla QR Kodu Tarayın</h3>
+                  <h3>{t('profile.twoFactorScanQR')}</h3>
                   <div className="qr-code-container">
                     <img src={qrCode} alt="QR Code" />
                   </div>
                   
                   <p className="manual-entry">
-                    <strong>Manuel Giriş Anahtarı:</strong> {secret}
+                    <strong>{t('profile.twoFactorManualKey')}</strong> {secret}
                   </p>
 
-                  <h3>2. Authenticator Uygulamanızdan Gelen Kodu Girin</h3>
+                  <h3>{t('profile.twoFactorEnterCode')}</h3>
                   <input
                     type="text"
                     maxLength="6"
@@ -155,7 +157,7 @@ const TwoFactorAuthPage = () => {
                     onClick={handleVerifyAndEnable}
                     disabled={loading || verificationToken.length !== 6}
                   >
-                    {loading ? 'Doğrulanıyor...' : 'Etkinleştir'}
+                    {loading ? t('profile.twoFactorVerifying') : t('profile.twoFactorEnable')}
                   </button>
                 </div>
               )}
@@ -164,27 +166,46 @@ const TwoFactorAuthPage = () => {
 
           {isEnabled && (
             <div className="card">
-              <h2>2FA'yı Devre Dışı Bırak</h2>
-              <p>2FA'yı devre dışı bırakmak hesabınızın güvenliğini azaltır.</p>
+              <h2>{t('profile.twoFactorDisableTitle')}</h2>
+              <p>{t('profile.twoFactorDisableDesc')}</p>
               <button 
                 className="btn btn-danger" 
                 onClick={handleDisable}
                 disabled={loading}
               >
-                {loading ? 'İşleniyor...' : '2FA\'yı Devre Dışı Bırak'}
+                {loading ? t('profile.twoFactorProcessing') : t('profile.twoFactorDisable')}
               </button>
             </div>
           )}
 
           <div className="card info-card">
-            <h2>2FA Nedir?</h2>
-            <p>İki faktörlü kimlik doğrulama, hesabınıza giriş yaparken şifrenize ek olarak bir güvenlik kodu gerektirir.</p>
-            <p><strong>Önerilen Uygulamalar:</strong></p>
-            <ul>
-              <li>Google Authenticator</li>
-              <li>Microsoft Authenticator</li>
-              <li>Authy</li>
-            </ul>
+            <h2>{t('profile.twoFactorWhatIs')}</h2>
+            <p className="info-desc">{t('profile.twoFactorWhatIsDesc')}</p>
+            
+            <div className="info-section">
+              <h3>{t('profile.twoFactorHowItWorks')}</h3>
+              <p className="info-steps">{t('profile.twoFactorHowItWorksDesc')}</p>
+            </div>
+
+            <div className="info-section">
+              <h3>{t('profile.twoFactorRecommendedApps')}</h3>
+              <ul className="apps-list">
+                <li>
+                  <strong>Google Authenticator</strong> - {language === 'en' ? 'Free for iOS and Android' : 'iOS ve Android için ücretsiz'}
+                </li>
+                <li>
+                  <strong>Microsoft Authenticator</strong> - {language === 'en' ? 'Integrated with Microsoft accounts' : 'Microsoft hesaplarıyla entegre'}
+                </li>
+                <li>
+                  <strong>Authy</strong> - {language === 'en' ? 'Cloud backup features' : 'Bulut yedekleme özellikli'}
+                </li>
+              </ul>
+            </div>
+
+            <div className="info-section security-note">
+              <h3>{t('profile.twoFactorSecurityNote')}</h3>
+              <p>{t('profile.twoFactorSecurityNoteDesc')}</p>
+            </div>
           </div>
         </div>
       </main>

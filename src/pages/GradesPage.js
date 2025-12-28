@@ -6,6 +6,7 @@ import Sidebar from '../components/Sidebar';
 import { DownloadIcon, BookIcon } from '../components/Icons';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from '../hooks/useTranslation';
+import './GradesPage.css';
 
 const GradesPage = () => {
   const { t, language } = useTranslation();
@@ -101,25 +102,16 @@ const GradesPage = () => {
                   <div
                     key={section.id}
                     onClick={() => handleSectionClick(section.id)}
+                    className="section-card"
                     style={{
                       padding: '1.5rem',
                       border: '1px solid var(--border-color)',
                       borderRadius: '8px',
-                      background: '#f8fafc',
+                      background: 'var(--card-bg)',
                       cursor: 'pointer',
                       transition: 'all 0.2s',
                       position: 'relative',
                       overflow: 'hidden'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#f1f5f9';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#f8fafc';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = 'none';
                     }}
                   >
                     <div style={{
@@ -214,11 +206,11 @@ const GradesPage = () => {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
-            <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+            <div className="gpa-card" style={{ background: 'var(--card-bg)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
               <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>{language === 'en' ? 'Semester GPA (GPA)' : 'Dönem Ortalaması (GNO)'}</div>
               <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--accent-color)' }}>{gpa !== null ? gpa : '-'}</div>
             </div>
-            <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+            <div className="gpa-card" style={{ background: 'var(--card-bg)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
               <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>{language === 'en' ? 'Overall GPA (CGPA)' : 'Genel Ortalama (AGNO)'}</div>
               <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--success)' }}>{cgpa !== null ? cgpa : '-'}</div>
             </div>
