@@ -42,14 +42,32 @@
   transition: all 0.3s;
 }
 
+[data-theme="dark"] .category-filters button {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: #e0e7ff;
+}
+
 .category-filters button:hover {
   background: #f8f9fa;
+}
+
+[data-theme="dark"] .category-filters button:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.4);
 }
 
 .category-filters button.active {
   background: #3498db;
   color: white;
   border-color: #3498db;
+}
+
+[data-theme="dark"] .category-filters button.active {
+  background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+  color: white;
+  border-color: #6366f1;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
 }
 
 .events-grid {
@@ -68,9 +86,21 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+[data-theme="dark"] .event-card {
+  background: linear-gradient(135deg, rgba(21, 27, 46, 0.95) 0%, rgba(15, 22, 36, 0.95) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
 .event-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+[data-theme="dark"] .event-card:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.2), 0 0 30px rgba(99, 102, 241, 0.1);
+  transform: translateY(-3px);
 }
 
 .event-header {
@@ -132,6 +162,10 @@
   font-size: 20px;
 }
 
+[data-theme="dark"] .event-card h3 {
+  color: #e0e7ff;
+}
+
 .event-date,
 .event-time,
 .event-location,
@@ -142,11 +176,23 @@
   color: #555;
 }
 
+[data-theme="dark"] .event-date,
+[data-theme="dark"] .event-time,
+[data-theme="dark"] .event-location,
+[data-theme="dark"] .event-capacity,
+[data-theme="dark"] .event-price {
+  color: #cbd5e1;
+}
+
 .event-description {
   margin: 15px 0;
   color: #666;
   font-size: 14px;
   line-height: 1.6;
+}
+
+[data-theme="dark"] .event-description {
+  color: #94a3b8;
 }
 
 .event-footer {
@@ -193,6 +239,8 @@
   font-size: 18px;
   grid-column: 1 / -1;
 }
+
+
 
 
 

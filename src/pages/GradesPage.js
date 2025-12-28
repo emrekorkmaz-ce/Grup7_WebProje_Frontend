@@ -5,8 +5,10 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { DownloadIcon, BookIcon } from '../components/Icons';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from '../hooks/useTranslation';
 
 const GradesPage = () => {
+  const { t, language } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [grades, setGrades] = useState([]);
@@ -31,7 +33,7 @@ const GradesPage = () => {
       setGpa(response.data.gpa);
       setCgpa(response.data.cgpa);
     } catch (err) {
-      setError('Notlar yüklenemedi.');
+      setError(language === 'en' ? 'Failed to load grades.' : 'Notlar yüklenemedi.');
     } finally {
       setLoading(false);
     }
@@ -44,7 +46,7 @@ const GradesPage = () => {
       const response = await api.get('/faculty/sections');
       setSections(response.data.data || response.data || []);
     } catch (err) {
-      setError('Dersler yüklenemedi.');
+      setError(t('courses.coursesLoadError'));
       console.error('Error fetching sections:', err);
     } finally {
       setLoading(false);
@@ -62,7 +64,7 @@ const GradesPage = () => {
       link.click();
       link.parentNode.removeChild(link);
     } catch (err) {
-      alert('Transkript indirilemedi.');
+      alert(t('grades.transcriptDownloadFailed'));
     }
   };
 
@@ -80,19 +82,19 @@ const GradesPage = () => {
           <div className="card">
             <div className="flex justify-between items-center mb-4">
               <div>
-                <h2>Not Girişi</h2>
+                <h2>{t('grades.title')}</h2>
                 <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
-                  Verdiğiniz derslerin şubelerini seçerek not girişi yapabilirsiniz.
+                  {t('grades.titleDesc')}
                 </p>
               </div>
             </div>
 
             {loading ? (
-              <div className="loading">Dersler yükleniyor...</div>
+              <div className="loading">{t('grades.sectionsLoading')}</div>
             ) : error ? (
               <div className="error">{error}</div>
             ) : sections.length === 0 ? (
-              <div className="text-center p-4">Henüz size atanmış ders bulunmamaktadır.</div>
+              <div className="text-center p-4">{language === 'en' ? 'No courses assigned to you yet.' : 'Henüz size atanmış ders bulunmamaktadır.'}</div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
                 {sections.map((section) => (
@@ -152,19 +154,19 @@ const GradesPage = () => {
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span><strong>Şube:</strong></span>
+                        <span><strong>{t('common.section')}:</strong></span>
                         <span>{section.section_number || section.sectionNumber || 'N/A'}</span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span><strong>Dönem:</strong></span>
-                        <span>{section.semester === 'fall' ? 'Güz' : section.semester === 'spring' ? 'Bahar' : section.semester || 'N/A'}</span>
+                        <span><strong>{language === 'en' ? 'Semester:' : 'Dönem:'}</strong></span>
+                        <span>{section.semester === 'fall' ? t('courseAssignment.fall') : section.semester === 'spring' ? t('courseAssignment.spring') : section.semester || 'N/A'}</span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span><strong>Yıl:</strong></span>
+                        <span><strong>{language === 'en' ? 'Year:' : 'Yıl:'}</strong></span>
                         <span>{section.year || 'N/A'}</span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span><strong>Kayıtlı Öğrenci:</strong></span>
+                        <span><strong>{language === 'en' ? 'Enrolled Students:' : 'Kayıtlı Öğrenci:'}</strong></span>
                         <span>{section.enrolled_count || section.enrolledCount || 0}</span>
                       </div>
                     </div>
@@ -184,7 +186,7 @@ const GradesPage = () => {
                         fontSize: '0.9rem',
                         fontWeight: 600
                       }}>
-                        Not Girişi Yap →
+                        {language === 'en' ? 'Enter Grades →' : 'Not Girişi Yap →'}
                       </span>
                     </div>
                   </div>
@@ -205,40 +207,40 @@ const GradesPage = () => {
       <main>
         <div className="card">
           <div className="flex justify-between items-center mb-4">
-            <h2>Notlarım</h2>
+            <h2>{language === 'en' ? 'My Grades' : 'Notlarım'}</h2>
             <button className="btn btn-secondary" onClick={handleTranscriptDownload}>
-              <DownloadIcon size={16} /> Transkript İndir
+              <DownloadIcon size={16} /> {t('grades.downloadTranscript')}
             </button>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
             <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Dönem Ortalaması (GNO)</div>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>{language === 'en' ? 'Semester GPA (GPA)' : 'Dönem Ortalaması (GNO)'}</div>
               <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--accent-color)' }}>{gpa !== null ? gpa : '-'}</div>
             </div>
             <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Genel Ortalama (AGNO)</div>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>{language === 'en' ? 'Overall GPA (CGPA)' : 'Genel Ortalama (AGNO)'}</div>
               <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--success)' }}>{cgpa !== null ? cgpa : '-'}</div>
             </div>
           </div>
 
           {loading ? (
-            <div className="loading">Notlar yükleniyor...</div>
+            <div className="loading">{language === 'en' ? 'Loading grades...' : 'Notlar yükleniyor...'}</div>
           ) : error ? (
             <div className="error">{error}</div>
           ) : grades.length === 0 ? (
-            <div className="text-center p-4">Henüz not girişi yapılmamış.</div>
+            <div className="text-center p-4">{language === 'en' ? 'No grades entered yet.' : 'Henüz not girişi yapılmamış.'}</div>
           ) : (
             <div style={{ overflowX: 'auto' }}>
               <table>
                 <thead>
                   <tr>
-                    <th>Ders Kodu</th>
-                    <th>Ders Adı</th>
-                    <th>Kredi</th>
-                    <th>Harf Notu</th>
-                    <th>Puan</th>
-                    <th>Dönem</th>
+                    <th>{t('courses.courseCode')}</th>
+                    <th>{t('courses.courseName')}</th>
+                    <th>{t('courses.credits')}</th>
+                    <th>{t('grades.letterGrade')}</th>
+                    <th>{language === 'en' ? 'Score' : 'Puan'}</th>
+                    <th>{language === 'en' ? 'Semester' : 'Dönem'}</th>
                   </tr>
                 </thead>
                 <tbody>

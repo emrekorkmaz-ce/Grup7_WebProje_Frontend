@@ -4,16 +4,40 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useAuth } from '../context/AuthContext';
+import trTranslations from '../locales/tr.json';
 import { GraduationCapIcon, UserIcon, ShieldIcon } from '../components/Icons';
 import bgImage from '../assets/university_bg.png';
 
-const loginSchema = yup.object().shape({
-    email: yup.string().email('Geçersiz e-posta formatı').required('E-posta adresi gereklidir'),
-    password: yup.string().required('Şifre gereklidir'),
-    rememberMe: yup.boolean()
-});
+// Login sayfası için özel translation hook'u - her zaman Türkçe
+const useLoginTranslation = () => {
+    const t = (key, params = {}) => {
+        const keys = key.split('.');
+        let value = trTranslations;
+
+        for (const k of keys) {
+            value = value?.[k];
+        }
+
+        if (!value) {
+            console.warn(`Translation missing for key: ${key}`);
+            return key;
+        }
+
+        // Replace parameters in translation string
+        if (typeof value === 'string' && Object.keys(params).length > 0) {
+            return value.replace(/\{(\w+)\}/g, (match, paramKey) => {
+                return params[paramKey] || match;
+            });
+        }
+
+        return value;
+    };
+
+    return { t, language: 'tr' };
+};
 
 const Login = () => {
+    const { t } = useLoginTranslation();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [requires2FA, setRequires2FA] = useState(false);
@@ -24,11 +48,17 @@ const Login = () => {
     const redirectUrl = searchParams.get('redirect');
     const wrongRole = searchParams.get('error') === 'wrong_role';
 
+    const loginSchema = yup.object().shape({
+        email: yup.string().email(t('auth.invalidEmailFormat')).required(t('auth.emailRequired')),
+        password: yup.string().required(t('auth.passwordRequired')),
+        rememberMe: yup.boolean()
+    });
+
     React.useEffect(() => {
         if (wrongRole) {
-            setError('Bu sayfaya erişmek için öğrenci hesabı ile giriş yapmanız gerekmektedir.');
+            setError(t('auth.wrongRoleError'));
         }
-    }, [wrongRole]);
+    }, [wrongRole, t]);
 
     React.useEffect(() => {
         if (user) {
@@ -69,7 +99,7 @@ const Login = () => {
                 ? (result.error.message || JSON.stringify(result.error))
                 : result.error;
             if (errorMsg && errorMsg.toLowerCase().includes('verify your email')) {
-                errorMsg = 'Hesabınızı kullanabilmek için doğrulama yapmanız gerekmektedir.';
+                errorMsg = t('auth.verifyEmailError');
             }
             setError(errorMsg);
             setLoading(false);
@@ -112,10 +142,10 @@ const Login = () => {
                         <GraduationCapIcon size={32} />
                     </div>
                     <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.5rem', border: 'none' }}>
-                        Öğrenci Girişi
+                        {t('auth.studentLogin')}
                     </h2>
                     <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-                        Kampüs Bilgi Sistemi'ne erişmek için bilgilerinizi giriniz.
+                        {t('auth.loginSubtitle')}
                     </p>
                 </div>
 
@@ -128,14 +158,14 @@ const Login = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div style={{ marginBottom: '1.25rem' }}>
                         <label style={{ display: 'block', color: '#475569', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 500 }}>
-                            E-posta Adresi
+                            {t('auth.emailAddress')}
                         </label>
                         <div style={{ position: 'relative' }}>
                             <input
                                 type="email"
                                 {...register('email')}
                                 disabled={loading}
-                                placeholder="ad.soyad@uni.edu.tr"
+                                placeholder={t('auth.emailPlaceholder')}
                                 style={{ paddingLeft: '2.5rem' }}
                             />
                             <div style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>
@@ -147,14 +177,14 @@ const Login = () => {
 
                     <div style={{ marginBottom: '1.25rem' }}>
                         <div style={{ marginBottom: '0.5rem' }}>
-                            <label style={{ color: '#475569', fontSize: '0.9rem', fontWeight: 500 }}>Şifre</label>
+                            <label style={{ color: '#475569', fontSize: '0.9rem', fontWeight: 500 }}>{t('auth.password')}</label>
                         </div>
                         <div style={{ position: 'relative' }}>
                             <input
                                 type="password"
                                 {...register('password')}
                                 disabled={loading || requires2FA}
-                                placeholder="••••••••"
+                                placeholder={t('auth.passwordPlaceholder')}
                                 style={{ paddingLeft: '2.5rem' }}
                             />
                             <div style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>
@@ -167,7 +197,7 @@ const Login = () => {
                     {requires2FA && (
                         <div style={{ marginBottom: '1.25rem' }}>
                             <div style={{ marginBottom: '0.5rem' }}>
-                                <label style={{ color: '#475569', fontSize: '0.9rem', fontWeight: 500 }}>2FA Kodu (6 haneli)</label>
+                                <label style={{ color: '#475569', fontSize: '0.9rem', fontWeight: 500 }}>{t('auth.twoFactorCode')}</label>
                             </div>
                             <div style={{ position: 'relative' }}>
                                 <input
@@ -175,7 +205,7 @@ const Login = () => {
                                     value={twoFactorToken}
                                     onChange={(e) => setTwoFactorToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                     disabled={loading}
-                                    placeholder="000000"
+                                    placeholder={t('auth.twoFactorPlaceholder')}
                                     maxLength="6"
                                     style={{ 
                                         paddingLeft: '2.5rem',
@@ -192,7 +222,7 @@ const Login = () => {
                                 </div>
                             </div>
                             <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.5rem', textAlign: 'center' }}>
-                                Authenticator uygulamanızdan gelen 6 haneli kodu girin
+                                {t('auth.twoFactorHint')}
                             </p>
                         </div>
                     )}
@@ -204,9 +234,9 @@ const Login = () => {
                                 {...register('rememberMe')}
                                 style={{ width: 'auto', marginRight: '0.5rem' }}
                             />
-                            Beni Hatırla
+                            {t('auth.rememberMe')}
                         </label>
-                        <Link to='/forgot-password' style={{ color: 'var(--accent-color)', fontSize: '0.85rem', textDecoration: 'none' }}>Unuttum?</Link>
+                        <Link to='/forgot-password' style={{ color: 'var(--accent-color)', fontSize: '0.85rem', textDecoration: 'none' }}>{t('auth.forgotPasswordLink')}</Link>
                     </div>
 
                     <button
@@ -220,22 +250,22 @@ const Login = () => {
                             justifyContent: 'center'
                         }}
                     >
-                        {loading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
+                        {loading ? t('auth.loggingIn') : t('auth.login')}
                     </button>
                 </form>
 
                 <div style={{ marginTop: '1.5rem', textAlign: 'center', borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem' }}>
                     <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-                        Yeni kayıt mı yaptıracaksınız?{' '}
+                        {t('auth.newRegistration')}{' '}
                         <Link to='/register' style={{ color: 'var(--accent-color)', fontWeight: 600, textDecoration: 'none' }}>
-                            Kayıt Ol
+                            {t('auth.register')}
                         </Link>
                     </p>
                 </div>
             </div>
 
             <div style={{ position: 'absolute', bottom: '1rem', color: '#94a3b8', fontSize: '0.8rem' }}>
-                &copy; {new Date().getFullYear()} Kampüs Bilgi Sistemi v1.0
+                {t('common.copyright', { year: new Date().getFullYear() })}
             </div>
         </div>
     );

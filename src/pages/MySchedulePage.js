@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import './MySchedulePage.css';
 
 const MySchedulePage = () => {
+  const { t, language } = useTranslation();
   const [schedule, setSchedule] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -20,7 +22,7 @@ const MySchedulePage = () => {
       setSchedule(response.data.data);
       setError('');
     } catch (err) {
-      setError('Program yüklenemedi.');
+      setError(language === 'en' ? 'Failed to load schedule.' : 'Program yüklenemedi.');
       console.error('Error fetching schedule:', err);
     } finally {
       setLoading(false);
@@ -41,23 +43,23 @@ const MySchedulePage = () => {
       link.click();
       link.remove();
     } catch (err) {
-      alert('iCal dosyası indirilemedi.');
+      alert(language === 'en' ? 'Failed to download iCal file.' : 'iCal dosyası indirilemedi.');
     }
   };
 
   const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
   const dayLabels = {
-    monday: 'Pazartesi',
-    tuesday: 'Salı',
-    wednesday: 'Çarşamba',
-    thursday: 'Perşembe',
-    friday: 'Cuma',
-    saturday: 'Cumartesi',
-    sunday: 'Pazar'
+    monday: t('schedule.monday'),
+    tuesday: t('schedule.tuesday'),
+    wednesday: t('schedule.wednesday'),
+    thursday: t('schedule.thursday'),
+    friday: t('schedule.friday'),
+    saturday: t('schedule.saturday'),
+    sunday: t('schedule.sunday')
   };
 
   if (loading) {
-    return <div className="loading">Yükleniyor...</div>;
+    return <div className="loading">{t('common.loading')}</div>;
   }
 
   if (error) {
@@ -79,9 +81,9 @@ const MySchedulePage = () => {
       <main>
         <div className="my-schedule-page">
       <div className="schedule-header">
-        <h1>Ders Programım</h1>
+        <h1>{t('schedule.mySchedule')}</h1>
         <button onClick={handleExportICal} className="export-btn">
-          iCal Olarak İndir
+          {language === 'en' ? 'Download as iCal' : 'iCal Olarak İndir'}
         </button>
       </div>
 
@@ -103,7 +105,7 @@ const MySchedulePage = () => {
                           <div className="course-name">{item.course_name}</div>
                         </div>
                         <div className="schedule-section">
-                          Bölüm {item.section_number}
+                          {t('common.section')} {item.section_number}
                         </div>
                         <div className="schedule-classroom">
                           {item.classroom.building} {item.classroom.room_number}
@@ -111,7 +113,7 @@ const MySchedulePage = () => {
                       </div>
                     ))
                   ) : (
-                    <div className="no-class">Ders yok</div>
+                    <div className="no-class">{language === 'en' ? 'No class' : 'Ders yok'}</div>
                   )}
                 </div>
               </div>
@@ -122,7 +124,7 @@ const MySchedulePage = () => {
 
       {schedule && Object.values(schedule).every(day => !day || day.length === 0) && (
         <div className="no-schedule">
-          Henüz programınız oluşturulmamış.
+          {t('schedule.noSchedule')}
         </div>
       )}
         </div>

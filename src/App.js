@@ -28,7 +28,6 @@ import ExcuseRequestsPage from './pages/ExcuseRequestsPage';
 import EnrollCoursesPage from './pages/EnrollCoursesPage';
 import MealMenuPage from './pages/MealMenuPage';
 import MyReservationsPage from './pages/MyReservationsPage';
-import MealScanPage from './pages/MealScanPage';
 import WalletPage from './pages/WalletPage';
 import EventsPage from './pages/EventsPage';
 import EventDetailPage from './pages/EventDetailPage';
@@ -181,13 +180,6 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <MyReservationsPage />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route path="/meals/scan"
-                        element={
-                            <ProtectedRoute roles={['admin', 'faculty']}>
-                                <MealScanPage />
                             </ProtectedRoute>
                         }
                     />

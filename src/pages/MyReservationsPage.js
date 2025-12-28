@@ -3,9 +3,11 @@ import api from '../services/api';
 import { QRCodeSVG } from 'qrcode.react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import './MyReservationsPage.css';
 
 const MyReservationsPage = () => {
+  const { t, language } = useTranslation();
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -27,7 +29,7 @@ const MyReservationsPage = () => {
       setReservations(response.data.data || []);
       setError('');
     } catch (err) {
-      setError('Rezervasyonlar yüklenemedi. Lütfen tekrar deneyin.');
+      setError(t('meals.loadReservationsError'));
       console.error('Error fetching reservations:', err);
     } finally {
       setLoading(false);
@@ -35,17 +37,17 @@ const MyReservationsPage = () => {
   };
 
   const handleCancel = async (id) => {
-    if (!window.confirm('Rezervasyonu iptal etmek istediğinize emin misiniz?')) {
+    if (!window.confirm(t('meals.cancelConfirm'))) {
       return;
     }
 
     try {
       await api.delete(`/meals/reservations/${id}`);
-      alert('Rezervasyon başarıyla iptal edildi.');
+      alert(t('meals.cancelSuccess'));
       fetchReservations();
     } catch (err) {
-      const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || 'Rezervasyon iptal edilemedi.';
-      alert(typeof errorMessage === 'string' ? errorMessage : 'Rezervasyon iptal edilemedi.');
+      const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || t('meals.cancelError');
+      alert(typeof errorMessage === 'string' ? errorMessage : t('meals.cancelError'));
       console.error('Cancel reservation error:', err);
     }
   };
@@ -64,14 +66,6 @@ const MyReservationsPage = () => {
     return hoursUntilMeal >= 2;
   };
 
-  const getStatusBadge = (status) => {
-    const badges = {
-      reserved: { text: 'Rezerve', class: 'status-reserved' },
-      used: { text: 'Kullanıldı', class: 'status-used' },
-      cancelled: { text: 'İptal Edildi', class: 'status-cancelled' }
-    };
-    return badges[status] || { text: status, class: '' };
-  };
 
   const upcomingReservations = reservations.filter(r => r.status === 'reserved');
   const pastReservations = reservations.filter(r => r.status === 'used');
@@ -88,43 +82,43 @@ const MyReservationsPage = () => {
       <Sidebar />
       <main>
         <div className="my-reservations-page">
-          <h1>Rezervasyonlarım</h1>
+          <h1>{t('meals.myReservations')}</h1>
 
       <div className="filter-tabs">
         <button
           className={filter === 'all' ? 'active' : ''}
           onClick={() => setFilter('all')}
         >
-          Tümü ({reservations.length})
+          {t('meals.all')} ({reservations.length})
         </button>
         <button
           className={filter === 'upcoming' ? 'active' : ''}
           onClick={() => setFilter('upcoming')}
         >
-          Yaklaşan ({upcomingReservations.length})
+          {t('meals.upcoming')} ({upcomingReservations.length})
         </button>
         <button
           className={filter === 'past' ? 'active' : ''}
           onClick={() => setFilter('past')}
         >
-          Geçmiş ({pastReservations.length})
+          {t('meals.past')} ({pastReservations.length})
         </button>
         <button
           className={filter === 'cancelled' ? 'active' : ''}
           onClick={() => setFilter('cancelled')}
         >
-          İptal Edilen ({cancelledReservations.length})
+          {t('meals.cancelled')} ({cancelledReservations.length})
         </button>
       </div>
 
       {error && <div className="error-message">{error}</div>}
 
       {loading ? (
-        <div className="loading">Yükleniyor...</div>
+        <div className="loading">{t('common.loading')}</div>
       ) : (
         <div className="reservations-list">
           {filteredReservations.length === 0 ? (
-            <div className="no-reservations">Rezervasyon bulunmamaktadır.</div>
+            <div className="no-reservations">{t('meals.noReservations')}</div>
           ) : (
             filteredReservations.map(reservation => (
               <ReservationCard
@@ -133,6 +127,8 @@ const MyReservationsPage = () => {
                 onCancel={handleCancel}
                 canCancel={canCancel(reservation)}
                 onShowQR={() => setSelectedQR(reservation)}
+                t={t}
+                language={language}
               />
             ))
           )}
@@ -143,6 +139,8 @@ const MyReservationsPage = () => {
         <QRModal
           reservation={selectedQR}
           onClose={() => setSelectedQR(null)}
+          t={t}
+          language={language}
         />
       )}
         </div>
@@ -151,27 +149,27 @@ const MyReservationsPage = () => {
   );
 };
 
-const ReservationCard = ({ reservation, onCancel, canCancel, onShowQR }) => {
+const ReservationCard = ({ reservation, onCancel, canCancel, onShowQR, t, language }) => {
   const statusBadge = {
-    reserved: { text: 'Rezerve', class: 'status-reserved' },
-    used: { text: 'Kullanıldı', class: 'status-used' },
-    cancelled: { text: 'İptal Edildi', class: 'status-cancelled' }
+    reserved: { text: t('meals.reserved'), class: 'status-reserved' },
+    used: { text: t('meals.used'), class: 'status-used' },
+    cancelled: { text: t('meals.cancelled'), class: 'status-cancelled' }
   }[reservation.status] || { text: reservation.status, class: '' };
 
   const mealType = reservation.mealType || reservation.meal_type;
   const mealTypeLabel = {
-    breakfast: 'Kahvaltı',
-    lunch: 'Öğle Yemeği',
-    dinner: 'Akşam Yemeği'
+    breakfast: t('meals.breakfast'),
+    lunch: t('meals.lunch'),
+    dinner: t('meals.dinner')
   }[mealType] || mealType;
 
   return (
     <div className="reservation-card">
       <div className="reservation-header">
         <div>
-          <h3>{reservation.menu?.cafeteria?.name || 'Kafeterya'}</h3>
+          <h3>{reservation.menu?.cafeteria?.name || t('meals.cafeteria')}</h3>
           <span className="date">
-            {new Date(reservation.date).toLocaleDateString('tr-TR', {
+            {new Date(reservation.date).toLocaleDateString(language === 'en' ? 'en-US' : 'tr-TR', {
               weekday: 'long',
               year: 'numeric',
               month: 'long',
@@ -186,25 +184,25 @@ const ReservationCard = ({ reservation, onCancel, canCancel, onShowQR }) => {
 
       <div className="reservation-details">
         <div className="detail-item">
-          <strong>Öğün:</strong> {mealTypeLabel}
+          <strong>{t('meals.meal')}:</strong> {mealTypeLabel}
         </div>
         <div className="detail-item">
-          <strong>Konum:</strong> {reservation.menu?.cafeteria?.location}
+          <strong>{t('events.location')}:</strong> {reservation.menu?.cafeteria?.location}
         </div>
         {(reservation.menu?.itemsJson || reservation.menu?.items_json)?.main && (
           <div className="detail-item">
-            <strong>Ana Yemek:</strong> {(reservation.menu.itemsJson || reservation.menu.items_json).main}
+            <strong>{t('meals.mainCourse')}:</strong> {(reservation.menu.itemsJson || reservation.menu.items_json).main}
           </div>
         )}
         {reservation.amount > 0 && (
           <div className="detail-item">
-            <strong>Tutar:</strong> {reservation.amount} TRY
+            <strong>{t('wallet.amount')}:</strong> {reservation.amount} TRY
           </div>
         )}
         {(reservation.usedAt || reservation.used_at) && (
           <div className="detail-item">
-            <strong>Kullanım Tarihi:</strong>{' '}
-            {new Date(reservation.usedAt || reservation.used_at).toLocaleString('tr-TR')}
+            <strong>{t('meals.usedDate')}:</strong>{' '}
+            {new Date(reservation.usedAt || reservation.used_at).toLocaleString(language === 'en' ? 'en-US' : 'tr-TR')}
           </div>
         )}
       </div>
@@ -212,12 +210,12 @@ const ReservationCard = ({ reservation, onCancel, canCancel, onShowQR }) => {
       <div className="reservation-actions">
         {reservation.status === 'reserved' && (
           <button className="qr-btn" onClick={onShowQR}>
-            QR Kod Göster
+            {t('meals.showQR')}
           </button>
         )}
         {canCancel && (
           <button className="cancel-btn" onClick={() => onCancel(reservation.id)}>
-            İptal Et
+            {t('common.cancel')}
           </button>
         )}
       </div>
@@ -225,30 +223,38 @@ const ReservationCard = ({ reservation, onCancel, canCancel, onShowQR }) => {
   );
 };
 
-const QRModal = ({ reservation, onClose }) => {
+const QRModal = ({ reservation, onClose, t, language }) => {
+  const getMealTypeLabel = (type) => {
+    const labels = {
+      breakfast: t('meals.breakfast'),
+      lunch: t('meals.lunch'),
+      dinner: t('meals.dinner')
+    };
+    return labels[type] || type;
+  };
+
   return (
     <div className="qr-modal-overlay" onClick={onClose}>
       <div className="qr-modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>QR Kod</h2>
+        <h2>{t('meals.qrCode')}</h2>
         <div className="qr-code-container">
           <QRCodeSVG value={reservation.qrCode || reservation.qr_code} size={300} />
         </div>
         <div className="qr-code-text">
-          <strong>Kod:</strong> {reservation.qrCode || reservation.qr_code}
+          <strong>{t('meals.qrCodeText')}:</strong> {reservation.qrCode || reservation.qr_code}
         </div>
         <div className="qr-info">
-          <p>Bu QR kodu kafeteryada göstererek yemeğinizi alabilirsiniz.</p>
+          <p>{t('meals.qrInfo')}</p>
           <p>
-            <strong>Tarih:</strong>{' '}
-            {new Date(reservation.date).toLocaleDateString('tr-TR')}
+            <strong>{t('attendance.date')}:</strong>{' '}
+            {new Date(reservation.date).toLocaleDateString(language === 'en' ? 'en-US' : 'tr-TR')}
           </p>
           <p>
-            <strong>Öğün:</strong>{' '}
-            {(reservation.mealType || reservation.meal_type) === 'lunch' ? 'Öğle Yemeği' :
-             (reservation.mealType || reservation.meal_type) === 'dinner' ? 'Akşam Yemeği' : 'Kahvaltı'}
+            <strong>{t('meals.meal')}:</strong>{' '}
+            {getMealTypeLabel(reservation.mealType || reservation.meal_type)}
           </p>
         </div>
-        <button className="close-btn" onClick={onClose}>Kapat</button>
+        <button className="close-btn" onClick={onClose}>{t('common.close')}</button>
       </div>
     </div>
   );

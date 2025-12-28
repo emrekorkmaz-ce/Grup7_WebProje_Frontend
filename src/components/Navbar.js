@@ -46,7 +46,7 @@ const Navbar = () => {
             <button 
               onClick={toggleLanguage} 
               className="language-toggle" 
-              title={language === 'tr' ? 'Switch to English' : 'Türkçe\'ye Geç'}
+              title={language === 'tr' ? t('navbar.switchToEnglish') : t('navbar.switchToTurkish')}
             >
               {language === 'tr' ? '🇬🇧 EN' : '🇹🇷 TR'}
             </button>

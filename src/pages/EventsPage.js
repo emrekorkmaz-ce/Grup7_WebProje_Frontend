@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import './EventsPage.css';
 
 const EventsPage = () => {
+  const { t, language } = useTranslation();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -28,7 +30,7 @@ const EventsPage = () => {
       setEvents(response.data.data || []);
       setError('');
     } catch (err) {
-      setError('Etkinlikler yüklenemedi. Lütfen tekrar deneyin.');
+      setError(t('events.loadError'));
       console.error('Error fetching events:', err);
     } finally {
       setLoading(false);
@@ -40,13 +42,13 @@ const EventsPage = () => {
   );
 
   const categories = [
-    { value: 'all', label: 'Tümü' },
-    { value: 'conference', label: 'Konferans' },
-    { value: 'workshop', label: 'Workshop' },
-    { value: 'social', label: 'Sosyal' },
-    { value: 'sports', label: 'Spor' },
-    { value: 'academic', label: 'Akademik' },
-    { value: 'cultural', label: 'Kültürel' }
+    { value: 'all', label: t('events.all') },
+    { value: 'conference', label: t('events.conference') },
+    { value: 'workshop', label: t('events.workshop') },
+    { value: 'social', label: t('events.social') },
+    { value: 'sports', label: t('events.sports') },
+    { value: 'academic', label: t('events.academic') },
+    { value: 'cultural', label: t('events.cultural') }
   ];
 
   return (
@@ -55,13 +57,13 @@ const EventsPage = () => {
       <Sidebar />
       <main>
         <div className="events-page">
-          <h1>Etkinlikler</h1>
+          <h1>{t('events.title')}</h1>
 
       <div className="filters-section">
         <div className="search-box">
           <input
             type="text"
-            placeholder="Etkinlik ara..."
+            placeholder={t('events.searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -82,17 +84,19 @@ const EventsPage = () => {
       {error && <div className="error-message">{error}</div>}
 
       {loading ? (
-        <div className="loading">Yükleniyor...</div>
+        <div className="loading">{t('common.loading')}</div>
       ) : (
         <div className="events-grid">
           {filteredEvents.length === 0 ? (
-            <div className="no-events">Etkinlik bulunmamaktadır.</div>
+            <div className="no-events">{t('events.noEvents')}</div>
           ) : (
             filteredEvents.map(event => (
               <EventCard
                 key={event.id}
                 event={event}
                 onClick={() => navigate(`/events/${event.id}`)}
+                t={t}
+                language={language}
               />
             ))
           )}
@@ -104,17 +108,9 @@ const EventsPage = () => {
   );
 };
 
-const EventCard = ({ event, onClick }) => {
+const EventCard = ({ event, onClick, t, language }) => {
   const getCategoryLabel = (category) => {
-    const labels = {
-      conference: 'Konferans',
-      workshop: 'Workshop',
-      social: 'Sosyal',
-      sports: 'Spor',
-      academic: 'Akademik',
-      cultural: 'Kültürel'
-    };
-    return labels[category] || category;
+    return t(`events.categoryLabels.${category}`) || category;
   };
 
   const getCategoryClass = (category) => {
@@ -131,13 +127,13 @@ const EventCard = ({ event, onClick }) => {
           {getCategoryLabel(event.category)}
         </span>
         {event.isPaid && (
-          <span className="paid-badge">Ücretli</span>
+          <span className="paid-badge">{t('events.paid')}</span>
         )}
       </div>
       <h3>{event.title}</h3>
       <div className="event-date">
-        <strong>Tarih:</strong>{' '}
-        {new Date(event.date).toLocaleDateString('tr-TR', {
+        <strong>{t('events.date')}:</strong>{' '}
+        {new Date(event.date).toLocaleDateString(language === 'en' ? 'en-US' : 'tr-TR', {
           weekday: 'long',
           year: 'numeric',
           month: 'long',
@@ -145,17 +141,17 @@ const EventCard = ({ event, onClick }) => {
         })}
       </div>
       <div className="event-time">
-        <strong>Saat:</strong> {event.startTime} - {event.endTime}
+        <strong>{t('events.time')}:</strong> {event.startTime} - {event.endTime}
       </div>
       <div className="event-location">
-        <strong>Konum:</strong> {event.location}
+        <strong>{t('events.location')}:</strong> {event.location}
       </div>
       <div className="event-capacity">
-        <strong>Kapasite:</strong> {remainingSpots} / {event.capacity} kalan
+        <strong>{t('events.capacity')}:</strong> {remainingSpots} / {event.capacity} {t('events.remaining')}
       </div>
       {event.isPaid && event.price && (
         <div className="event-price">
-          <strong>Ücret:</strong> {event.price} TRY
+          <strong>{t('events.price')}:</strong> {event.price} TRY
         </div>
       )}
       {event.description && (
@@ -167,12 +163,12 @@ const EventCard = ({ event, onClick }) => {
       )}
       <div className="event-footer">
         {isUpcoming ? (
-          <span className="status-upcoming">Yaklaşan</span>
+          <span className="status-upcoming">{t('events.upcoming')}</span>
         ) : (
-          <span className="status-past">Geçmiş</span>
+          <span className="status-past">{t('events.past')}</span>
         )}
         {remainingSpots <= 0 && (
-          <span className="status-full">Dolu</span>
+          <span className="status-full">{t('events.full')}</span>
         )}
       </div>
     </div>

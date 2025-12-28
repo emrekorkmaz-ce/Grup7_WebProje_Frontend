@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from '../hooks/useTranslation';
 import api, { BACKEND_BASE_URL } from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
@@ -11,14 +12,15 @@ import TextInput from '../components/TextInput';
 import { CameraIcon, TrashIcon, SaveIcon } from '../components/Icons';
 // import './Profile.css';
 
-const profileSchema = yup.object().shape({
-    full_name: yup.string().required('Ad soyad gereklidir'),
-    phone: yup.string().matches(/^\+?[0-9]\d{9,14}$/, 'Geçersiz telefon numarası formatı')
-});
-
 const Profile = () => {
+    const { t } = useTranslation();
     const { user, updateUser } = useAuth();
     const navigate = useNavigate();
+    
+    const profileSchema = yup.object().shape({
+        full_name: yup.string().required(t('profile.fullNameRequired')),
+        phone: yup.string().matches(/^\+?[0-9]\d{9,14}$/, t('profile.invalidPhone'))
+    });
     const [profilePicture, setProfilePicture] = useState(user?.profile_picture_url || '');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -56,10 +58,10 @@ const Profile = () => {
         try {
             const response = await api.put('/users/me', data);
             updateUser(response.data.data);
-            setSuccess('Profil başarıyla güncellendi!');
+            setSuccess(t('profile.profileUpdated'));
         } catch (err) {
             const errorData = err.response?.data?.error;
-            const errorMessage = typeof errorData === 'object' ? (errorData.message || JSON.stringify(errorData)) : (errorData || 'Profil güncellenemedi');
+            const errorMessage = typeof errorData === 'object' ? (errorData.message || JSON.stringify(errorData)) : (errorData || t('profile.profileUpdateFailed'));
             setError(errorMessage);
         }
 
@@ -71,12 +73,12 @@ const Profile = () => {
         if (!file) return;
 
         if (file.size > 5 * 1024 * 1024) {
-            setError('Dosya boyutu 5MB\'dan küçük olmalıdır');
+            setError(t('profile.fileSizeError'));
             return;
         }
 
         if (!file.type.match('image/jpeg|image/jpg|image/png')) {
-            setError('Sadece JPEG, JPG ve PNG resimlerine izin verilir');
+            setError(t('profile.fileTypeError'));
             return;
         }
 
@@ -94,10 +96,10 @@ const Profile = () => {
             });
             setProfilePicture(response.data.data.profilePictureUrl);
             updateUser({ ...user, profile_picture_url: response.data.data.profilePictureUrl });
-            setSuccess('Profil resmi başarıyla yüklendi!');
+            setSuccess(t('profile.pictureUploaded'));
         } catch (error) {
             const errorData = error.response?.data?.error;
-            const errorMessage = typeof errorData === 'object' ? (errorData.message || JSON.stringify(errorData)) : (errorData || 'Profil resmi yüklenemedi');
+            const errorMessage = typeof errorData === 'object' ? (errorData.message || JSON.stringify(errorData)) : (errorData || t('profile.pictureUploadFailed'));
             setError(errorMessage);
         }
 
@@ -112,10 +114,10 @@ const Profile = () => {
             await api.delete('/users/me/profile-picture');
             setProfilePicture(null);
             updateUser({ ...user, profile_picture_url: null });
-            setSuccess('Profil resmi başarıyla kaldırıldı!');
+            setSuccess(t('profile.pictureRemoved'));
         } catch (error) {
             const errorData = error.response?.data?.error;
-            const errorMessage = typeof errorData === 'object' ? (errorData.message || JSON.stringify(errorData)) : (errorData || 'Profil resmi kaldırılamadı');
+            const errorMessage = typeof errorData === 'object' ? (errorData.message || JSON.stringify(errorData)) : (errorData || t('profile.pictureRemoveFailed'));
             setError(errorMessage);
         }
 
@@ -134,7 +136,7 @@ const Profile = () => {
             <Navbar />
             <Sidebar />
             <main>
-                <h2 className="mb-4">Profil Ayarları</h2>
+                <h2 className="mb-4">{t('profile.title')}</h2>
 
                 {error && <div className="error mb-4">{error}</div>}
                 {success && <div className="card p-4 mb-4" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', border: '1px solid var(--success)' }}>{success}</div>}
@@ -143,7 +145,7 @@ const Profile = () => {
 
                     {/* Sol Kolon: Profil Resmi */}
                     <div className="card" style={{ height: 'fit-content', textAlign: 'center' }}>
-                        <h3 className="mb-4">Profil Fotoğrafı</h3>
+                        <h3 className="mb-4">{t('profile.profilePicture')}</h3>
                         <div style={{
                             width: '150px', height: '150px', margin: '0 auto 1.5rem',
                             borderRadius: '50%', overflow: 'hidden',
@@ -170,7 +172,7 @@ const Profile = () => {
 
                         <div className="flex flex-col gap-2">
                             <label htmlFor='profile-picture-upload' className='btn btn-primary' style={{ cursor: 'pointer', display: 'inline-block' }}>
-                                {uploading ? 'Yükleniyor...' : <><CameraIcon size={18} /> Fotoğraf Değiştir</>}
+                                {uploading ? t('profile.uploading') : <><CameraIcon size={18} /> {t('profile.changePhoto')}</>}
                             </label>
                             <input
                                 type='file'
@@ -188,19 +190,19 @@ const Profile = () => {
                                     disabled={uploading}
                                     style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}
                                 >
-                                    <TrashIcon size={18} /> Fotoğrafı Kaldır
+                                    <TrashIcon size={18} /> {t('profile.removePhoto')}
                                 </button>
                             )}
-                            <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '0.5rem' }}>Maks 5 MB (JPG/PNG)</small>
+                            <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '0.5rem' }}>{t('profile.maxSize')}</small>
                         </div>
                     </div>
 
                     {/* Sağ Kolon: Bilgiler */}
                     <div className="card">
-                        <h3 className="mb-4">Kişisel Bilgiler</h3>
+                        <h3 className="mb-4">{t('profile.personalInfo')}</h3>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className="mb-4">
-                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>E-posta</label>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('profile.email')}</label>
                                 <input
                                     type='email'
                                     value={user?.email || ''}
@@ -210,7 +212,7 @@ const Profile = () => {
                             </div>
 
                             <div className="mb-4">
-                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Ad Soyad</label>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('profile.fullName')}</label>
                                 <input
                                     type='text'
                                     {...register('full_name')}
@@ -220,7 +222,7 @@ const Profile = () => {
                             </div>
 
                             <div className="mb-4">
-                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Telefon</label>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('profile.phone')}</label>
                                 <input
                                     type='tel'
                                     {...register('phone')}
@@ -230,10 +232,10 @@ const Profile = () => {
                             </div>
 
                             <div className="mb-4">
-                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Rol</label>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('profile.role')}</label>
                                 <input
                                     type='text'
-                                    value={user?.role === 'student' ? 'Öğrenci' : user?.role === 'admin' ? 'Yönetici' : 'Akademisyen'}
+                                    value={user?.role === 'student' ? t('profile.student') : user?.role === 'admin' ? t('profile.admin') : t('profile.faculty')}
                                     disabled
                                     style={{ opacity: 0.7 }}
                                 />
@@ -242,11 +244,11 @@ const Profile = () => {
                             {user?.student && (
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                     <div className="mb-4">
-                                        <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Öğrenci No</label>
+                                        <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('profile.studentNumber')}</label>
                                         <input value={user.student.student_number || ''} disabled style={{ opacity: 0.7 }} />
                                     </div>
                                     <div className="mb-4">
-                                        <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>AGNO</label>
+                                        <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('profile.cgpa')}</label>
                                         <input value={user.student.cgpa ? parseFloat(user.student.cgpa).toFixed(2) : '-'} disabled style={{ opacity: 0.7 }} />
                                     </div>
                                 </div>
@@ -259,7 +261,7 @@ const Profile = () => {
                                     disabled={loading}
                                     style={{ padding: '0.75rem 2rem' }}
                                 >
-                                    {loading ? 'Kaydediliyor...' : <><SaveIcon size={18} /> Değişiklikleri Kaydet</>}
+                                    {loading ? t('profile.saving') : <><SaveIcon size={18} /> {t('profile.saveChanges')}</>}
                                 </button>
                             </div>
                         </form>
@@ -267,18 +269,18 @@ const Profile = () => {
 
                     {/* Güvenlik Bölümü */}
                     <div className="card" style={{ marginTop: '2rem' }}>
-                        <h3 className="mb-4">Güvenlik</h3>
+                        <h3 className="mb-4">{t('profile.security')}</h3>
                         <div className="security-section">
                             <div className="security-item">
                                 <div>
-                                    <h3>İki Faktörlü Kimlik Doğrulama (2FA)</h3>
-                                    <p>Hesabınızı ekstra bir güvenlik katmanıyla koruyun</p>
+                                    <h3>{t('profile.twoFactorAuth')}</h3>
+                                    <p>{t('profile.twoFactorDesc')}</p>
                                 </div>
                                 <button 
                                     className="btn btn-primary"
                                     onClick={() => navigate('/settings/2fa')}
                                 >
-                                    2FA Ayarları
+                                    {t('profile.twoFactorSettings')}
                                 </button>
                             </div>
                         </div>

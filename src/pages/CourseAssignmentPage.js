@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import { BookIcon, UserIcon } from '../components/Icons';
 
 const CourseAssignmentPage = () => {
+  const { t, language } = useTranslation();
   const [sections, setSections] = useState([]);
   const [faculty, setFaculty] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +29,7 @@ const CourseAssignmentPage = () => {
       setSections(sectionsRes.data.data || []);
       setFaculty(facultyRes.data.data || []);
     } catch (err) {
-      setError('Veriler yüklenemedi: ' + (err.response?.data?.message || err.message));
+      setError((language === 'en' ? 'Failed to load data: ' : 'Veriler yüklenemedi: ') + (err.response?.data?.message || err.message));
     } finally {
       setLoading(false);
     }
@@ -35,7 +37,7 @@ const CourseAssignmentPage = () => {
 
   const handleAssign = async (sectionId, instructorId) => {
     if (!instructorId) {
-      alert('Lütfen bir akademisyen seçin');
+      alert(language === 'en' ? 'Please select a faculty member' : 'Lütfen bir akademisyen seçin');
       return;
     }
 
@@ -49,21 +51,21 @@ const CourseAssignmentPage = () => {
         instructorId
       });
       
-      setSuccessMessage('Akademisyen başarıyla atandı!');
+      setSuccessMessage(t('courseAssignment.assignSuccess'));
       setTimeout(() => setSuccessMessage(null), 3000);
       
       // Verileri yenile
       await fetchData();
     } catch (err) {
-      setError('Atama yapılamadı: ' + (err.response?.data?.message || err.message));
+      setError(t('courseAssignment.assignFailed') + ': ' + (err.response?.data?.message || err.message));
     } finally {
       setAssigning({ ...assigning, [sectionId]: false });
     }
   };
 
   const getSemesterText = (semester) => {
-    if (semester === 'fall' || semester === 'FALL') return 'Güz';
-    if (semester === 'spring' || semester === 'SPRING') return 'Bahar';
+    if (semester === 'fall' || semester === 'FALL') return t('courseAssignment.fall');
+    if (semester === 'spring' || semester === 'SPRING') return t('courseAssignment.spring');
     return semester;
   };
 
@@ -74,7 +76,7 @@ const CourseAssignmentPage = () => {
         <Sidebar />
         <main>
           <div className="card">
-            <div className="loading">Yükleniyor...</div>
+            <div className="loading">{t('common.loading')}</div>
           </div>
         </main>
       </div>
@@ -88,9 +90,9 @@ const CourseAssignmentPage = () => {
       <main>
         <div className="card">
           <div style={{ marginBottom: '2rem' }}>
-            <h2>Ders Atama</h2>
+            <h2>{t('courseAssignment.title')}</h2>
             <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
-              Ders şubelerine akademisyen atayabilirsiniz.
+              {t('courseAssignment.titleDesc')}
             </p>
           </div>
 
@@ -114,22 +116,22 @@ const CourseAssignmentPage = () => {
           )}
 
           {sections.length === 0 ? (
-            <div className="text-center p-4">Henüz ders şubesi bulunmamaktadır.</div>
+            <div className="text-center p-4">{t('courseAssignment.noSections')}</div>
           ) : (
             <div style={{ overflowX: 'auto' }}>
               <table>
                 <thead>
                   <tr>
-                    <th>Ders Kodu</th>
-                    <th>Ders Adı</th>
-                    <th>Şube</th>
-                    <th>Dönem</th>
-                    <th>Yıl</th>
-                    <th>Kapasite</th>
-                    <th>Kayıtlı</th>
-                    <th>Mevcut Akademisyen</th>
-                    <th>Akademisyen Seç</th>
-                    <th>İşlem</th>
+                    <th>{t('courses.courseCode')}</th>
+                    <th>{t('courses.courseName')}</th>
+                    <th>{t('common.section')}</th>
+                    <th>{t('courseAssignment.semester')}</th>
+                    <th>{language === 'en' ? 'Year' : 'Yıl'}</th>
+                    <th>{t('courses.capacity')}</th>
+                    <th>{t('courses.enrolled')}</th>
+                    <th>{language === 'en' ? 'Current Instructor' : 'Mevcut Akademisyen'}</th>
+                    <th>{language === 'en' ? 'Select Instructor' : 'Akademisyen Seç'}</th>
+                    <th>{language === 'en' ? 'Action' : 'İşlem'}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -150,7 +152,7 @@ const CourseAssignmentPage = () => {
                             {section.instructor.fullName}
                           </span>
                         ) : (
-                          <span style={{ color: 'var(--text-muted)' }}>Atanmamış</span>
+                          <span style={{ color: 'var(--text-muted)' }}>{t('courseAssignment.notAssigned')}</span>
                         )}
                       </td>
                       <td>
@@ -171,17 +173,17 @@ const CourseAssignmentPage = () => {
                           }}
                           disabled={assigning[section.id]}
                         >
-                          <option value="">Akademisyen Seçin</option>
+                          <option value="">{language === 'en' ? 'Select Instructor' : 'Akademisyen Seçin'}</option>
                           {faculty.map((f) => (
                             <option key={f.id} value={f.id}>
-                              {f.fullName} ({f.title || 'Akademisyen'})
+                              {f.fullName} ({f.title || (language === 'en' ? 'Faculty' : 'Akademisyen')})
                             </option>
                           ))}
                         </select>
                       </td>
                       <td>
                         {assigning[section.id] ? (
-                          <span style={{ color: 'var(--text-muted)' }}>Atanıyor...</span>
+                          <span style={{ color: 'var(--text-muted)' }}>{language === 'en' ? 'Assigning...' : 'Atanıyor...'}</span>
                         ) : (
                           <span style={{ color: 'var(--text-muted)' }}>-</span>
                         )}
@@ -199,4 +201,5 @@ const CourseAssignmentPage = () => {
 };
 
 export default CourseAssignmentPage;
+
 

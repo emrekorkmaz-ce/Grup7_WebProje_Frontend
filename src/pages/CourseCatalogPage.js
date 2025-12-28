@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 
 const CourseCatalogPage = () => {
+  const { t, language } = useTranslation();
   const [courses, setCourses] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -89,12 +91,12 @@ const CourseCatalogPage = () => {
       <Sidebar />
       <main>
         <div className="card">
-          <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem', fontWeight: 700 }}>Ders Kataloğu</h2>
+          <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem', fontWeight: 700 }}>{t('courses.courseCatalog')}</h2>
 
           <div className="filters" style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', marginBottom: '1.5rem' }}>
             <input
               type="text"
-              placeholder="Ders kodu veya adı ara..."
+              placeholder={t('courses.searchCourse')}
               value={filters.search}
               onChange={handleSearch}
               className="form-input"

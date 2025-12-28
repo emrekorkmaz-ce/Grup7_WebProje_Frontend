@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import './ClassroomReservationsPage.css';
 
 const ClassroomReservationsPage = () => {
+  const { t, language } = useTranslation();
   const [reservations, setReservations] = useState([]);
   const [classrooms, setClassrooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +32,7 @@ const ClassroomReservationsPage = () => {
       setReservations(response.data.data || []);
       setError('');
     } catch (err) {
-      setError('Rezervasyonlar yüklenemedi.');
+      setError(t('classroomReservations.loadError'));
       console.error('Error fetching reservations:', err);
     } finally {
       setLoading(false);
@@ -43,7 +45,7 @@ const ClassroomReservationsPage = () => {
       setClassrooms(response.data.data || []);
     } catch (err) {
       console.error('Error fetching classrooms:', err);
-      setError('Derslikler yüklenemedi.');
+      setError(t('classroomReservations.classroomsLoadError'));
     }
   };
 
@@ -51,7 +53,7 @@ const ClassroomReservationsPage = () => {
     e.preventDefault();
     try {
       await api.post('/reservations', formData);
-      alert('Rezervasyon talebi başarıyla oluşturuldu!');
+      alert(t('classroomReservations.createSuccess'));
       setShowForm(false);
       setFormData({
         classroom_id: '',
@@ -62,16 +64,16 @@ const ClassroomReservationsPage = () => {
       });
       fetchReservations();
     } catch (err) {
-      alert(err.response?.data?.error || 'Rezervasyon oluşturulamadı.');
+      alert(err.response?.data?.error || t('classroomReservations.createError'));
     }
   };
 
   const getStatusBadge = (status) => {
     const badges = {
-      pending: { text: 'Beklemede', class: 'status-pending' },
-      approved: { text: 'Onaylandı', class: 'status-approved' },
-      rejected: { text: 'Reddedildi', class: 'status-rejected' },
-      cancelled: { text: 'İptal Edildi', class: 'status-cancelled' }
+      pending: { text: t('classroomReservations.status.pending'), class: 'status-pending' },
+      approved: { text: t('classroomReservations.status.approved'), class: 'status-approved' },
+      rejected: { text: t('classroomReservations.status.rejected'), class: 'status-rejected' },
+      cancelled: { text: t('classroomReservations.status.cancelled'), class: 'status-cancelled' }
     };
     return badges[status] || { text: status, class: '' };
   };
@@ -83,34 +85,34 @@ const ClassroomReservationsPage = () => {
       <main>
         <div className="classroom-reservations-page">
           <div className="page-header">
-            <h1>Derslik Rezervasyonları</h1>
+            <h1>{t('classroomReservations.title')}</h1>
             <button onClick={() => setShowForm(!showForm)} className="new-reservation-btn">
-              {showForm ? 'İptal' : 'Yeni Rezervasyon'}
+              {showForm ? t('classroomReservations.cancel') : t('classroomReservations.newReservation')}
             </button>
           </div>
 
           {showForm && (
             <div className="reservation-form-container">
-              <h2>Yeni Rezervasyon</h2>
+              <h2>{t('classroomReservations.newReservation')}</h2>
               <form onSubmit={handleSubmit} className="reservation-form">
                 <div className="form-group">
-                  <label>Derslik:</label>
+                  <label>{t('classroomReservations.classroom')}:</label>
                   <select
                     value={formData.classroom_id}
                     onChange={(e) => setFormData({ ...formData, classroom_id: e.target.value })}
                     required
                   >
-                    <option value="">Derslik Seçin</option>
+                    <option value="">{t('classroomReservations.selectClassroom')}</option>
                     {classrooms.map(classroom => (
                       <option key={classroom.id} value={classroom.id}>
-                        {classroom.building} {classroom.room_number} (Kapasite: {classroom.capacity})
+                        {classroom.building} {classroom.room_number} ({t('classroomReservations.capacity')}: {classroom.capacity})
                       </option>
                     ))}
                   </select>
                 </div>
 
                 <div className="form-group">
-                  <label>Tarih:</label>
+                  <label>{t('classroomReservations.date')}:</label>
                   <input
                     type="date"
                     value={formData.date}
@@ -122,7 +124,7 @@ const ClassroomReservationsPage = () => {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Başlangıç Saati:</label>
+                    <label>{t('classroomReservations.startTime')}:</label>
                     <input
                       type="time"
                       value={formData.start_time}
@@ -132,7 +134,7 @@ const ClassroomReservationsPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label>Bitiş Saati:</label>
+                    <label>{t('classroomReservations.endTime')}:</label>
                     <input
                       type="time"
                       value={formData.end_time}
@@ -143,24 +145,24 @@ const ClassroomReservationsPage = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Amaç:</label>
+                  <label>{t('classroomReservations.purpose')}:</label>
                   <textarea
                     value={formData.purpose}
                     onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
                     required
                     rows={3}
-                    placeholder="Rezervasyon amacını açıklayın..."
+                    placeholder={t('classroomReservations.purposePlaceholder')}
                   />
                 </div>
 
                 <div className="form-actions">
-                  <button type="submit" className="submit-btn">Rezerve Et</button>
+                  <button type="submit" className="submit-btn">{t('classroomReservations.reserve')}</button>
                   <button
                     type="button"
                     onClick={() => setShowForm(false)}
                     className="cancel-btn"
                   >
-                    İptal
+                    {t('classroomReservations.cancel')}
                   </button>
                 </div>
               </form>
@@ -170,11 +172,11 @@ const ClassroomReservationsPage = () => {
           {error && <div className="error-message">{error}</div>}
 
           {loading ? (
-            <div className="loading">Yükleniyor...</div>
+            <div className="loading">{t('classroomReservations.loading')}</div>
           ) : (
             <div className="reservations-list">
               {reservations.length === 0 ? (
-                <div className="no-reservations">Rezervasyon bulunmamaktadır.</div>
+                <div className="no-reservations">{t('classroomReservations.noReservations')}</div>
               ) : (
                 reservations.map(reservation => {
                   const statusBadge = getStatusBadge(reservation.status);
@@ -186,7 +188,7 @@ const ClassroomReservationsPage = () => {
                             {reservation.classroom?.building} {reservation.classroom?.room_number}
                           </h3>
                           <span className="date">
-                            {new Date(reservation.date).toLocaleDateString('tr-TR', {
+                            {new Date(reservation.date).toLocaleDateString(language === 'en' ? 'en-US' : 'tr-TR', {
                               weekday: 'long',
                               year: 'numeric',
                               month: 'long',
@@ -201,13 +203,13 @@ const ClassroomReservationsPage = () => {
 
                       <div className="reservation-details">
                         <div className="detail-item">
-                          <strong>Saat:</strong> {reservation.start_time} - {reservation.end_time}
+                          <strong>{t('classroomReservations.time')}:</strong> {reservation.start_time} - {reservation.end_time}
                         </div>
                         <div className="detail-item">
-                          <strong>Amaç:</strong> {reservation.purpose}
+                          <strong>{t('classroomReservations.purpose')}:</strong> {reservation.purpose}
                         </div>
                         <div className="detail-item">
-                          <strong>Kapasite:</strong> {reservation.classroom?.capacity} kişi
+                          <strong>{t('classroomReservations.capacity')}:</strong> {reservation.classroom?.capacity} {t('classroomReservations.people')}
                         </div>
                       </div>
                     </div>

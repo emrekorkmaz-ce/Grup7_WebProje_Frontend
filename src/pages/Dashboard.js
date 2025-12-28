@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { BookIcon, GraduationCapIcon, CalendarIcon, SettingsIcon, CheckCircleIcon, ClockIcon } from '../components/Icons';
@@ -8,6 +9,7 @@ import { BookIcon, GraduationCapIcon, CalendarIcon, SettingsIcon, CheckCircleIco
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t, language } = useTranslation();
 
   const getInitials = (name) => {
     if (!name) return 'U';
@@ -39,11 +41,11 @@ const Dashboard = () => {
     } else if (action === 'reservations') {
       navigate('/reservations');
     } else {
-      alert('Bu özellik yapım aşamasındadır.');
+      alert(t('dashboard.featureInProgress'));
     }
   };
 
-  const currentDate = new Date().toLocaleDateString('tr-TR', {
+  const currentDate = new Date().toLocaleDateString(language === 'en' ? 'en-US' : 'tr-TR', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -60,24 +62,21 @@ const Dashboard = () => {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '2rem',
-          backgroundColor: 'white',
-          borderLeft: '4px solid var(--accent-color)'
+          marginBottom: '2rem'
         }}>
           <div>
             <h1 style={{ fontSize: '1.5rem', marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
-              Sayın {formatName(user?.full_name)}
+              {t('dashboard.greeting')} {formatName(user?.full_name)}
             </h1>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
               {currentDate}
             </p>
           </div>
           <div className="hidden md:block">
-            <div style={{
+            <div className="avatar-circle" style={{
               width: '50px',
               height: '50px',
               borderRadius: '50%',
-              background: 'var(--accent-color)',
               color: 'white',
               display: 'flex',
               alignItems: 'center',
@@ -92,20 +91,20 @@ const Dashboard = () => {
 
         {/* Admin Quick Access */}
         {user?.role === 'admin' && (
-          <div className="card" style={{ marginBottom: '1.5rem', backgroundColor: '#eff6ff', borderLeft: '4px solid var(--accent-color)' }}>
-            <h3 className="mb-4">Admin Paneli</h3>
+          <div className="card admin-panel-card" style={{ marginBottom: '1.5rem', borderLeft: '4px solid var(--accent-color)' }}>
+            <h3 className="mb-4">{t('dashboard.adminPanel')}</h3>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <button className="btn btn-primary" onClick={() => navigate('/admin/dashboard')}>
-                📊 Admin Dashboard
+                📊 {t('sidebar.adminDashboard')}
               </button>
               <button className="btn btn-primary" onClick={() => navigate('/admin/analytics/academic')}>
-                📈 Akademik Analitik
+                📈 {t('sidebar.academicAnalytics')}
               </button>
               <button className="btn btn-primary" onClick={() => navigate('/admin/analytics/attendance')}>
-                📉 Yoklama Analitik
+                📉 {t('sidebar.attendanceAnalytics')}
               </button>
               <button className="btn btn-primary" onClick={() => navigate('/admin/iot')}>
-                📡 IoT Dashboard
+                📡 {t('sidebar.iotDashboard')}
               </button>
             </div>
           </div>
@@ -115,14 +114,14 @@ const Dashboard = () => {
 
           {/* Profile Summary Card */}
           <div className="card">
-            <h3 className="mb-4">{user?.role === 'admin' ? 'Admin Bilgileri' : user?.role === 'faculty' ? 'Öğretim Üyesi Bilgileri' : 'Öğrenci Bilgileri'}</h3>
+            <h3 className="mb-4">{user?.role === 'admin' ? t('dashboard.adminInfo') : user?.role === 'faculty' ? t('dashboard.facultyInfo') : t('dashboard.studentInfo')}</h3>
             <div className="flex flex-col gap-3">
               <div style={{ paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-color)' }}>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>E-posta Adresi</span>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>{t('dashboard.emailAddress')}</span>
                 <span style={{ fontWeight: 500 }}>{user?.email}</span>
               </div>
               <div style={{ paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-color)' }}>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Telefon Numarası</span>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>{t('dashboard.phoneNumber')}</span>
                 <span style={{ fontWeight: 500 }}>{user?.phone || '-'}</span>
               </div>
               <div style={{ marginTop: '0.5rem' }}>
@@ -138,7 +137,7 @@ const Dashboard = () => {
                   fontWeight: 600
                 }}>
                   {user?.is_verified ? <CheckCircleIcon size={14} /> : <ClockIcon size={14} />}
-                  {user?.is_verified ? 'Hesap Doğrulandı' : 'Doğrulama Bekleniyor'}
+                  {user?.is_verified ? t('dashboard.accountVerified') : t('dashboard.verificationPending')}
                 </div>
               </div>
             </div>
@@ -147,21 +146,21 @@ const Dashboard = () => {
           {/* Academic Stats Card */}
           {user?.student && (
             <div className="card">
-              <h3 className="mb-4">Akademik Durum</h3>
+              <h3 className="mb-4">{t('dashboard.academicStatus')}</h3>
               <div className="flex flex-col gap-4">
                 <div>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>Kayıtlı Bölüm</span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase' }}>{t('dashboard.registeredDepartment')}</span>
                   <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--accent-color)' }}>
-                    {user.student.department?.name || 'Bilgisayar Programcılığı'}
+                    {user.student.department?.name || t('dashboard.defaultDepartment')}
                   </div>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Dönem Ort.</div>
+                  <div className="gpa-card" style={{ padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{t('dashboard.semesterGPA')}</div>
                     <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>{user.student.gpa || '0.00'}</div>
                   </div>
-                  <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Genel Ort.</div>
+                  <div className="gpa-card" style={{ padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{t('dashboard.overallGPA')}</div>
                     <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--success)' }}>{user.student.cgpa || '0.00'}</div>
                   </div>
                 </div>
@@ -171,94 +170,94 @@ const Dashboard = () => {
 
           {/* Quick Actions Card */}
           <div className="card">
-            <h3 className="mb-4">Hızlı Erişim Menüsü</h3>
+            <h3 className="mb-4">{t('dashboard.quickAccess')}</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <button className="btn btn-secondary" onClick={() => handleAction('courses')} style={{ justifyContent: 'start', height: '100%' }}>
                 <BookIcon size={18} color="var(--accent-color)" />
-                <span>Derslerim</span>
+                <span>{t('dashboard.myCourses')}</span>
               </button>
               <button className="btn btn-secondary" onClick={() => handleAction('grades')} style={{ justifyContent: 'start', height: '100%' }}>
                 <GraduationCapIcon size={18} color="var(--accent-color)" />
-                <span>Not Listesi</span>
+                <span>{t('dashboard.gradeList')}</span>
               </button>
               <button className="btn btn-secondary" onClick={() => handleAction('schedule')} style={{ justifyContent: 'start', height: '100%' }}>
                 <CalendarIcon size={18} color="var(--accent-color)" />
-                <span>Ders Programı</span>
+                <span>{t('dashboard.courseSchedule')}</span>
               </button>
               <button className="btn btn-secondary" onClick={() => handleAction('settings')} style={{ justifyContent: 'start', height: '100%' }}>
                 <SettingsIcon size={18} color="var(--text-secondary)" />
-                <span>Hesap Ayarları</span>
+                <span>{t('dashboard.accountSettings')}</span>
               </button>
             </div>
           </div>
 
           {/* Part 3: Meal Service Card */}
           <div className="card">
-            <h3 className="mb-4">Yemek Servisi</h3>
+            <h3 className="mb-4">{t('dashboard.mealService')}</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <button className="btn btn-secondary" onClick={() => handleAction('meals')} style={{ justifyContent: 'start', height: '100%' }}>
                 <span style={{ fontSize: '20px', marginRight: '8px' }}>🍽️</span>
-                <span>Yemek Menüsü</span>
+                <span>{t('dashboard.mealMenu')}</span>
               </button>
               <button className="btn btn-secondary" onClick={() => navigate('/meals/reservations')} style={{ justifyContent: 'start', height: '100%' }}>
                 <span style={{ fontSize: '20px', marginRight: '8px' }}>📋</span>
-                <span>Rezervasyonlarım</span>
+                <span>{t('dashboard.myReservations')}</span>
               </button>
             </div>
           </div>
 
           {/* Part 3: Wallet & Events Card */}
           <div className="card">
-            <h3 className="mb-4">Kampüs Yaşamı</h3>
+            <h3 className="mb-4">{t('dashboard.campusLife')}</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <button className="btn btn-secondary" onClick={() => handleAction('wallet')} style={{ justifyContent: 'start', height: '100%' }}>
                 <span style={{ fontSize: '20px', marginRight: '8px' }}>💳</span>
-                <span>Cüzdan</span>
+                <span>{t('dashboard.wallet')}</span>
               </button>
               <button className="btn btn-secondary" onClick={() => handleAction('events')} style={{ justifyContent: 'start', height: '100%' }}>
                 <span style={{ fontSize: '20px', marginRight: '8px' }}>🎉</span>
-                <span>Etkinlikler</span>
+                <span>{t('dashboard.events')}</span>
               </button>
               <button className="btn btn-secondary" onClick={() => navigate('/my-events')} style={{ justifyContent: 'start', height: '100%' }}>
                 <span style={{ fontSize: '20px', marginRight: '8px' }}>📅</span>
-                <span>Etkinliklerim</span>
+                <span>{t('dashboard.myEvents')}</span>
               </button>
               <button className="btn btn-secondary" onClick={() => handleAction('reservations')} style={{ justifyContent: 'start', height: '100%' }}>
                 <span style={{ fontSize: '20px', marginRight: '8px' }}>🏫</span>
-                <span>Derslik Rezervasyonu</span>
+                <span>{t('dashboard.classroomReservation')}</span>
               </button>
             </div>
           </div>
 
           {/* Announcements Card */}
           <div className="card">
-            <h3 className="mb-4">Duyurular & Haberler</h3>
+            <h3 className="mb-4">{t('dashboard.announcements')}</h3>
             <div className="flex flex-col gap-3">
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
-                <div style={{ minWidth: '60px', fontSize: '0.75rem', color: 'var(--text-secondary)', background: '#f1f5f9', padding: '4px', textAlign: 'center', borderRadius: '4px' }}>
-                  10 Ara
+                <div className="announcement-date-badge" style={{ minWidth: '60px', fontSize: '0.75rem', color: 'var(--text-secondary)', padding: '4px', textAlign: 'center', borderRadius: '4px' }}>
+                  {language === 'en' ? 'Dec 10' : '10 Ara'}
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>Final Sınav Programı</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Akademik takvim güncellendi.</div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>{t('dashboard.announcement1Title')}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('dashboard.announcement1Desc')}</div>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
-                <div style={{ minWidth: '60px', fontSize: '0.75rem', color: 'var(--text-secondary)', background: '#f1f5f9', padding: '4px', textAlign: 'center', borderRadius: '4px' }}>
-                  15 Ara
+                <div className="announcement-date-badge" style={{ minWidth: '60px', fontSize: '0.75rem', color: 'var(--text-secondary)', padding: '4px', textAlign: 'center', borderRadius: '4px' }}>
+                  {language === 'en' ? 'Dec 15' : '15 Ara'}
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>Kütüphane Çalışma Saatleri</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Vize haftası boyunca 7/24 açık.</div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>{t('dashboard.announcement2Title')}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('dashboard.announcement2Desc')}</div>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                <div style={{ minWidth: '60px', fontSize: '0.75rem', color: 'var(--text-secondary)', background: '#f1f5f9', padding: '4px', textAlign: 'center', borderRadius: '4px' }}>
-                  05 Oca
+                <div className="announcement-date-badge" style={{ minWidth: '60px', fontSize: '0.75rem', color: 'var(--text-secondary)', padding: '4px', textAlign: 'center', borderRadius: '4px' }}>
+                  {language === 'en' ? 'Jan 05' : '05 Oca'}
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>Bahar Dönemi Kayıtları</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Ders seçimleri başlıyor.</div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>{t('dashboard.announcement3Title')}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('dashboard.announcement3Desc')}</div>
                 </div>
               </div>
             </div>

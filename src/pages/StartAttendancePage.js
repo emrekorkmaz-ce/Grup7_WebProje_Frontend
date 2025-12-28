@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import { MegaphoneIcon, CheckCircleIcon, CopyIcon, BookIcon } from '../components/Icons';
 // import './StartAttendancePage.css';
 
 const StartAttendancePage = () => {
+  const { t, language } = useTranslation();
   const [qrCode, setQrCode] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -105,10 +107,10 @@ const StartAttendancePage = () => {
       if (sectionsList.length > 0) {
         setSelectedSection(sectionsList[0].id);
       } else {
-        setError('Size atanmış ders bulunmamaktadır.');
+        setError(language === 'en' ? 'No courses assigned to you.' : 'Size atanmış ders bulunmamaktadır.');
       }
     } catch (err) {
-      setError('Dersler yüklenemedi: ' + (err.response?.data?.error || err.message));
+      setError((language === 'en' ? 'Failed to load courses: ' : 'Dersler yüklenemedi: ') + (err.response?.data?.error || err.message));
       setSections([]); // Hata durumunda boş array set et
     } finally {
       setLoadingSections(false);
@@ -117,7 +119,7 @@ const StartAttendancePage = () => {
 
   const handleStartAttendance = async () => {
     if (!selectedSection) {
-      setError('Lütfen bir ders seçiniz.');
+      setError(language === 'en' ? 'Please select a course.' : 'Lütfen bir ders seçiniz.');
       return;
     }
 
@@ -191,7 +193,7 @@ const StartAttendancePage = () => {
       // Yoklama kayıtlarını hemen yükle ve periyodik olarak güncelle
       fetchAttendanceRecords(newSessionId);
     } catch (err) {
-      setError('Yoklama başlatılamadı: ' + (err.response?.data?.error || err.message));
+      setError((language === 'en' ? 'Failed to start attendance: ' : 'Yoklama başlatılamadı: ') + (err.response?.data?.error || err.message));
     } finally {
       setLoading(false);
     }
@@ -213,7 +215,7 @@ const StartAttendancePage = () => {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(attendanceUrl);
-    alert('URL kopyalandı!');
+    alert(language === 'en' ? 'URL copied!' : 'URL kopyalandı!');
   };
 
   return (
@@ -223,19 +225,19 @@ const StartAttendancePage = () => {
       <main>
         <div className="card">
           <div style={{ marginBottom: '2rem' }}>
-            <h2 style={{ marginBottom: '0.5rem' }}>Yoklama Oturumu Başlat</h2>
+            <h2 style={{ marginBottom: '0.5rem' }}>{t('attendance.startAttendance')}</h2>
             <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
-              Ders seçerek yoklama oturumu başlatabilirsiniz.
+              {t('attendance.startAttendanceDesc')}
             </p>
           </div>
 
           {loadingSections ? (
             <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-              Dersler yükleniyor...
+              {t('courses.coursesLoading')}
             </div>
           ) : sections.length === 0 ? (
             <div className="error" style={{ padding: '1.5rem', textAlign: 'center' }}>
-              Size atanmış ders bulunmamaktadır. Lütfen admin ile iletişime geçin.
+              {language === 'en' ? 'No courses assigned to you. Please contact an administrator.' : 'Size atanmış ders bulunmamaktadır. Lütfen admin ile iletişime geçin.'}
             </div>
           ) : (
             <>
@@ -247,7 +249,7 @@ const StartAttendancePage = () => {
                   color: 'var(--text-primary)',
                   fontSize: '1rem'
                 }}>
-                  Ders Seçimi
+                  {t('attendance.selectCourse')}
                 </label>
                 <select
                   value={selectedSection}
@@ -273,10 +275,10 @@ const StartAttendancePage = () => {
                     e.target.style.boxShadow = 'none';
                   }}
                 >
-                  <option value="">-- Ders Seçiniz --</option>
+                  <option value="">-- {t('attendance.selectSection')} --</option>
                   {sections.map(section => (
                     <option key={section.id} value={section.id}>
-                      {section.courseCode} - {section.courseName} (Şube {section.sectionNumber || section.section_number}) - {section.semester === 'fall' || section.semester === 'FALL' ? 'Güz' : section.semester === 'spring' || section.semester === 'SPRING' ? 'Bahar' : section.semester} {section.year}
+                      {section.courseCode} - {section.courseName} ({t('common.section')} {section.sectionNumber || section.section_number}) - {section.semester === 'fall' || section.semester === 'FALL' ? t('courseAssignment.fall') : section.semester === 'spring' || section.semester === 'SPRING' ? t('courseAssignment.spring') : section.semester} {section.year}
                     </option>
                   ))}
                 </select>
@@ -289,7 +291,7 @@ const StartAttendancePage = () => {
                     fontSize: '0.9rem',
                     color: 'var(--text-secondary)'
                   }}>
-                    Seçili ders: {sections.find(s => s.id === selectedSection)?.courseCode} - {sections.find(s => s.id === selectedSection)?.courseName}
+                    {language === 'en' ? 'Selected course:' : 'Seçili ders:'} {sections.find(s => s.id === selectedSection)?.courseCode} - {sections.find(s => s.id === selectedSection)?.courseName}
                   </div>
                 )}
               </div>
@@ -309,9 +311,9 @@ const StartAttendancePage = () => {
                 }}
               >
                 {loading ? (
-                  <>Yükleniyor...</>
+                  <>{t('common.loading')}</>
                 ) : (
-                  <><MegaphoneIcon size={18} /> Yoklama Oturumunu Başlat</>
+                  <><MegaphoneIcon size={18} /> {language === 'en' ? 'Start Attendance Session' : 'Yoklama Oturumunu Başlat'}</>
                 )}
               </button>
             </>
@@ -333,7 +335,7 @@ const StartAttendancePage = () => {
                 marginBottom: '2rem'
               }}>
                 <h3 style={{ color: '#10b981', marginBottom: '0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <CheckCircleIcon size={24} /> Oturum Aktif
+                  <CheckCircleIcon size={24} /> {language === 'en' ? 'Session Active' : 'Oturum Aktif'}
                 </h3>
               </div>
 
@@ -349,10 +351,10 @@ const StartAttendancePage = () => {
                   margin: '0 auto 2rem auto',
                   boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
                 }}>
-                  <h3 style={{ color: '#1e293b', marginBottom: '1.5rem' }}>📱 QR Kodu Tarayın</h3>
+                  <h3 style={{ color: '#1e293b', marginBottom: '1.5rem' }}>📱 {language === 'en' ? 'Scan QR Code' : 'QR Kodu Tarayın'}</h3>
                   <img
                     src={qrCode}
-                    alt="Yoklama QR Kodu"
+                    alt={language === 'en' ? 'Attendance QR Code' : 'Yoklama QR Kodu'}
                     style={{
                       width: '100%',
                       maxWidth: '300px',
@@ -360,13 +362,13 @@ const StartAttendancePage = () => {
                     }}
                   />
                   <p style={{ color: '#64748b', marginTop: '1rem', fontSize: '0.9rem' }}>
-                    Telefon kamerasını kullanın
+                    {language === 'en' ? 'Use phone camera' : 'Telefon kamerasını kullanın'}
                   </p>
                 </div>
               )}
 
               <div className="card" style={{ background: 'rgba(255, 255, 255, 0.02)', marginBottom: '1.5rem' }}>
-                <h4 style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>OTURUM ID</h4>
+                <h4 style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{language === 'en' ? 'SESSION ID' : 'OTURUM ID'}</h4>
                 <div style={{
                   fontFamily: 'monospace',
                   color: 'var(--accent-color)',
@@ -378,7 +380,7 @@ const StartAttendancePage = () => {
               </div>
 
               <div className="card" style={{ background: 'rgba(255, 255, 255, 0.02)', marginBottom: '2rem' }}>
-                <h4 style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>PAYLAŞILABİLİR LİNK</h4>
+                <h4 style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>{language === 'en' ? 'SHAREABLE LINK' : 'PAYLAŞILABİLİR LİNK'}</h4>
                 <div style={{ display: 'flex', gap: '1rem' }}>
                   <code style={{
                     background: 'rgba(0,0,0,0.3)',
@@ -396,7 +398,7 @@ const StartAttendancePage = () => {
                     className="btn btn-secondary"
                     onClick={copyToClipboard}
                   >
-                    <CopyIcon size={16} /> Kopyala
+                    <CopyIcon size={16} /> {language === 'en' ? 'Copy' : 'Kopyala'}
                   </button>
                 </div>
               </div>
@@ -405,7 +407,7 @@ const StartAttendancePage = () => {
               {attendanceRecords && (
                 <div className="card" style={{ background: 'rgba(255, 255, 255, 0.02)', marginBottom: '2rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <h4 style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>YOKLAMA KAYITLARI</h4>
+                    <h4 style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>{language === 'en' ? 'ATTENDANCE RECORDS' : 'YOKLAMA KAYITLARI'}</h4>
                     {loadingRecords && (
                       <div className="spinner sm"></div>
                     )}
@@ -425,7 +427,7 @@ const StartAttendancePage = () => {
                         flex: 1,
                         minWidth: '120px'
                       }}>
-                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Toplam</div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>{t('attendance.totalClasses')}</div>
                         <div style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--accent-color)' }}>
                           {attendanceRecords.stats.total}
                         </div>
@@ -437,7 +439,7 @@ const StartAttendancePage = () => {
                         flex: 1,
                         minWidth: '120px'
                       }}>
-                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Var</div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>{t('attendance.status.present')}</div>
                         <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#10b981' }}>
                           {attendanceRecords.stats.present}
                         </div>
@@ -449,7 +451,7 @@ const StartAttendancePage = () => {
                         flex: 1,
                         minWidth: '120px'
                       }}>
-                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Yok</div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>{t('attendance.status.absent')}</div>
                         <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#ef4444' }}>
                           {attendanceRecords.stats.absent}
                         </div>
@@ -468,10 +470,10 @@ const StartAttendancePage = () => {
                       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                         <thead>
                           <tr style={{ background: 'rgba(0,0,0,0.3)', borderBottom: '2px solid var(--glass-border)' }}>
-                            <th style={{ padding: '0.75rem', textAlign: 'left', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>Öğrenci No</th>
-                            <th style={{ padding: '0.75rem', textAlign: 'left', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>Ad Soyad</th>
-                            <th style={{ padding: '0.75rem', textAlign: 'center', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>Durum</th>
-                            <th style={{ padding: '0.75rem', textAlign: 'center', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>Giriş Saati</th>
+                            <th style={{ padding: '0.75rem', textAlign: 'left', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>{t('profile.studentNumber')}</th>
+                            <th style={{ padding: '0.75rem', textAlign: 'left', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>{t('auth.fullName')}</th>
+                            <th style={{ padding: '0.75rem', textAlign: 'center', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>{t('attendance.statusLabel')}</th>
+                            <th style={{ padding: '0.75rem', textAlign: 'center', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>{language === 'en' ? 'Check-in Time' : 'Giriş Saati'}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -493,7 +495,7 @@ const StartAttendancePage = () => {
                                     fontSize: '0.85rem',
                                     fontWeight: 600
                                   }}>
-                                    Var
+                                    {t('attendance.status.present')}
                                   </span>
                                 ) : (
                                   <span style={{
@@ -504,12 +506,12 @@ const StartAttendancePage = () => {
                                     fontSize: '0.85rem',
                                     fontWeight: 600
                                   }}>
-                                    Yok
+                                    {t('attendance.status.absent')}
                                   </span>
                                 )}
                               </td>
                               <td style={{ padding: '0.75rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                                {student.checkInTime ? new Date(student.checkInTime).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '-'}
+                                {student.checkInTime ? new Date(student.checkInTime).toLocaleTimeString(language === 'en' ? 'en-US' : 'tr-TR', { hour: '2-digit', minute: '2-digit' }) : '-'}
                               </td>
                             </tr>
                           ))}
@@ -518,7 +520,7 @@ const StartAttendancePage = () => {
                     </div>
                   ) : (
                     <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                      Henüz yoklama kaydı yok
+                      {t('attendance.noAttendanceRecords')}
                     </div>
                   )}
                 </div>
@@ -531,13 +533,13 @@ const StartAttendancePage = () => {
                 borderRadius: '0 var(--radius-md) var(--radius-md) 0'
               }}>
                 <h4 style={{ color: 'var(--accent-color)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <BookIcon size={18} /> Bilgi
+                  <BookIcon size={18} /> {t('attendance.info')}
                 </h4>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
-                  1. Bu sayfayı projektör ile tahtaya yansıtın.
+                  {t('attendance.infoStep1')}
                 </p>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                  2. Öğrenciler QR kodu tarayarak veya linke tıklayarak yoklama verebilir.
+                  {t('attendance.infoStep2')}
                 </p>
               </div>
             </div>

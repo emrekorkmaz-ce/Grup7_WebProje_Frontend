@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useNotifications } from '../context/NotificationContext';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import './NotificationsPage.css';
 
 const NotificationsPage = () => {
+  const { t, language } = useTranslation();
   const { notifications, markAsRead, markAllAsRead, deleteNotification } = useNotifications();
   const [filter, setFilter] = useState('all'); // all, read, unread
   const [categoryFilter, setCategoryFilter] = useState('all');
@@ -25,27 +27,27 @@ const NotificationsPage = () => {
       <main>
         <div className="notifications-page">
           <div className="notifications-header">
-            <h1>Bildirimler</h1>
+            <h1>{t('notifications.title')}</h1>
             <button className="btn btn-primary" onClick={markAllAsRead}>
-              Tümünü Okundu İşaretle
+              {t('notifications.markAllRead')}
             </button>
           </div>
 
           <div className="notifications-filters">
             <div className="filter-group">
-              <label>Durum:</label>
+              <label>{t('notifications.status')}:</label>
               <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-                <option value="all">Tümü</option>
-                <option value="unread">Okunmamış</option>
-                <option value="read">Okunmuş</option>
+                <option value="all">{t('notifications.all')}</option>
+                <option value="unread">{t('notifications.unread')}</option>
+                <option value="read">{t('notifications.read')}</option>
               </select>
             </div>
             <div className="filter-group">
-              <label>Kategori:</label>
+              <label>{t('notifications.category')}:</label>
               <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
                 {categories.map(cat => (
                   <option key={cat} value={cat}>
-                    {cat === 'all' ? 'Tümü' : cat.charAt(0).toUpperCase() + cat.slice(1)}
+                    {cat === 'all' ? t('notifications.all') : cat.charAt(0).toUpperCase() + cat.slice(1)}
                   </option>
                 ))}
               </select>
@@ -54,7 +56,7 @@ const NotificationsPage = () => {
 
           <div className="notifications-list">
             {filteredNotifications.length === 0 ? (
-              <div className="no-notifications">Bildirim bulunmamaktadır.</div>
+              <div className="no-notifications">{t('notifications.noNotifications')}</div>
             ) : (
               filteredNotifications.map(notification => (
                 <div
@@ -69,7 +71,7 @@ const NotificationsPage = () => {
                     <p className="notification-card-message">{notification.message}</p>
                     <div className="notification-card-footer">
                       <span className="notification-card-time">
-                        {new Date(notification.createdAt).toLocaleString('tr-TR')}
+                        {new Date(notification.createdAt).toLocaleString(language === 'en' ? 'en-US' : 'tr-TR')}
                       </span>
                       <div className="notification-card-actions">
                         {!notification.isRead && (
@@ -77,14 +79,14 @@ const NotificationsPage = () => {
                             className="btn btn-sm btn-primary"
                             onClick={() => markAsRead(notification.id)}
                           >
-                            Okundu İşaretle
+                            {t('notifications.markAsRead')}
                           </button>
                         )}
                         <button
                           className="btn btn-sm btn-danger"
                           onClick={() => deleteNotification(notification.id)}
                         >
-                          Sil
+                          {t('notifications.delete')}
                         </button>
                       </div>
                     </div>

@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
+
 const EnrollCoursesPage = () => {
+    const { t, language } = useTranslation();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -19,7 +22,7 @@ const EnrollCoursesPage = () => {
             const response = await api.get('/student/available-courses');
             setCourses(response.data);
         } catch (err) {
-            setError('Dersler yüklenemedi: ' + (err.response?.data?.error || err.message));
+            setError((language === 'en' ? 'Failed to load courses: ' : 'Dersler yüklenemedi: ') + (err.response?.data?.error || err.message));
         } finally {
             setLoading(false);
         }
@@ -29,10 +32,10 @@ const EnrollCoursesPage = () => {
         try {
             setEnrolling(sectionId);
             await api.post('/student/enroll', { sectionId });
-            alert('Derse başarıyla kayıt oldunuz!');
+            alert(language === 'en' ? 'Successfully enrolled in the course!' : 'Derse başarıyla kayıt oldunuz!');
             fetchAvailableCourses(); // Refresh list
         } catch (err) {
-            alert('Kayıt başarısız: ' + (err.response?.data?.error || err.message));
+            alert((language === 'en' ? 'Enrollment failed: ' : 'Kayıt başarısız: ') + (err.response?.data?.error || err.message));
         } finally {
             setEnrolling(null);
         }
@@ -44,14 +47,14 @@ const EnrollCoursesPage = () => {
             <Sidebar />
             <main>
                 <div className="enroll-courses-page">
-                    <h2 style={{ marginBottom: '2rem', fontSize: '1.5rem', fontWeight: 700 }}>Ders Seçimi</h2>
+                    <h2 style={{ marginBottom: '2rem', fontSize: '1.5rem', fontWeight: 700 }}>{t('courses.courseSelection')}</h2>
 
-                    {loading && <div className="loading">Yükleniyor...</div>}
+                    {loading && <div className="loading">{t('common.loading')}</div>}
                     {error && <div className="error">{error}</div>}
 
                     {!loading && courses.length === 0 && (
                         <div style={{ color: 'var(--text-secondary)', padding: '2rem', textAlign: 'center', background: 'white', borderRadius: '8px', border: '1px dashed var(--border-color)' }}>
-                            Şu anda kayıt için uygun ders bulunamadı.
+                            {language === 'en' ? 'No courses available for enrollment at the moment.' : 'Şu anda kayıt için uygun ders bulunamadı.'}
                         </div>
                     )}
 
@@ -70,16 +73,16 @@ const EnrollCoursesPage = () => {
 
                                     <div style={{ flex: 1 }}>
                                         <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '0.5rem' }}>
-                                            <strong>Bölüm:</strong> {course.sectionNumber}
+                                            <strong>{t('common.section')}:</strong> {course.sectionNumber}
                                         </div>
                                         <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '0.5rem' }}>
-                                            <strong>Öğretim Üyesi:</strong> {course.instructorName || 'Belirtilmemiş'}
+                                            <strong>{t('common.instructor')}:</strong> {course.instructorName || (language === 'en' ? 'Not specified' : 'Belirtilmemiş')}
                                         </div>
                                         <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '0.5rem' }}>
-                                            <strong>Kontenjan:</strong> {course.enrolledCount}/{course.capacity}
+                                            <strong>{language === 'en' ? 'Capacity:' : 'Kontenjan:'}</strong> {course.enrolledCount}/{course.capacity}
                                         </div>
                                         <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
-                                            <strong>Kredi:</strong> {course.credits}
+                                            <strong>{t('courses.credits')}:</strong> {course.credits}
                                         </div>
                                     </div>
 
@@ -94,7 +97,7 @@ const EnrollCoursesPage = () => {
                                             cursor: (enrolling === course.sectionId || course.enrolledCount >= course.capacity) ? 'not-allowed' : 'pointer',
                                         }}
                                     >
-                                        {enrolling === course.sectionId ? 'Kaydediliyor...' : (course.enrolledCount >= course.capacity ? 'Kontenjan Dolu' : 'Kayıt Ol')}
+                                        {enrolling === course.sectionId ? (language === 'en' ? 'Enrolling...' : 'Kaydediliyor...') : (course.enrolledCount >= course.capacity ? (language === 'en' ? 'Full' : 'Kontenjan Dolu') : t('courses.enroll'))}
                                     </button>
                                 </div>
                             ))}

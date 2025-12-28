@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useAuth } from '../context/AuthContext';
+import trTranslations from '../locales/tr.json';
 import api from '../services/api';
 import TextInput from '../components/TextInput';
 import Select from '../components/Select';
@@ -12,47 +13,36 @@ import { GraduationCapIcon } from '../components/Icons';
 import bgImage from '../assets/university_bg.png';
 // import './Register.css';
 
-const registerSchema = yup.object().shape({
-    email: yup.string()
-        .email('Geçersiz e-posta formatı')
-        .matches(/@.*\.edu$/i, 'E-posta adresi .edu uzantılı olmalıdır')
-        .required('E-posta gereklidir'),
-    password: yup
-        .string()
-        .min(8, 'Şifre en az 8 karakter olmalıdır')
-        .matches(/[A-Z]/, 'Şifre en az bir büyük harf içermelidir')
-        .matches(/[a-z]/, 'Şifre en az bir küçük harf içermelidir')
-        .matches(/[0-9]/, 'Şifre en az bir rakam içermelidir')
-        .required('Şifre gereklidir'),
-    confirmPassword: yup
-        .string()
-        .oneOf([yup.ref('password')], 'Şifreler eşleşmelidir')
-        .required('Lütfen şifrenizi onaylayın'),
-    full_name: yup.string().required('Ad soyad gereklidir'),
-    role: yup.string().oneOf(['student', 'faculty'], 'Geçersiz rol').required('Rol gereklidir'),
-    student_number: yup.string().when('role', {
-        is: 'student',
-        then: (schema) => schema
-            .required('Öğrenci numarası gereklidir')
-            .min(6, 'Öğrenci numarası en az 6 karakter olmalıdır')
-            .max(20, 'Öğrenci numarası en fazla 20 karakter olabilir'),
-        otherwise: (schema) => schema.notRequired()
-    }),
-    employee_number: yup.string().when('role', {
-        is: 'faculty',
-        then: (schema) => schema.required('Personel numarası gereklidir'),
-        otherwise: (schema) => schema.notRequired()
-    }),
-    title: yup.string().when('role', {
-        is: 'faculty',
-        then: (schema) => schema.required('Ünvan gereklidir'),
-        otherwise: (schema) => schema.notRequired()
-    }),
-    department_id: yup.string().required('Bölüm gereklidir'),
-    terms: yup.boolean().oneOf([true], 'Şartlar ve koşulları kabul etmelisiniz')
-});
+// Register sayfası için özel translation hook'u - her zaman Türkçe
+const useRegisterTranslation = () => {
+    const t = (key, params = {}) => {
+        const keys = key.split('.');
+        let value = trTranslations;
+
+        for (const k of keys) {
+            value = value?.[k];
+        }
+
+        if (!value) {
+            console.warn(`Translation missing for key: ${key}`);
+            return key;
+        }
+
+        // Replace parameters in translation string
+        if (typeof value === 'string' && Object.keys(params).length > 0) {
+            return value.replace(/\{(\w+)\}/g, (match, paramKey) => {
+                return params[paramKey] || match;
+            });
+        }
+
+        return value;
+    };
+
+    return { t, language: 'tr' };
+};
 
 const Register = () => {
+    const { t, language } = useRegisterTranslation();
     const [departments, setDepartments] = useState([]);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -60,6 +50,46 @@ const Register = () => {
     const [verificationInfo, setVerificationInfo] = useState(null);
     const { register: registerUser } = useAuth();
     const navigate = useNavigate();
+
+    const registerSchema = yup.object().shape({
+        email: yup.string()
+            .email(t('auth.invalidEmailFormat'))
+            .matches(/@.*\.edu$/i, t('auth.emailEduRequired'))
+            .required(t('auth.emailRequiredRegister')),
+        password: yup
+            .string()
+            .min(8, t('auth.passwordMin'))
+            .matches(/[A-Z]/, t('auth.passwordUppercase'))
+            .matches(/[a-z]/, t('auth.passwordLowercase'))
+            .matches(/[0-9]/, t('auth.passwordNumber'))
+            .required(t('auth.passwordRequired')),
+        confirmPassword: yup
+            .string()
+            .oneOf([yup.ref('password')], t('auth.passwordsMustMatch'))
+            .required(t('auth.confirmPasswordRequired')),
+        full_name: yup.string().required(t('auth.fullNameRequired')),
+        role: yup.string().oneOf(['student', 'faculty'], t('auth.invalidRole')).required(t('auth.roleRequired')),
+        student_number: yup.string().when('role', {
+            is: 'student',
+            then: (schema) => schema
+                .required(t('auth.studentNumberRequired'))
+                .min(6, t('auth.studentNumberMin'))
+                .max(20, t('auth.studentNumberMax')),
+            otherwise: (schema) => schema.notRequired()
+        }),
+        employee_number: yup.string().when('role', {
+            is: 'faculty',
+            then: (schema) => schema.required(t('auth.employeeNumberRequired')),
+            otherwise: (schema) => schema.notRequired()
+        }),
+        title: yup.string().when('role', {
+            is: 'faculty',
+            then: (schema) => schema.required(t('auth.titleRequired')),
+            otherwise: (schema) => schema.notRequired()
+        }),
+        department_id: yup.string().required(t('auth.departmentRequired')),
+        terms: yup.boolean().oneOf([true], t('auth.termsRequired'))
+    });
 
     const { register, handleSubmit, watch, formState: { errors } } = useForm({
         resolver: yupResolver(registerSchema),
@@ -90,7 +120,7 @@ const Register = () => {
                 } else {
                     console.error('Unexpected response format:', res.data);
                     setDepartments([]);
-                    setError('Bölümler yüklenemedi. Lütfen sayfayı yenileyin.');
+                    setError(t('auth.departmentsLoadError') + '. Lütfen sayfayı yenileyin.');
                 }
             })
             .catch((err) => {
@@ -99,7 +129,7 @@ const Register = () => {
                 console.error('Error message:', err.message);
                 setDepartments([]);
                 const errorMsg = err.response?.data?.error?.message || err.message || 'Backend servisinin çalıştığından emin olun.';
-                setError(`Bölümler yüklenemedi. ${errorMsg}`);
+                setError(`${t('auth.departmentsLoadError')}. ${errorMsg}`);
             });
     }, []);
 
@@ -129,7 +159,7 @@ const Register = () => {
         if (result.success) {
             // Check if verification is required
             if (result.requiresVerification) {
-                setSuccess('Kayıt başarılı! Hesabınızı kullanabilmek için e-posta adresinizi doğrulamanız gerekiyor.');
+                setSuccess(t('auth.registerSuccessVerify'));
                 // Show verification URL if provided (development mode)
                 if (result.verificationUrl) {
                     setVerificationInfo({
@@ -138,7 +168,7 @@ const Register = () => {
                     });
                 }
             } else {
-                setSuccess('Kayıt başarılı! Giriş yapabilirsiniz.');
+                setSuccess(t('auth.registerSuccess'));
                 setTimeout(() => {
                     navigate('/login');
                 }, 2000);
@@ -149,7 +179,7 @@ const Register = () => {
                 ? (result.error.message || JSON.stringify(result.error))
                 : result.error;
             if (errorMsg && errorMsg.toLowerCase().includes('verify your email')) {
-                errorMsg = 'Hesabınızı kullanabilmek için önce e-posta adresinizi onaylamanız gerekiyor.';
+                errorMsg = t('auth.verifyEmailError');
             }
             setError(errorMsg);
         }
@@ -158,7 +188,7 @@ const Register = () => {
     };
 
     const departmentOptions = [
-        { value: '', label: 'Bölüm Seçin' },
+        { value: '', label: t('auth.department') + ' Seçin' },
         ...departments.map(dept => ({
             value: dept.id,
             label: `${dept.name} (${dept.code})`
@@ -227,8 +257,8 @@ const Register = () => {
                     }}>
                         <GraduationCapIcon size={32} />
                     </div>
-                    <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.5rem' }}>Aramıza Katılın</h2>
-                    <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Kampüs Bilgi Sistemi'ne kaydolun</p>
+                    <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.5rem' }}>{t('auth.registerTitle')}</h2>
+                    <p style={{ color: '#64748b', fontSize: '0.9rem' }}>{t('auth.registerSubtitle')}</p>
                 </div>
 
                 {error && <div className="error">{error}</div>}
@@ -262,26 +292,26 @@ const Register = () => {
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-4">
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Ad Soyad *</label>
-                        <input type='text' {...register('full_name')} disabled={loading} placeholder="Ad Soyad" />
+                        <label className="block text-sm font-medium text-slate-700 mb-1">{t('auth.fullName')} *</label>
+                        <input type='text' {...register('full_name')} disabled={loading} placeholder={t('auth.fullName')} />
                         {errors.full_name && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.full_name.message}</div>}
                     </div>
 
                     <div className="mb-4">
-                        <label className="block text-sm font-medium text-slate-700 mb-1">E-posta *</label>
-                        <input type='email' {...register('email')} disabled={loading} placeholder="ornek@uni.edu.tr" />
+                        <label className="block text-sm font-medium text-slate-700 mb-1">{t('auth.email')} *</label>
+                        <input type='email' {...register('email')} disabled={loading} placeholder={t('auth.emailPlaceholder')} />
                         {errors.email && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.email.message}</div>}
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="mb-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Şifre *</label>
-                            <input type='password' {...register('password')} disabled={loading} placeholder="••••••••" />
+                            <label className="block text-sm font-medium text-slate-700 mb-1">{t('auth.password')} *</label>
+                            <input type='password' {...register('password')} disabled={loading} placeholder={t('auth.passwordPlaceholder')} />
                             {errors.password && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.password.message}</div>}
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Şifreyi Onayla *</label>
-                            <input type='password' {...register('confirmPassword')} disabled={loading} placeholder="••••••••" />
+                            <label className="block text-sm font-medium text-slate-700 mb-1">{t('auth.confirmPassword')} *</label>
+                            <input type='password' {...register('confirmPassword')} disabled={loading} placeholder={t('auth.passwordPlaceholder')} />
                             {errors.confirmPassword && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.confirmPassword.message}</div>}
                         </div>
                     </div>
@@ -290,18 +320,18 @@ const Register = () => {
                     </small>
 
                     <div className="mb-4">
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Kullanıcı Tipi *</label>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">{t('auth.role')} *</label>
                         <select {...register('role')} disabled={loading}>
-                            <option value="student">Öğrenci</option>
-                            <option value="faculty">Akademisyen</option>
+                            <option value="student">{t('profile.student')}</option>
+                            <option value="faculty">{t('profile.faculty')}</option>
                         </select>
                         {errors.role && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.role.message}</div>}
                     </div>
 
                     {role === 'student' && (
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Öğrenci Numarası *</label>
-                            <input type='text' {...register('student_number')} disabled={loading} placeholder="Öğrenci No" />
+                            <label className="block text-sm font-medium text-slate-700 mb-1">{t('auth.studentNumber')} *</label>
+                            <input type='text' {...register('student_number')} disabled={loading} placeholder={t('auth.studentNumber')} />
                             {errors.student_number && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.student_number.message}</div>}
                         </div>
                     )}
@@ -309,12 +339,12 @@ const Register = () => {
                     {role === 'faculty' && (
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="mb-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Personel No *</label>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">{t('auth.employeeNumber')} *</label>
                                 <input type='text' {...register('employee_number')} disabled={loading} />
                                 {errors.employee_number && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.employee_number.message}</div>}
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Ünvan *</label>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">{t('auth.title')} *</label>
                                 <input type='text' {...register('title')} disabled={loading} placeholder="örn. Prof. Dr." />
                                 {errors.title && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.title.message}</div>}
                             </div>
@@ -322,7 +352,7 @@ const Register = () => {
                     )}
 
                     <div className="mb-4">
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Bölüm *</label>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">{t('auth.department')} *</label>
                         <select {...register('department_id')} disabled={loading}>
                             {departmentOptions.map(opt => (
                                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -334,7 +364,7 @@ const Register = () => {
                     <div style={{ marginBottom: '2rem' }}>
                         <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#64748b', fontSize: '0.9rem' }}>
                             <input type="checkbox" {...register('terms')} style={{ marginRight: '0.5rem', width: 'auto' }} disabled={loading} />
-                            Şartlar ve koşulları kabul ediyorum *
+                            {t('auth.terms')} *
                         </label>
                         {errors.terms && <div style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>{errors.terms.message}</div>}
                     </div>
@@ -345,7 +375,7 @@ const Register = () => {
                         disabled={loading}
                         style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', fontWeight: 600, justifyContent: 'center' }}
                     >
-                        {loading ? 'Kaydediliyor...' : 'Kayıt Ol'}
+                        {loading ? 'Kaydediliyor...' : t('auth.register')}
                     </button>
                 </form>
 
@@ -353,7 +383,7 @@ const Register = () => {
                     <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
                         Zaten hesabınız var mı?{' '}
                         <Link to='/login' style={{ color: 'var(--accent-color)', fontWeight: 600, textDecoration: 'none' }}>
-                            Giriş Yap
+                            {t('auth.login')}
                         </Link>
                     </p>
                 </div>

@@ -52,13 +52,30 @@
   transition: box-shadow 0.2s;
 }
 
+[data-theme="dark"] .notification-card {
+  background: linear-gradient(135deg, rgba(21, 27, 46, 0.95) 0%, rgba(15, 22, 36, 0.95) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
 .notification-card:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .notification-card:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.2), 0 0 30px rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
 }
 
 .notification-card.unread {
   border-left: 4px solid var(--accent-color);
   background-color: #eff6ff;
+}
+
+[data-theme="dark"] .notification-card.unread {
+  border-left: 4px solid #6366f1;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0.1) 100%);
 }
 
 .notification-card-header {

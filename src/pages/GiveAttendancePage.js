@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { MapPinIcon, CheckCircleIcon } from '../components/Icons';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from '../hooks/useTranslation';
 import Loading from '../components/Loading';
 
 const GiveAttendancePage = () => {
   const { sessionId } = useParams();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { t, language } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [location, setLocation] = useState(null);
@@ -21,7 +23,7 @@ const GiveAttendancePage = () => {
     if (!user || user.role !== 'student') return;
 
     if (!('geolocation' in navigator)) {
-      setError('Cihazınızda konum servisi bulunamadı.');
+      setError(t('attendance.locationError'));
       setLoading(false);
       return;
     }
@@ -32,7 +34,7 @@ const GiveAttendancePage = () => {
         setLoading(false);
       },
       () => {
-        setError('Konum alınamadı. Lütfen izin verin.');
+        setError(t('attendance.locationPermissionError'));
         setLoading(false);
       }
     );
@@ -46,13 +48,13 @@ const GiveAttendancePage = () => {
     try {
       const response = await api.post(`/student/attendance/give/${sessionId}`, { location });
       setSuccess(true);
-      // Başarılı olduktan sonra 3 saniye sonra kapat
+      // Başarılı olduktan sonra 3 saniye sonra devamsızlık durumu sayfasına yönlendir
       setTimeout(() => {
-        // İsteğe bağlı: Ana sayfaya yönlendir
-        // navigate('/dashboard');
+        navigate('/my-attendance');
       }, 3000);
     } catch (err) {
-      setError(err.response?.data?.error || 'Yoklama verilemedi.');
+      const errorMsg = err.response?.data?.error || t('attendance.attendanceFailed');
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -73,26 +75,49 @@ const GiveAttendancePage = () => {
               <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
                 <CheckCircleIcon size={64} color="var(--success)" />
               </div>
-              <h2 style={{ color: 'var(--success)' }}>Yoklama Başarılı!</h2>
-              <p style={{ color: 'var(--text-secondary)' }}>Katılımınız sisteme kaydedildi.</p>
+              <h2 style={{ color: 'var(--success)' }}>{t('attendance.attendanceSuccess')}</h2>
+              <p style={{ color: 'var(--text-secondary)' }}>{t('attendance.attendanceRecorded')}</p>
             </div>
           ) : (
             <>
-              <h2 className="mb-4">Yoklama Ver</h2>
+              <h2 className="mb-4">{t('attendance.giveAttendance')}</h2>
 
               {loading ? (
                 <div className="flex flex-col items-center">
                   <div className="spinner lg mb-4"></div>
-                  <p style={{ color: 'var(--accent-color)' }}>Konum alınıyor...</p>
+                  <p style={{ color: 'var(--accent-color)' }}>{t('attendance.locationRequired')}</p>
                 </div>
               ) : error ? (
                 <div className="error text-center">
                   <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'center' }}>
                     <MapPinIcon size={32} />
                   </div>
-                  {error}
-                  <button className="btn btn-secondary mt-4 w-full" onClick={() => window.location.reload()}>
-                    Tekrar Dene
+                  <p style={{ marginBottom: '1rem' }}>{error}</p>
+                  {(error.includes('kayıtlı değilsiniz') || error.includes('not enrolled') || error.includes('enrolled')) && (
+                    <div style={{ 
+                      marginBottom: '1rem', 
+                      padding: '1rem', 
+                      background: 'rgba(59, 130, 246, 0.1)', 
+                      borderRadius: '8px',
+                      fontSize: '0.9rem'
+                    }}>
+                      <p style={{ marginBottom: '0.5rem', fontWeight: 600 }}>{t('common.solution')}:</p>
+                      <p style={{ marginBottom: '0.5rem' }}>{t('attendance.notEnrolledDetails')}</p>
+                      <Link 
+                        to="/enroll-courses" 
+                        className="btn btn-primary"
+                        style={{ 
+                          display: 'inline-block',
+                          marginTop: '0.5rem',
+                          textDecoration: 'none'
+                        }}
+                      >
+                        {t('attendance.goToCourseSelection')}
+                      </Link>
+                    </div>
+                  )}
+                  <button className="btn btn-secondary mt-2 w-full" onClick={() => window.location.reload()}>
+                    {t('common.tryAgain')}
                   </button>
                 </div>
               ) : (
@@ -107,7 +132,7 @@ const GiveAttendancePage = () => {
                     <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'center' }}>
                       <MapPinIcon size={24} />
                     </div>
-                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Konumunuz Algılandı</div>
+                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{t('attendance.locationDetected')}</div>
                     <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
                       {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
                     </div>
@@ -119,7 +144,7 @@ const GiveAttendancePage = () => {
                     disabled={!location || loading}
                     style={{ width: '100%', padding: '1rem', fontSize: '1.1rem' }}
                   >
-                    <CheckCircleIcon size={18} /> Buradayım
+                    <CheckCircleIcon size={18} /> {language === 'en' ? 'I\'m Here' : 'Buradayım'}
                   </button>
                 </div>
               )}

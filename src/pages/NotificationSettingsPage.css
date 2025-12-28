@@ -24,6 +24,13 @@
   margin-bottom: 1.5rem;
 }
 
+[data-theme="dark"] .settings-card,
+[data-theme="dark"] .info-card {
+  background: linear-gradient(135deg, rgba(21, 27, 46, 0.95) 0%, rgba(15, 22, 36, 0.95) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
 .preferences-table {
   width: 100%;
   border-collapse: collapse;
@@ -35,12 +42,21 @@
   background-color: #f9fafb;
 }
 
+[data-theme="dark"] .preferences-table thead {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+}
+
 .preferences-table th {
   padding: 1rem;
   text-align: left;
   font-weight: 600;
   color: var(--text-primary);
   border-bottom: 2px solid #e5e7eb;
+}
+
+[data-theme="dark"] .preferences-table th {
+  color: #e0e7ff;
+  border-bottom-color: rgba(99, 102, 241, 0.4);
 }
 
 .preferences-table th:first-child {
@@ -60,6 +76,10 @@
 
 .preferences-table tbody tr:hover {
   background-color: #f9fafb;
+}
+
+[data-theme="dark"] .preferences-table tbody tr:hover {
+  background-color: rgba(99, 102, 241, 0.1);
 }
 
 .category-label {

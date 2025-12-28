@@ -39,11 +39,23 @@
   border-radius: 8px;
 }
 
+[data-theme="dark"] .meal-section {
+  background: linear-gradient(135deg, rgba(21, 27, 46, 0.95) 0%, rgba(15, 22, 36, 0.95) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
 .meal-section h2 {
   margin-bottom: 15px;
   color: #2c3e50;
   border-bottom: 2px solid #3498db;
   padding-bottom: 10px;
+}
+
+[data-theme="dark"] .meal-section h2 {
+  color: #c7d2fe;
+  border-bottom-color: rgba(99, 102, 241, 0.4);
+  text-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
 }
 
 .meal-card {
@@ -53,6 +65,18 @@
   padding: 20px;
   margin-bottom: 15px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+[data-theme="dark"] .meal-card {
+  background: linear-gradient(135deg, rgba(21, 27, 46, 0.95) 0%, rgba(15, 22, 36, 0.95) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="dark"] .meal-card:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.2), 0 0 30px rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
 }
 
 .meal-header {
@@ -67,9 +91,17 @@
   color: #2c3e50;
 }
 
+[data-theme="dark"] .meal-header h3 {
+  color: #e0e7ff;
+}
+
 .location {
   color: #7f8c8d;
   font-size: 14px;
+}
+
+[data-theme="dark"] .location {
+  color: #94a3b8;
 }
 
 .meal-content {
@@ -89,6 +121,12 @@
   padding: 8px;
   background: #f8f9fa;
   border-radius: 4px;
+}
+
+[data-theme="dark"] .meal-item {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: #e0e7ff;
 }
 
 .meal-badges {
@@ -120,6 +158,10 @@
   gap: 5px;
   font-size: 14px;
   color: #555;
+}
+
+[data-theme="dark"] .nutrition-info {
+  color: #cbd5e1;
 }
 
 .reserve-btn {
@@ -159,9 +201,19 @@
   width: 90%;
 }
 
+[data-theme="dark"] .modal-content {
+  background: linear-gradient(135deg, rgba(21, 27, 46, 0.98) 0%, rgba(15, 22, 36, 0.98) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(99, 102, 241, 0.2), 0 0 50px rgba(99, 102, 241, 0.2);
+}
+
 .modal-content h2 {
   margin-bottom: 20px;
   color: #2c3e50;
+}
+
+[data-theme="dark"] .modal-content h2 {
+  color: #e0e7ff;
 }
 
 .reservation-details {
@@ -226,6 +278,8 @@
   color: #7f8c8d;
   font-size: 18px;
 }
+
+
 
 
 

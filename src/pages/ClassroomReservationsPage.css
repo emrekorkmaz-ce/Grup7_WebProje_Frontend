@@ -41,9 +41,19 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+[data-theme="dark"] .reservation-form-container {
+  background: linear-gradient(135deg, rgba(21, 27, 46, 0.95) 0%, rgba(15, 22, 36, 0.95) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
 .reservation-form-container h2 {
   margin-top: 0;
   color: #2c3e50;
+}
+
+[data-theme="dark"] .reservation-form-container h2 {
+  color: #e0e7ff;
 }
 
 .reservation-form {
@@ -130,6 +140,18 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+[data-theme="dark"] .reservation-card {
+  background: linear-gradient(135deg, rgba(21, 27, 46, 0.95) 0%, rgba(15, 22, 36, 0.95) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="dark"] .reservation-card:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.2), 0 0 30px rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+}
+
 .reservation-header {
   display: flex;
   justify-content: space-between;
@@ -144,9 +166,17 @@
   color: #2c3e50;
 }
 
+[data-theme="dark"] .reservation-header h3 {
+  color: #e0e7ff;
+}
+
 .date {
   color: #7f8c8d;
   font-size: 14px;
+}
+
+[data-theme="dark"] .date {
+  color: #94a3b8;
 }
 
 .status-badge {
@@ -189,6 +219,12 @@
   font-size: 14px;
 }
 
+[data-theme="dark"] .detail-item {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: #e0e7ff;
+}
+
 .error-message {
   background: #fee;
   color: #c33;
@@ -209,6 +245,8 @@
   color: #7f8c8d;
   font-size: 18px;
 }
+
+
 
 
 

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import { toast } from 'react-toastify';
 import './NotificationSettingsPage.css';
 
 const NotificationSettingsPage = () => {
+  const { t } = useTranslation();
   const [preferences, setPreferences] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -22,7 +24,7 @@ const NotificationSettingsPage = () => {
       setPreferences(response.data.data);
       setError('');
     } catch (err) {
-      setError('Bildirim tercihleri yüklenemedi.');
+      setError(t('notificationSettings.loadError'));
       console.error('Error fetching preferences:', err);
     } finally {
       setLoading(false);
@@ -43,9 +45,9 @@ const NotificationSettingsPage = () => {
     try {
       setSaving(true);
       await api.put('/notifications/preferences', { preferences });
-      toast.success('Bildirim tercihleri başarıyla güncellendi.');
+      toast.success(t('notificationSettings.saveSuccess'));
     } catch (err) {
-      toast.error('Bildirim tercihleri güncellenemedi.');
+      toast.error(t('notificationSettings.saveError'));
       console.error('Error saving preferences:', err);
     } finally {
       setSaving(false);
@@ -53,18 +55,18 @@ const NotificationSettingsPage = () => {
   };
 
   const categories = [
-    { key: 'academic', label: 'Akademik' },
-    { key: 'attendance', label: 'Yoklama' },
-    { key: 'meal', label: 'Yemek' },
-    { key: 'event', label: 'Etkinlik' },
-    { key: 'payment', label: 'Ödeme' },
-    { key: 'system', label: 'Sistem' }
+    { key: 'academic', label: t('notificationSettings.academic') },
+    { key: 'attendance', label: t('notificationSettings.attendance') },
+    { key: 'meal', label: t('notificationSettings.meal') },
+    { key: 'event', label: t('notificationSettings.event') },
+    { key: 'payment', label: t('notificationSettings.payment') },
+    { key: 'system', label: t('notificationSettings.system') }
   ];
 
   const channels = [
-    { key: 'email', label: 'E-posta' },
-    { key: 'push', label: 'Push Bildirimi' },
-    { key: 'sms', label: 'SMS' }
+    { key: 'email', label: t('notificationSettings.email') },
+    { key: 'push', label: t('notificationSettings.push') },
+    { key: 'sms', label: t('notificationSettings.sms') }
   ];
 
   if (loading) {
@@ -74,7 +76,7 @@ const NotificationSettingsPage = () => {
         <Sidebar />
         <main>
           <div className="notification-settings-page">
-            <div className="loading">Yükleniyor...</div>
+            <div className="loading">{t('notificationSettings.loading')}</div>
           </div>
         </main>
       </div>
@@ -88,7 +90,7 @@ const NotificationSettingsPage = () => {
         <Sidebar />
         <main>
           <div className="notification-settings-page">
-            <div className="error-message">{error || 'Veri yüklenemedi'}</div>
+            <div className="error-message">{error || t('notificationSettings.dataLoadError')}</div>
           </div>
         </main>
       </div>
@@ -102,15 +104,15 @@ const NotificationSettingsPage = () => {
       <main>
         <div className="notification-settings-page">
           <div className="settings-header">
-            <h1>Bildirim Ayarları</h1>
-            <p>Hangi bildirimleri hangi kanallardan almak istediğinizi seçebilirsiniz.</p>
+            <h1>{t('notificationSettings.title')}</h1>
+            <p>{t('notificationSettings.subtitle')}</p>
           </div>
 
           <div className="settings-card">
             <table className="preferences-table">
               <thead>
                 <tr>
-                  <th>Kategori</th>
+                  <th>{t('notificationSettings.category')}</th>
                   {channels.map(channel => (
                     <th key={channel.key}>{channel.label}</th>
                   ))}
@@ -151,17 +153,17 @@ const NotificationSettingsPage = () => {
                 onClick={handleSave}
                 disabled={saving}
               >
-                {saving ? 'Kaydediliyor...' : 'Kaydet'}
+                {saving ? t('notificationSettings.saving') : t('notificationSettings.save')}
               </button>
             </div>
           </div>
 
           <div className="info-card">
-            <h3>Bildirim Kanalları Hakkında</h3>
+            <h3>{t('notificationSettings.channelsInfo')}</h3>
             <ul>
-              <li><strong>E-posta:</strong> Bildirimler e-posta adresinize gönderilir.</li>
-              <li><strong>Push Bildirimi:</strong> Tarayıcınızda anlık bildirimler alırsınız.</li>
-              <li><strong>SMS:</strong> Sadece kritik bildirimler (yoklama uyarıları, ödeme bildirimleri) için kullanılır.</li>
+              <li><strong>{t('notificationSettings.email')}:</strong> {t('notificationSettings.emailInfo')}</li>
+              <li><strong>{t('notificationSettings.push')}:</strong> {t('notificationSettings.pushInfo')}</li>
+              <li><strong>{t('notificationSettings.sms')}:</strong> {t('notificationSettings.smsInfo')}</li>
             </ul>
           </div>
         </div>

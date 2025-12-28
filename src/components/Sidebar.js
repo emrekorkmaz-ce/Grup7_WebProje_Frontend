@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   HomeIcon,
   UserIcon,
@@ -19,7 +20,6 @@ import {
   PartyPopperIcon,
   BellIcon,
   SettingsIcon,
-  QrCodeIcon,
   CheckIcon,
   BuildingIcon
 } from './Icons';
@@ -28,6 +28,7 @@ import './Sidebar.css';
 const Sidebar = () => {
   const { user } = useAuth();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const isActive = (path) => {
     return location.pathname === path ? 'active' : '';
@@ -38,24 +39,24 @@ const Sidebar = () => {
       <nav className="sidebar-nav">
         <Link to="/dashboard" className={`sidebar-link ${isActive('/dashboard')}`}>
           <HomeIcon size={20} className="sidebar-icon" />
-          <span>Ana Sayfa</span>
+          <span>{t('sidebar.home')}</span>
         </Link>
         <Link to="/profile" className={`sidebar-link ${isActive('/profile')}`}>
           <UserIcon size={20} className="sidebar-icon" />
-          <span>Profil</span>
+          <span>{t('sidebar.profile')}</span>
         </Link>
         {/* Derslerim - Sadece Öğrenci ve Akademisyen */}
         {(user?.role === 'student' || user?.role === 'faculty') && (
           <Link to="/my-courses" className={`sidebar-link ${isActive('/my-courses')}`}>
             <BookIcon size={20} className="sidebar-icon" />
-            <span>Derslerim</span>
+            <span>{t('sidebar.myCourses')}</span>
           </Link>
         )}
         {/* Not Girişi - Sadece Akademisyen */}
         {user?.role === 'faculty' && (
           <Link to="/grades" className={`sidebar-link ${isActive('/grades')}`}>
             <GraduationCapIcon size={20} className="sidebar-icon" />
-            <span>Not Girişi</span>
+            <span>{t('sidebar.gradeEntry')}</span>
           </Link>
         )}
 
@@ -67,7 +68,7 @@ const Sidebar = () => {
           {user?.role === 'faculty' && (
             <Link to="/attendance/start" className={`sidebar-link ${isActive('/attendance/start')}`}>
               <MegaphoneIcon size={20} className="sidebar-icon" />
-              <span>Yoklama Başlat</span>
+              <span>{t('sidebar.startAttendance')}</span>
             </Link>
           )}
 
@@ -75,7 +76,7 @@ const Sidebar = () => {
           {(user?.role === 'admin' || user?.role === 'faculty') && (
             <Link to="/attendance/report/11111111-aaaa-bbbb-cccc-111111111111" className={`sidebar-link ${isActive('/attendance/report/11111111-aaaa-bbbb-cccc-111111111111')}`}>
               <ChartIcon size={20} className="sidebar-icon" />
-              <span>Yoklama Raporu</span>
+              <span>{t('sidebar.attendanceReport')}</span>
             </Link>
           )}
 
@@ -83,7 +84,7 @@ const Sidebar = () => {
           {user?.role === 'student' && (
             <Link to="/my-attendance" className={`sidebar-link ${isActive('/my-attendance')}`}>
               <CalendarIcon size={20} className="sidebar-icon" />
-              <span>Devamsızlık Durumu</span>
+              <span>{t('sidebar.attendanceStatus')}</span>
             </Link>
           )}
         </div>
@@ -92,7 +93,7 @@ const Sidebar = () => {
         {user?.role === 'student' && (
           <Link to="/enroll-courses" className={`sidebar-link ${isActive('/enroll-courses')}`}>
             <EditIcon size={20} className="sidebar-icon" />
-            <span>Ders Seçimi</span>
+            <span>{t('sidebar.courseSelection')}</span>
           </Link>
         )}
 
@@ -100,38 +101,38 @@ const Sidebar = () => {
           <>
             <Link to="/users" className={`sidebar-link ${isActive('/users')}`}>
               <UsersIcon size={20} className="sidebar-icon" />
-              <span>Kullanıcı Yönetimi</span>
+              <span>{t('sidebar.userManagement')}</span>
             </Link>
             <Link to="/course-assignment" className={`sidebar-link ${isActive('/course-assignment')}`}>
               <BookIcon size={20} className="sidebar-icon" />
-              <span>Ders Atama</span>
+              <span>{t('sidebar.courseAssignment')}</span>
             </Link>
             {/* Part 4: Admin Dashboard */}
             <div className="sidebar-section">
-              <div className="sidebar-section-title">YÖNETİM</div>
+              <div className="sidebar-section-title">{t('sidebar.management')}</div>
               <Link to="/admin/dashboard" className={`sidebar-link ${isActive('/admin/dashboard')}`}>
                 <ChartIcon size={20} className="sidebar-icon" />
-                <span>Admin Dashboard</span>
+                <span>{t('sidebar.adminDashboard')}</span>
               </Link>
               <Link to="/admin/analytics/academic" className={`sidebar-link ${isActive('/admin/analytics/academic')}`}>
                 <BarChartIcon size={20} className="sidebar-icon" />
-                <span>Akademik Analitik</span>
+                <span>{t('sidebar.academicAnalytics')}</span>
               </Link>
               <Link to="/admin/analytics/attendance" className={`sidebar-link ${isActive('/admin/analytics/attendance')}`}>
                 <TrendingUpIcon size={20} className="sidebar-icon" />
-                <span>Yoklama Analitik</span>
+                <span>{t('sidebar.attendanceAnalytics')}</span>
               </Link>
               <Link to="/admin/analytics/meal" className={`sidebar-link ${isActive('/admin/analytics/meal')}`}>
                 <UtensilsIcon size={20} className="sidebar-icon" />
-                <span>Yemek Analitik</span>
+                <span>{t('sidebar.mealAnalytics')}</span>
               </Link>
               <Link to="/admin/analytics/events" className={`sidebar-link ${isActive('/admin/analytics/events')}`}>
                 <PartyPopperIcon size={20} className="sidebar-icon" />
-                <span>Etkinlik Analitik</span>
+                <span>{t('sidebar.eventAnalytics')}</span>
               </Link>
               <Link to="/admin/iot" className={`sidebar-link ${isActive('/admin/iot')}`}>
                 <ChartIcon size={20} className="sidebar-icon" />
-                <span>IoT Dashboard</span>
+                <span>{t('sidebar.iotDashboard')}</span>
               </Link>
             </div>
           </>
@@ -139,44 +140,38 @@ const Sidebar = () => {
 
         {/* Part 3: Meal Service */}
         <div className="sidebar-section">
-          <div className="sidebar-section-title">YEMEK SERVİSİ</div>
+          <div className="sidebar-section-title">{t('sidebar.foodService')}</div>
           <Link to="/meals/menu" className={`sidebar-link ${isActive('/meals/menu')}`}>
             <UtensilsIcon size={20} className="sidebar-icon" />
-            <span>Yemek Menüsü</span>
+            <span>{t('sidebar.mealMenu')}</span>
           </Link>
           <Link to="/meals/reservations" className={`sidebar-link ${isActive('/meals/reservations')}`}>
             <ClipboardIcon size={20} className="sidebar-icon" />
-            <span>Rezervasyonlarım</span>
+            <span>{t('sidebar.myReservations')}</span>
           </Link>
-          {(user?.role === 'admin' || user?.role === 'faculty') && (
-            <Link to="/meals/scan" className={`sidebar-link ${isActive('/meals/scan')}`}>
-              <QrCodeIcon size={20} className="sidebar-icon" />
-              <span>QR Kod Tarayıcı</span>
-            </Link>
-          )}
         </div>
 
         {/* Part 3: Wallet */}
         <Link to="/wallet" className={`sidebar-link ${isActive('/wallet')}`}>
           <CreditCardIcon size={20} className="sidebar-icon" />
-          <span>Cüzdan</span>
+          <span>{t('sidebar.wallet')}</span>
         </Link>
 
         {/* Part 3: Events */}
         <div className="sidebar-section">
-          <div className="sidebar-section-title">ETKİNLİKLER</div>
+          <div className="sidebar-section-title">{t('sidebar.events')}</div>
           <Link to="/events" className={`sidebar-link ${isActive('/events')}`}>
             <PartyPopperIcon size={20} className="sidebar-icon" />
-            <span>Etkinlikler</span>
+            <span>{t('sidebar.eventsList')}</span>
           </Link>
           <Link to="/my-events" className={`sidebar-link ${isActive('/my-events')}`}>
             <CalendarIcon size={20} className="sidebar-icon" />
-            <span>Etkinliklerim</span>
+            <span>{t('sidebar.myEvents')}</span>
           </Link>
           {user?.role === 'admin' && (
             <Link to="/events/checkin" className={`sidebar-link ${isActive('/events/checkin')}`}>
               <CheckIcon size={20} className="sidebar-icon" />
-              <span>Check-in</span>
+              <span>{t('sidebar.checkIn')}</span>
             </Link>
           )}
         </div>
@@ -184,25 +179,25 @@ const Sidebar = () => {
         {/* Part 3: Schedule */}
         <Link to="/schedule" className={`sidebar-link ${isActive('/schedule')}`}>
           <CalendarIcon size={20} className="sidebar-icon" />
-          <span>Ders Programı</span>
+          <span>{t('sidebar.courseSchedule')}</span>
         </Link>
 
         {/* Part 3: Classroom Reservations */}
         <Link to="/reservations" className={`sidebar-link ${isActive('/reservations')}`}>
           <BuildingIcon size={20} className="sidebar-icon" />
-          <span>Derslik Rezervasyonu</span>
+          <span>{t('sidebar.classroomReservation')}</span>
         </Link>
 
         {/* Part 4: Notifications */}
         <div className="sidebar-section">
-          <div className="sidebar-section-title">BİLDİRİMLER</div>
+          <div className="sidebar-section-title">{t('sidebar.notifications')}</div>
           <Link to="/notifications" className={`sidebar-link ${isActive('/notifications')}`}>
             <BellIcon size={20} className="sidebar-icon" />
-            <span>Bildirimler</span>
+            <span>{t('sidebar.notificationsList')}</span>
           </Link>
           <Link to="/settings/notifications" className={`sidebar-link ${isActive('/settings/notifications')}`}>
             <SettingsIcon size={20} className="sidebar-icon" />
-            <span>Bildirim Ayarları</span>
+            <span>{t('sidebar.notificationSettings')}</span>
           </Link>
         </div>
       </nav>

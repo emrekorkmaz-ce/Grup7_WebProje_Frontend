@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import { UserIcon, BookIcon, CheckCircleIcon, ClockIcon } from '../components/Icons';
 // import './MyCoursesPage.css';
 
 const MyCoursesPage = () => {
+  const { t } = useTranslation();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,7 +23,7 @@ const MyCoursesPage = () => {
         const response = await api.get('/student/my-courses');
         setCourses(response.data);
       } catch (err) {
-        setError('Dersler yüklenemedi.');
+        setError(t('courses.coursesLoadError'));
       } finally {
         setLoading(false);
       }
@@ -38,14 +40,14 @@ const MyCoursesPage = () => {
       <Navbar />
       <Sidebar />
       <main>
-        <h2 className="mb-4">Kayıtlı Derslerim</h2>
+        <h2 className="mb-4">{t('courses.registeredCourses')}</h2>
 
         {loading ? (
-          <div className="loading">Dersler yükleniyor...</div>
+          <div className="loading">{t('courses.coursesLoading')}</div>
         ) : error ? (
           <div className="error">{error}</div>
         ) : courses.length === 0 ? (
-          <div className="card text-center p-4">Henüz kayıtlı dersiniz bulunmamaktadır.</div>
+          <div className="card text-center p-4">{t('courses.noCourses')}</div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
             {courses.map((course) => (
@@ -72,7 +74,7 @@ const MyCoursesPage = () => {
                     <UserIcon size={16} /> {course.instructorName}
                   </div>
                   <div className="flex items-center gap-2">
-                    <BookIcon size={16} /> Şube: {course.sectionName || course.sectionNumber}
+                    <BookIcon size={16} /> {t('common.section')}: {course.sectionName || course.sectionNumber}
                   </div>
                 </div>
 
@@ -87,7 +89,7 @@ const MyCoursesPage = () => {
                     color: course.status === 'active' ? 'var(--success)' : 'var(--warning)',
                     textTransform: 'uppercase'
                   }}>
-                    {course.statusText || course.status || 'Aktif'}
+                    {course.statusText || course.status || t('common.active')}
                   </span>
                 </div>
               </div>

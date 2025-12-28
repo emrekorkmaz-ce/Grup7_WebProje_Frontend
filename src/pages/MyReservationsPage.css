@@ -51,6 +51,18 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+[data-theme="dark"] .reservation-card {
+  background: linear-gradient(135deg, rgba(21, 27, 46, 0.95) 0%, rgba(15, 22, 36, 0.95) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="dark"] .reservation-card:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.2), 0 0 30px rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+}
+
 .reservation-header {
   display: flex;
   justify-content: space-between;
@@ -65,9 +77,17 @@
   color: #2c3e50;
 }
 
+[data-theme="dark"] .reservation-header h3 {
+  color: #e0e7ff;
+}
+
 .date {
   color: #7f8c8d;
   font-size: 14px;
+}
+
+[data-theme="dark"] .date {
+  color: #94a3b8;
 }
 
 .status-badge {
@@ -104,6 +124,12 @@
   background: #f8f9fa;
   border-radius: 4px;
   font-size: 14px;
+}
+
+[data-theme="dark"] .detail-item {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: #e0e7ff;
 }
 
 .reservation-actions {
@@ -162,9 +188,19 @@
   text-align: center;
 }
 
+[data-theme="dark"] .qr-modal-content {
+  background: linear-gradient(135deg, rgba(21, 27, 46, 0.98) 0%, rgba(15, 22, 36, 0.98) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(99, 102, 241, 0.2), 0 0 50px rgba(99, 102, 241, 0.2);
+}
+
 .qr-modal-content h2 {
   margin-bottom: 20px;
   color: #2c3e50;
+}
+
+[data-theme="dark"] .qr-modal-content h2 {
+  color: #e0e7ff;
 }
 
 .qr-code-container {
@@ -177,6 +213,11 @@
   border-radius: 8px;
 }
 
+[data-theme="dark"] .qr-code-container {
+  background: rgba(10, 14, 26, 0.8);
+  border: 2px solid rgba(99, 102, 241, 0.3);
+}
+
 .qr-code-text {
   margin: 15px 0;
   padding: 10px;
@@ -187,10 +228,20 @@
   word-break: break-all;
 }
 
+[data-theme="dark"] .qr-code-text {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: #e0e7ff;
+}
+
 .qr-info {
   margin: 20px 0;
   text-align: left;
   color: #555;
+}
+
+[data-theme="dark"] .qr-info {
+  color: #cbd5e1;
 }
 
 .qr-info p {
@@ -233,6 +284,8 @@
   color: #7f8c8d;
   font-size: 18px;
 }
+
+
 
 
 

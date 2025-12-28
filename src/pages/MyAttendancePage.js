@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 // // import './MyAttendancePage.css'; // Removed
 
 
 const MyAttendancePage = () => {
+  const { t } = useTranslation();
   const [attendance, setAttendance] = useState([]);
   const [summary, setSummary] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +26,7 @@ const MyAttendancePage = () => {
         setAttendance(attRes.data || []);
         setSummary(sumRes.data || []);
       } catch (err) {
-        setError('Yoklama verileri yüklenemedi.');
+        setError(t('attendance.attendanceDataError'));
       } finally {
         setLoading(false);
       }
@@ -53,9 +55,9 @@ const MyAttendancePage = () => {
       });
       setExcuseModal({ open: false, sessionId: null });
       setExcuseReason('');
-      alert('Mazeret talebiniz iletildi.');
+      alert(t('attendance.excuseRequestSent'));
     } catch (err) {
-      setExcuseError('Mazeret talebi gönderilemedi.');
+      setExcuseError(t('attendance.excuseRequestFailed'));
     } finally {
       setExcuseLoading(false);
     }
@@ -69,7 +71,7 @@ const MyAttendancePage = () => {
         {/* ÖZET KARTLARI */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
           {loading ? (
-            <div style={{ color: 'var(--text-secondary)' }}>Yükleniyor...</div>
+            <div style={{ color: 'var(--text-secondary)' }}>{t('common.loading')}</div>
           ) : summary.map(item => (
             <div key={item.courseCode} className="card" style={{ padding: '1.5rem', borderLeft: item.remaining === 0 ? '4px solid #ef4444' : item.remaining <= 1 ? '4px solid #f59e0b' : '4px solid #10b981' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
@@ -79,13 +81,13 @@ const MyAttendancePage = () => {
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <span style={{ fontSize: '1.5rem', fontWeight: 800, color: item.remaining === 0 ? '#ef4444' : 'var(--text-primary)' }}>{item.remaining}</span>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>Kalan Hak</p>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>{t('attendance.remainingRights')}</p>
                 </div>
               </div>
 
               <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                <span>Devamsızlık: <b style={{ color: 'var(--text-primary)' }}>{item.absent}</b> / {item.limit}</span>
-                <span>Toplam Ders: {item.totalSessions}</span>
+                <span>{t('attendance.absence')}: <b style={{ color: 'var(--text-primary)' }}>{item.absent}</b> / {item.limit}</span>
+                <span>{t('attendance.totalClasses')}: {item.totalSessions}</span>
               </div>
 
               <div style={{ height: '8px', width: '100%', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
@@ -101,24 +103,24 @@ const MyAttendancePage = () => {
         </div>
 
         <div className="card">
-          <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem', fontWeight: 700 }}>Yoklama Geçmişi</h2>
+          <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem', fontWeight: 700 }}>{t('attendance.attendanceHistory')}</h2>
           {loading ? (
-            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>Yükleniyor...</div>
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>{t('common.loading')}</div>
           ) : error ? (
             <div style={{ padding: '1rem', background: 'rgba(239,68,68,0.1)', color: '#ef4444', borderRadius: '8px' }}>{error}</div>
           ) : attendance.length === 0 ? (
             <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)', border: '1px dashed var(--border-color)', borderRadius: '8px' }}>
-              Henüz yoklama veriniz yok.
+              {t('attendance.noAttendanceYet')}
             </div>
           ) : (
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--border-color)', textAlign: 'left' }}>
-                    <th style={{ padding: '1rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Ders</th>
-                    <th style={{ padding: '1rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Tarih</th>
-                    <th style={{ padding: '1rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Durum</th>
-                    <th style={{ padding: '1rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Mazeret</th>
+                    <th style={{ padding: '1rem', color: 'var(--text-secondary)', fontWeight: 600 }}>{t('attendance.course')}</th>
+                    <th style={{ padding: '1rem', color: 'var(--text-secondary)', fontWeight: 600 }}>{t('attendance.date')}</th>
+                    <th style={{ padding: '1rem', color: 'var(--text-secondary)', fontWeight: 600 }}>{t('attendance.statusLabel')}</th>
+                    <th style={{ padding: '1rem', color: 'var(--text-secondary)', fontWeight: 600 }}>{t('attendance.excuse')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -135,7 +137,7 @@ const MyAttendancePage = () => {
                           background: item.status === 'present' ? 'rgba(16,185,129,0.1)' : item.status === 'flagged' ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)',
                           color: item.status === 'present' ? '#10b981' : item.status === 'flagged' ? '#f59e0b' : '#ef4444'
                         }}>
-                          {item.status === 'present' ? 'Katıldı' : item.status === 'flagged' ? 'Şüpheli' : 'Katılmadı'}
+                          {item.status === 'present' ? t('attendance.status.present') : item.status === 'flagged' ? t('attendance.status.flagged') : t('attendance.status.absent')}
                         </span>
                       </td>
                       <td style={{ padding: '1rem' }}>
@@ -168,12 +170,12 @@ const MyAttendancePage = () => {
                 border: '1px solid var(--border-color)',
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
               }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem', marginTop: 0 }}>Mazeret Talep Et</h3>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem', marginTop: 0 }}>{t('attendance.requestExcuse')}</h3>
                 <div style={{ marginBottom: '1.5rem' }}>
                   <textarea
                     value={excuseReason}
                     onChange={e => setExcuseReason(e.target.value)}
-                    placeholder="Mazeret açıklamanızı ve rapor detaylarını buraya giriniz..."
+                    placeholder={t('attendance.excusePlaceholder')}
                     rows={4}
                     style={{
                       width: '100%',
@@ -203,14 +205,14 @@ const MyAttendancePage = () => {
                       cursor: 'pointer'
                     }}
                   >
-                    İptal
+                    {t('common.cancel')}
                   </button>
                   <button
                     onClick={submitExcuse}
                     disabled={excuseLoading || !excuseReason.trim()}
                     className="btn btn-primary"
                   >
-                    {excuseLoading ? 'Gönderiliyor...' : 'Gönder'}
+                    {excuseLoading ? t('attendance.sending') : t('common.submit')}
                   </button>
                 </div>
               </div>

@@ -28,6 +28,18 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+[data-theme="dark"] .summary-card {
+  background: linear-gradient(135deg, rgba(21, 27, 46, 0.95) 0%, rgba(15, 22, 36, 0.95) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="dark"] .summary-card:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.2), 0 0 30px rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+}
+
 .summary-card h3 {
   font-size: 0.9rem;
   color: var(--text-secondary);
@@ -49,6 +61,14 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
+}
+
+[data-theme="dark"] .chart-card,
+[data-theme="dark"] .table-card,
+[data-theme="dark"] .filters-card {
+  background: linear-gradient(135deg, rgba(21, 27, 46, 0.95) 0%, rgba(15, 22, 36, 0.95) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
 }
 
 .chart-card h2,
@@ -96,6 +116,10 @@
   background-color: #f9fafb;
 }
 
+[data-theme="dark"] .analytics-table thead {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+}
+
 .analytics-table th {
   padding: 0.75rem;
   text-align: left;
@@ -104,14 +128,27 @@
   border-bottom: 2px solid #e5e7eb;
 }
 
+[data-theme="dark"] .analytics-table th {
+  color: #e0e7ff;
+  border-bottom-color: rgba(99, 102, 241, 0.4);
+}
+
 .analytics-table td {
   padding: 0.75rem;
   border-bottom: 1px solid #e5e7eb;
   color: var(--text-secondary);
 }
 
+[data-theme="dark"] .analytics-table td {
+  border-bottom-color: rgba(99, 102, 241, 0.1);
+}
+
 .analytics-table tbody tr:hover {
   background-color: #f9fafb;
+}
+
+[data-theme="dark"] .analytics-table tbody tr:hover {
+  background-color: rgba(99, 102, 241, 0.1);
 }
 
 .risk-value {
@@ -130,6 +167,11 @@
   padding: 1rem;
   border-radius: 8px;
   text-align: center;
+}
+
+[data-theme="dark"] .peak-hour-card {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
 .peak-hour-card h3 {
