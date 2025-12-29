@@ -44,10 +44,17 @@
     font-weight: bold;
     cursor: pointer;
     transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .export-btn:hover {
     background: #2980b9;
+}
+
+.export-btn svg {
+    color: white;
 }
 
 .schedule-container {
@@ -66,7 +73,7 @@
 
 .schedule-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 15px;
 }
 
@@ -120,6 +127,12 @@
     color: #3498db;
     margin-bottom: 5px;
     font-size: 11px;
+    display: flex;
+    align-items: center;
+}
+
+.schedule-time svg {
+    color: #3498db;
 }
 
 .schedule-course {
@@ -154,6 +167,11 @@
     gap: 4px;
 }
 
+.schedule-classroom svg {
+    color: #95a5a6;
+    flex-shrink: 0;
+}
+
 .no-class {
     text-align: center;
     color: #bdc3c7;
@@ -166,8 +184,15 @@
 }
 
 .no-class-icon {
-    font-size: 24px;
     opacity: 0.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bdc3c7;
+}
+
+.no-class-icon svg {
+    color: #bdc3c7;
 }
 
 .no-class-text {
@@ -199,9 +224,17 @@
 }
 
 .loading-spinner {
-    font-size: 64px;
     animation: spin 2s linear infinite;
     margin-bottom: 20px;
+    color: #3498db;
+}
+
+.loading-spinner svg {
+    color: #3498db;
+}
+
+[data-theme="dark"] .loading-spinner svg {
+    color: #60a5fa;
 }
 
 @keyframes spin {
@@ -279,6 +312,14 @@
 .stat-icon {
     font-size: 36px;
     line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+}
+
+.stat-icon svg {
+    color: inherit;
 }
 
 .stat-content {
@@ -345,6 +386,14 @@
 .info-icon {
     font-size: 32px;
     line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2196f3;
+}
+
+[data-theme="dark"] .info-icon {
+    color: #60a5fa;
 }
 
 .info-content h3 {
@@ -393,9 +442,20 @@
 }
 
 .empty-schedule-icon {
-    font-size: 80px;
     margin-bottom: 20px;
     opacity: 0.6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7f8c8d;
+}
+
+.empty-schedule-icon svg {
+    color: #7f8c8d;
+}
+
+[data-theme="dark"] .empty-schedule-icon svg {
+    color: #a5b4fc;
 }
 
 .empty-schedule-content h2 {
@@ -467,7 +527,7 @@
 
 @media (max-width: 1200px) {
     .schedule-grid {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 

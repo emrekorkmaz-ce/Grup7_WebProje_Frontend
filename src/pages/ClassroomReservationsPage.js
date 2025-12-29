@@ -3,14 +3,18 @@ import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { useTranslation } from '../hooks/useTranslation';
+import { useAuth } from '../context/AuthContext';
 import './ClassroomReservationsPage.css';
 
 const ClassroomReservationsPage = () => {
   const { t, language } = useTranslation();
+  const { user } = useAuth();
   const [reservations, setReservations] = useState([]);
   const [classrooms, setClassrooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [rejectReason, setRejectReason] = useState('');
+  const [rejectingId, setRejectingId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     classroom_id: '',
@@ -19,17 +23,28 @@ const ClassroomReservationsPage = () => {
     end_time: '',
     purpose: ''
   });
+  const isAdmin = user?.role === 'admin';
+  const canCreateReservation = user?.role === 'student' || user?.role === 'faculty';
 
   useEffect(() => {
     fetchReservations();
-    fetchClassrooms();
+    if (canCreateReservation) {
+      fetchClassrooms();
+    }
   }, []);
 
   const fetchReservations = async () => {
     try {
       setLoading(true);
       const response = await api.get('/reservations');
-      setReservations(response.data.data || []);
+      let allReservations = response.data.data || [];
+      
+      // Admin ise sadece pending rezervasyonları göster
+      if (isAdmin) {
+        allReservations = allReservations.filter(r => r.status === 'pending');
+      }
+      
+      setReservations(allReservations);
       setError('');
     } catch (err) {
       setError(t('classroomReservations.loadError'));
@@ -53,7 +68,7 @@ const ClassroomReservationsPage = () => {
     e.preventDefault();
     try {
       await api.post('/reservations', formData);
-      alert(t('classroomReservations.createSuccess'));
+      alert(t('classroomReservations.createSuccess') || 'Rezervasyon talebi başarıyla oluşturuldu!');
       setShowForm(false);
       setFormData({
         classroom_id: '',
@@ -64,7 +79,29 @@ const ClassroomReservationsPage = () => {
       });
       fetchReservations();
     } catch (err) {
-      alert(err.response?.data?.error || t('classroomReservations.createError'));
+      alert(err.response?.data?.error || t('classroomReservations.createError') || 'Rezervasyon oluşturulamadı.');
+    }
+  };
+
+  const handleApprove = async (id) => {
+    try {
+      await api.put(`/reservations/${id}/approve`);
+      alert(t('classroomReservations.approveSuccess') || 'Rezervasyon onaylandı');
+      fetchReservations();
+    } catch (err) {
+      alert(err.response?.data?.error || t('classroomReservations.approveError') || 'Onaylama başarısız');
+    }
+  };
+
+  const handleReject = async (id) => {
+    try {
+      await api.put(`/reservations/${id}/reject`, { reason: rejectReason });
+      alert(t('classroomReservations.rejectSuccess') || 'Rezervasyon reddedildi');
+      setRejectingId(null);
+      setRejectReason('');
+      fetchReservations();
+    } catch (err) {
+      alert(err.response?.data?.error || t('classroomReservations.rejectError') || 'Reddetme başarısız');
     }
   };
 
@@ -85,13 +122,20 @@ const ClassroomReservationsPage = () => {
       <main>
         <div className="classroom-reservations-page">
           <div className="page-header">
-            <h1>{t('classroomReservations.title')}</h1>
-            <button onClick={() => setShowForm(!showForm)} className="new-reservation-btn">
-              {showForm ? t('classroomReservations.cancel') : t('classroomReservations.newReservation')}
-            </button>
+            <h1>
+              {isAdmin 
+                ? (t('classroomReservations.pendingRequests') || 'Bekleyen Rezervasyon İstekleri')
+                : t('classroomReservations.title')
+              }
+            </h1>
+            {canCreateReservation && (
+              <button onClick={() => setShowForm(!showForm)} className="new-reservation-btn">
+                {showForm ? t('classroomReservations.cancel') : t('classroomReservations.newReservation')}
+              </button>
+            )}
           </div>
 
-          {showForm && (
+          {canCreateReservation && showForm && (
             <div className="reservation-form-container">
               <h2>{t('classroomReservations.newReservation')}</h2>
               <form onSubmit={handleSubmit} className="reservation-form">
@@ -176,7 +220,12 @@ const ClassroomReservationsPage = () => {
           ) : (
             <div className="reservations-list">
               {reservations.length === 0 ? (
-                <div className="no-reservations">{t('classroomReservations.noReservations')}</div>
+                <div className="no-reservations">
+                  {isAdmin 
+                    ? (t('classroomReservations.noPendingRequests') || 'Bekleyen rezervasyon isteği bulunmamaktadır.')
+                    : t('classroomReservations.noReservations')
+                  }
+                </div>
               ) : (
                 reservations.map(reservation => {
                   const statusBadge = getStatusBadge(reservation.status);
@@ -202,6 +251,11 @@ const ClassroomReservationsPage = () => {
                       </div>
 
                       <div className="reservation-details">
+                        {isAdmin && reservation.user && (
+                          <div className="detail-item">
+                            <strong>{t('classroomReservations.requestedBy') || 'İsteyen:'}</strong> {reservation.user.fullName} ({reservation.user.email})
+                          </div>
+                        )}
                         <div className="detail-item">
                           <strong>{t('classroomReservations.time')}:</strong> {reservation.start_time} - {reservation.end_time}
                         </div>
@@ -212,6 +266,52 @@ const ClassroomReservationsPage = () => {
                           <strong>{t('classroomReservations.capacity')}:</strong> {reservation.classroom?.capacity} {t('classroomReservations.people')}
                         </div>
                       </div>
+
+                      {isAdmin && reservation.status === 'pending' && (
+                        <div className="reservation-actions">
+                          <button 
+                            onClick={() => handleApprove(reservation.id)}
+                            className="approve-btn"
+                          >
+                            {t('classroomReservations.approve') || 'Onayla'}
+                          </button>
+                          <button 
+                            onClick={() => setRejectingId(reservation.id)}
+                            className="reject-btn"
+                          >
+                            {t('classroomReservations.reject') || 'Reddet'}
+                          </button>
+                        </div>
+                      )}
+
+                      {rejectingId === reservation.id && (
+                        <div className="reject-form">
+                          <textarea
+                            value={rejectReason}
+                            onChange={(e) => setRejectReason(e.target.value)}
+                            placeholder={t('classroomReservations.rejectReasonPlaceholder') || 'Reddetme sebebi (opsiyonel)'}
+                            rows={3}
+                            className="reject-reason-input"
+                          />
+                          <div className="reject-form-actions">
+                            <button 
+                              onClick={() => handleReject(reservation.id)}
+                              className="confirm-reject-btn"
+                            >
+                              {t('classroomReservations.confirmReject') || 'Reddetmeyi Onayla'}
+                            </button>
+                            <button 
+                              onClick={() => {
+                                setRejectingId(null);
+                                setRejectReason('');
+                              }}
+                              className="cancel-reject-btn"
+                            >
+                              {t('classroomReservations.cancel') || 'İptal'}
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })
@@ -225,5 +325,3 @@ const ClassroomReservationsPage = () => {
 };
 
 export default ClassroomReservationsPage;
-
-
