@@ -245,16 +245,34 @@ const IoTDashboardPage = () => {
                 <div className="chart-container">
                   {sensorData.length > 0 ? (
                     <ResponsiveContainer width="100%" height={400}>
-                      <LineChart data={sensorData}>
+                      <LineChart data={sensorData.map(item => ({
+                        ...item,
+                        timestamp: new Date(item.timestamp).toLocaleString('tr-TR', {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                      }))}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="timestamp" />
+                        <XAxis 
+                          dataKey="timestamp" 
+                          angle={-45}
+                          textAnchor="end"
+                          height={80}
+                        />
                         <YAxis />
-                        <Tooltip />
+                        <Tooltip 
+                          formatter={(value) => [`${value} ${selectedSensor.unit}`, 'Değer']}
+                          labelFormatter={(label) => `Tarih: ${label}`}
+                        />
                         <Legend />
                         <Line
                           type="monotone"
                           dataKey="value"
                           stroke="#8884d8"
+                          strokeWidth={2}
+                          dot={{ r: 3 }}
                           name={`${selectedSensor.name} (${selectedSensor.unit})`}
                         />
                       </LineChart>
