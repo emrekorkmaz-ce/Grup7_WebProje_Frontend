@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './AnalyticsPage.css';
 
 const MealAnalyticsPage = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -27,7 +29,7 @@ const MealAnalyticsPage = () => {
       setData(response.data.data);
       setError('');
     } catch (err) {
-      setError('Yemek kullanım verileri yüklenemedi.');
+      setError(t('mealAnalytics.errorLoading'));
       console.error('Error fetching meal analytics:', err);
     } finally {
       setLoading(false);
@@ -52,7 +54,7 @@ const MealAnalyticsPage = () => {
       link.remove();
     } catch (err) {
       console.error('Error exporting report:', err);
-      alert('Rapor dışa aktarılamadı.');
+      alert(t('mealAnalytics.exportError'));
     }
   };
 
@@ -63,7 +65,7 @@ const MealAnalyticsPage = () => {
         <Sidebar />
         <main>
           <div className="analytics-page">
-            <div className="loading">Yükleniyor...</div>
+            <div className="loading">{t('common.loading')}</div>
           </div>
         </main>
       </div>
@@ -77,7 +79,7 @@ const MealAnalyticsPage = () => {
         <Sidebar />
         <main>
           <div className="analytics-page">
-            <div className="error-message">{error || 'Veri yüklenemedi'}</div>
+            <div className="error-message">{error || t('common.noData')}</div>
           </div>
         </main>
       </div>
@@ -91,18 +93,18 @@ const MealAnalyticsPage = () => {
       <main>
         <div className="analytics-page">
           <div className="analytics-header">
-            <h1>Yemek Kullanım Analitiği</h1>
+            <h1>{t('mealAnalytics.title')}</h1>
             <button className="btn btn-primary" onClick={handleExport}>
-              Raporu İndir (Excel)
+              {t('adminDashboard.downloadMealReport')}
             </button>
           </div>
 
           {/* Date Filters */}
           <div className="filters-card">
-            <h3>Tarih Filtreleri</h3>
+            <h3>{t('mealAnalytics.dateFilters')}</h3>
             <div className="filter-inputs">
               <div>
-                <label>Başlangıç Tarihi:</label>
+                <label>{t('mealAnalytics.startDate')}:</label>
                 <input
                   type="date"
                   value={startDate}
@@ -110,7 +112,7 @@ const MealAnalyticsPage = () => {
                 />
               </div>
               <div>
-                <label>Bitiş Tarihi:</label>
+                <label>{t('mealAnalytics.endDate')}:</label>
                 <input
                   type="date"
                   value={endDate}
@@ -118,7 +120,7 @@ const MealAnalyticsPage = () => {
                 />
               </div>
               <button className="btn btn-secondary" onClick={() => { setStartDate(''); setEndDate(''); }}>
-                Filtreleri Temizle
+                {t('mealAnalytics.clearFilters')}
               </button>
             </div>
           </div>
@@ -126,14 +128,14 @@ const MealAnalyticsPage = () => {
           {/* Summary Cards */}
           <div className="summary-cards">
             <div className="summary-card">
-              <h3>Toplam Gelir</h3>
+              <h3>{t('mealAnalytics.totalRevenue')}</h3>
               <div className="summary-value">{data.totalRevenue?.toFixed(2)} ₺</div>
             </div>
           </div>
 
           {/* Daily Meal Counts */}
           <div className="chart-card">
-            <h2>Günlük Yemek Sayıları</h2>
+            <h2>{t('mealAnalytics.dailyMealCounts')}</h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={data.dailyMealCounts}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -141,17 +143,17 @@ const MealAnalyticsPage = () => {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="breakfast" stroke="#8884d8" name="Kahvaltı" />
-                <Line type="monotone" dataKey="lunch" stroke="#82ca9d" name="Öğle Yemeği" />
-                <Line type="monotone" dataKey="dinner" stroke="#ffc658" name="Akşam Yemeği" />
-                <Line type="monotone" dataKey="total" stroke="#ff7300" name="Toplam" />
+                <Line type="monotone" dataKey="breakfast" stroke="#8884d8" name={t('mealAnalytics.breakfast')} />
+                <Line type="monotone" dataKey="lunch" stroke="#82ca9d" name={t('mealAnalytics.lunch')} />
+                <Line type="monotone" dataKey="dinner" stroke="#ffc658" name={t('mealAnalytics.dinner')} />
+                <Line type="monotone" dataKey="total" stroke="#ff7300" name={t('mealAnalytics.total')} />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
           {/* Cafeteria Utilization */}
           <div className="chart-card">
-            <h2>Kafeterya Kullanım Oranları</h2>
+            <h2>{t('mealAnalytics.cafeteriaUtilization')}</h2>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={data.cafeteriaUtilization}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -159,23 +161,23 @@ const MealAnalyticsPage = () => {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="utilizationRate" fill="#8884d8" name="Kullanım Oranı (%)" />
-                <Bar dataKey="totalReservations" fill="#82ca9d" name="Toplam Rezervasyon" />
+                <Bar dataKey="utilizationRate" fill="#8884d8" name={t('mealAnalytics.utilizationRate')} />
+                <Bar dataKey="totalReservations" fill="#82ca9d" name={t('mealAnalytics.totalReservations')} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           {/* Peak Hours */}
           <div className="chart-card">
-            <h2>Yoğun Saatler</h2>
+            <h2>{t('mealAnalytics.peakHours')}</h2>
             <div className="peak-hours-grid">
               {data.peakHours?.map((peak, index) => (
                 <div key={index} className="peak-hour-card">
-                  <h3>{peak.mealType === 'breakfast' ? 'Kahvaltı' : peak.mealType === 'lunch' ? 'Öğle Yemeği' : 'Akşam Yemeği'}</h3>
+                  <h3>{peak.mealType === 'breakfast' ? t('mealAnalytics.breakfast') : peak.mealType === 'lunch' ? t('mealAnalytics.lunch') : t('mealAnalytics.dinner')}</h3>
                   <div className="peak-hour-value">
-                    {peak.peakHour !== null ? `${peak.peakHour}:00` : 'Veri yok'}
+                    {peak.peakHour !== null ? `${peak.peakHour}:00` : t('common.noData')}
                   </div>
-                  <div className="peak-hour-count">En yüksek: {peak.peakCount} rezervasyon</div>
+                  <div className="peak-hour-count">{t('mealAnalytics.peakCount').replace('{count}', peak.peakCount)}</div>
                 </div>
               ))}
             </div>

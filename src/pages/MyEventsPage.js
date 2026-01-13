@@ -21,19 +21,19 @@ const MyEventsPage = () => {
   const fetchRegistrations = async () => {
     try {
       setLoading(true);
-      console.log('🔍 [MyEventsPage] Fetching registrations...');
+      console.log('[MyEventsPage] Fetching registrations...');
       // Get current user's event registrations
       const response = await api.get('/events/my-registrations');
-      console.log('✅ [MyEventsPage] Response:', response.data);
+      console.log('[MyEventsPage] Response:', response.data);
       const registrations = response.data.data || [];
-      console.log('📋 [MyEventsPage] Registrations:', registrations);
+      console.log('[MyEventsPage] Registrations:', registrations);
       setRegistrations(registrations);
       setError('');
     } catch (err) {
       setError(t('myEvents.loadError'));
-      console.error('❌ [MyEventsPage] Error fetching registrations:', err);
-      console.error('❌ [MyEventsPage] Error response:', err.response?.data);
-      console.error('❌ [MyEventsPage] Error status:', err.response?.status);
+      console.error('[MyEventsPage] Error fetching registrations:', err);
+      console.error('[MyEventsPage] Error response:', err.response?.data);
+      console.error('[MyEventsPage] Error status:', err.response?.status);
     } finally {
       setLoading(false);
     }

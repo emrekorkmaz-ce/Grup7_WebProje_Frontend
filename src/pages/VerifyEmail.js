@@ -26,7 +26,7 @@ const VerifyEmail = () => {
     let isMounted = true;
 
     const verifyEmail = async () => {
-      console.log('🔍 VerifyEmail: Token from URL:', token);
+      console.log('VerifyEmail: Token from URL:', token);
 
       try {
         await api.post('/auth/verify-email', { token });
@@ -36,8 +36,8 @@ const VerifyEmail = () => {
           navigate('/login');
         }, 3000);
       } catch (error) {
-        console.error('❌ Verification error:', error);
-        console.error('❌ Error response:', error.response?.data);
+        console.error('Verification error:', error);
+        console.error('Error response:', error.response?.data);
 
         // Only show error if we have a response (not a network error)
         // Network errors might be temporary, so we'll keep showing "verifying"

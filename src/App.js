@@ -24,6 +24,7 @@ import MyAttendancePage from './pages/MyAttendancePage';
 import AttendanceReportPage from './pages/AttendanceReportPage';
 import ExcuseRequestsPage from './pages/ExcuseRequestsPage';
 import EnrollCoursesPage from './pages/EnrollCoursesPage';
+import EnrollmentRequestsPage from './pages/EnrollmentRequestsPage';
 import MealMenuPage from './pages/MealMenuPage';
 import MyReservationsPage from './pages/MyReservationsPage';
 import MealScanPage from './pages/MealScanPage';
@@ -35,6 +36,7 @@ import EventCheckInPage from './pages/EventCheckInPage';
 import MySchedulePage from './pages/MySchedulePage';
 import ClassroomReservationsPage from './pages/ClassroomReservationsPage';
 import AdminDashboard from './pages/AdminDashboard';
+import CourseAssignmentPage from './pages/CourseAssignmentPage';
 import NotificationsPage from './pages/NotificationsPage';
 import AcademicAnalyticsPage from './pages/AcademicAnalyticsPage';
 import AttendanceAnalyticsPage from './pages/AttendanceAnalyticsPage';
@@ -42,6 +44,7 @@ import MealAnalyticsPage from './pages/MealAnalyticsPage';
 import EventAnalyticsPage from './pages/EventAnalyticsPage';
 import NotificationSettingsPage from './pages/NotificationSettingsPage';
 import IoTDashboardPage from './pages/IoTDashboardPage';
+import TwoFactorAuthPage from './pages/TwoFactorAuthPage';
 import './App.css';
 
 function App() {
@@ -118,6 +121,11 @@ function App() {
                 ['student'] } >
             <EnrollCoursesPage / ></ProtectedRoute>
         }
+        /> <Route path="/enrollment-requests"
+        element={ <ProtectedRoute roles={
+                ['faculty'] } >
+            <EnrollmentRequestsPage / ></ProtectedRoute>
+        }
         />{ /* Part 3: Meal Service Routes */ }<Route path="/meals/menu"
         element={ <ProtectedRoute >
             <MealMenuPage / ></ProtectedRoute>
@@ -152,8 +160,8 @@ function App() {
                 ['admin'] } >
             <EventCheckInPage / ></ProtectedRoute>
         }
-        />{ /* Part 3: Scheduling Routes */ }<Route path="/schedule"
-        element={ <ProtectedRoute >
+        />{ /* Part 3: Scheduling Routes - Sadece Öğrenci */ }<Route path="/schedule"
+        element={ <ProtectedRoute roles={['student']}>
             <MySchedulePage / ></ProtectedRoute>
         }
         />{ /* Part 3: Classroom Reservations Routes */ }<Route path="/reservations"
@@ -164,6 +172,11 @@ function App() {
         element={ <ProtectedRoute roles={
                 ['admin'] } >
             <AdminDashboard / ></ProtectedRoute>
+        }
+        /> <Route path="/admin/course-assignment"
+        element={ <ProtectedRoute roles={
+                ['admin'] } >
+            <CourseAssignmentPage / ></ProtectedRoute>
         }
         /> <Route path="/admin/analytics/academic"
         element={ <ProtectedRoute roles={
@@ -192,6 +205,10 @@ function App() {
         /> <Route path="/settings/notifications"
         element={ <ProtectedRoute >
             <NotificationSettingsPage / ></ProtectedRoute>
+        }
+        /> <Route path="/settings/2fa"
+        element={ <ProtectedRoute >
+            <TwoFactorAuthPage / ></ProtectedRoute>
         }
         />{ /* Part 4: IoT Dashboard (Bonus) */ }<Route path="/admin/iot"
         element={ <ProtectedRoute roles={

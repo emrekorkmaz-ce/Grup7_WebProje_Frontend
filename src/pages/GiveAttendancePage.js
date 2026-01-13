@@ -17,10 +17,36 @@ const GiveAttendancePage = () => {
   const [success, setSuccess] = useState(false);
   const [sessionInfo, setSessionInfo] = useState(null);
 
+  // Önce yönlendirme kontrolü - useEffect her zaman çağrılmalı
+  useEffect(() => {
+    if (!user) {
+      const currentPath = window.location.pathname;
+      navigate(`/login?redirect=${encodeURIComponent(currentPath)}`, { replace: true });
+      return;
+    }
+
+    if (user.role !== 'student') {
+      // Kullanıcı yanlış role ile giriş yapmış, çıkış yapıp öğrenci olarak giriş yapması gerekiyor
+      const currentPath = window.location.pathname;
+      navigate(`/login?redirect=${encodeURIComponent(currentPath)}&error=wrong_role&message=${encodeURIComponent(language === 'en' ? 'Please log in as a student to give attendance.' : 'Yoklama vermek için öğrenci olarak giriş yapmalısınız.')}`, { replace: true });
+      return;
+    }
+  }, [user, navigate, language]);
+
+  // GPS konum alma - sadece öğrenci için
   useEffect(() => {
     // ProtectedRoute zaten authentication ve role kontrolü yapıyor
     // Burada sadece konum alıyoruz
-    if (!user || user.role !== 'student') return;
+    if (!user || user.role !== 'student') {
+      setLoading(false);
+      return;
+    }
+
+    if (!sessionId) {
+      setError(language === 'en' ? 'Invalid attendance session ID.' : 'Geçersiz yoklama oturum ID\'si.');
+      setLoading(false);
+      return;
+    }
 
     if (!('geolocation' in navigator)) {
       setError(t('attendance.locationError'));
@@ -30,15 +56,25 @@ const GiveAttendancePage = () => {
     
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setLocation({ 
+          lat: pos.coords.latitude, 
+          lng: pos.coords.longitude,
+          accuracy: pos.coords.accuracy || 10
+        });
         setLoading(false);
       },
-      () => {
+      (err) => {
+        console.error('Geolocation error:', err);
         setError(t('attendance.locationPermissionError'));
         setLoading(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
       }
     );
-  }, [user]);
+  }, [user, sessionId, language, t]);
 
   const handleGiveAttendance = async () => {
     if (!location || !user || user.role !== 'student') return;
@@ -61,7 +97,12 @@ const GiveAttendancePage = () => {
   };
 
   // Loading durumu - ProtectedRoute zaten kontrol ediyor ama ekstra güvenlik için
-  if (authLoading || !user || user.role !== 'student') {
+  if (authLoading) {
+    return <Loading />;
+  }
+
+  // Eğer kullanıcı yoksa veya student değilse, yönlendirme yapılıyor, burada bir şey gösterme
+  if (!user || user.role !== 'student') {
     return <Loading />;
   }
 

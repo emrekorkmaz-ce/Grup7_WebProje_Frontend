@@ -93,7 +93,17 @@ const IoTDashboardPage = () => {
         }
       });
 
-      setSensorData(response.data.data?.data || []);
+      // Backend'den gelen veri formatı: response.data.data.data
+      const sensorDataArray = response.data?.data?.data || response.data?.data || [];
+      
+      // Veriyi chart formatına dönüştür
+      const formattedData = sensorDataArray.map(item => ({
+        timestamp: item.timestamp || item.time || new Date().toISOString(),
+        value: parseFloat(item.value) || 0,
+        unit: item.unit || selectedSensor.unit
+      }));
+
+      setSensorData(formattedData);
     } catch (err) {
       console.error('Error fetching sensor data:', err);
     }
@@ -245,26 +255,25 @@ const IoTDashboardPage = () => {
                 <div className="chart-container">
                   {sensorData.length > 0 ? (
                     <ResponsiveContainer width="100%" height={400}>
-                      <LineChart data={sensorData.map(item => ({
-                        ...item,
-                        timestamp: new Date(item.timestamp).toLocaleString('tr-TR', {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })
-                      }))}>
+                      <LineChart data={sensorData}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis 
                           dataKey="timestamp" 
-                          angle={-45}
-                          textAnchor="end"
-                          height={80}
+                          tickFormatter={(value) => {
+                            const date = new Date(value);
+                            if (timeRange === '24h') {
+                              return date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+                            }
+                            return date.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit' });
+                          }}
                         />
                         <YAxis />
                         <Tooltip 
+                          labelFormatter={(value) => {
+                            const date = new Date(value);
+                            return date.toLocaleString('tr-TR');
+                          }}
                           formatter={(value) => [`${value} ${selectedSensor.unit}`, 'Değer']}
-                          labelFormatter={(label) => `Tarih: ${label}`}
                         />
                         <Legend />
                         <Line
@@ -272,13 +281,23 @@ const IoTDashboardPage = () => {
                           dataKey="value"
                           stroke="#8884d8"
                           strokeWidth={2}
-                          dot={{ r: 3 }}
+                          dot={{ r: 4 }}
                           name={`${selectedSensor.name} (${selectedSensor.unit})`}
                         />
                       </LineChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="no-data">Veri bulunmamaktadır.</div>
+                    <div className="no-data" style={{ 
+                      padding: '3rem', 
+                      textAlign: 'center', 
+                      color: 'var(--text-secondary)',
+                      fontSize: '1.1rem'
+                    }}>
+                      Veri bulunmamaktadır.
+                      <div style={{ marginTop: '1rem', fontSize: '0.9rem' }}>
+                        "Veri Ekle" butonuna tıklayarak sensör verisi ekleyebilirsiniz.
+                      </div>
+                    </div>
                   )}
                 </div>
 

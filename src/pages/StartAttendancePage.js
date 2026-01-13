@@ -3,7 +3,7 @@ import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { useTranslation } from '../hooks/useTranslation';
-import { MegaphoneIcon, CheckCircleIcon, CopyIcon, BookIcon } from '../components/Icons';
+import { MegaphoneIcon, CheckCircleIcon, CopyIcon, BookIcon, QrCodeIcon } from '../components/Icons';
 import './StartAttendancePage.css';
 
 const StartAttendancePage = () => {
@@ -353,7 +353,10 @@ const StartAttendancePage = () => {
                   boxShadow: 'var(--shadow-lg)',
                   border: '1px solid var(--border-color)'
                 }}>
-                  <h3 style={{ color: 'var(--text-primary)', marginBottom: '1.5rem' }}>📱 {language === 'en' ? 'Scan QR Code' : 'QR Kodu Tarayın'}</h3>
+                  <h3 style={{ color: 'var(--text-primary)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <QrCodeIcon size={20} />
+                    {language === 'en' ? 'Scan QR Code' : 'QR Kodu Tarayın'}
+                  </h3>
                   <img
                     src={qrCode}
                     alt={language === 'en' ? 'Attendance QR Code' : 'Yoklama QR Kodu'}

@@ -621,6 +621,23 @@ export const QrCodeIcon = ({ size = 20, color = 'currentColor', ...props }) => (
     /svg>
 );
 
+export const XIcon = ({ size = 20, color = 'currentColor', ...props }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={color}
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+);
+
 export const CheckIcon = ({ size = 20, color = 'currentColor', ...props }) => ( <
     svg width = { size }
     height = { size }
@@ -739,5 +756,40 @@ export const SparklesIcon = ({ size = 20, color = 'currentColor', ...props }) =>
     path d = "M18 12h4" > < /path> <
     path d = "M4.93 19.07l2.83-2.83" > < /path> <
     path d = "M16.24 7.76l2.83-2.83" > < /path> <
+    /svg>
+);
+
+export const WifiIcon = ({ size = 20, color = 'currentColor', ...props }) => ( <
+    svg width = { size }
+    height = { size }
+    viewBox = "0 0 24 24"
+    fill = "none"
+    stroke = { color }
+    strokeWidth = "2"
+    strokeLinecap = "round"
+    strokeLinejoin = "round" {...props } >
+    <
+    path d = "M5 12.55a11 11 0 0 1 14.08 0" > < /path> <
+    path d = "M1.42 9a16 16 0 0 1 21.16 0" > < /path> <
+    path d = "M8.53 16.11a6 6 0 0 1 6.95 0" > < /path> <
+    line x1 = "12"
+    y1 = "20"
+    x2 = "12.01"
+    y2 = "20" > < /line> <
+    /svg>
+);
+
+export const SchoolIcon = ({ size = 20, color = 'currentColor', ...props }) => ( <
+    svg width = { size }
+    height = { size }
+    viewBox = "0 0 24 24"
+    fill = "none"
+    stroke = { color }
+    strokeWidth = "2"
+    strokeLinecap = "round"
+    strokeLinejoin = "round" {...props } >
+    <
+    path d = "M22 10v6M2 10l10-5 10 5-10 5z" > < /path> <
+    path d = "M6 12v5c3 3 9 3 12 0v-5" > < /path> <
     /svg>
 );

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './AnalyticsPage.css';
 
 const AttendanceAnalyticsPage = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -27,7 +29,7 @@ const AttendanceAnalyticsPage = () => {
       setData(response.data.data);
       setError('');
     } catch (err) {
-      setError('Yoklama analitiği verileri yüklenemedi.');
+      setError(t('attendanceAnalytics.errorLoading'));
       console.error('Error fetching attendance analytics:', err);
     } finally {
       setLoading(false);
@@ -52,7 +54,7 @@ const AttendanceAnalyticsPage = () => {
       link.remove();
     } catch (err) {
       console.error('Error exporting report:', err);
-      alert('Rapor dışa aktarılamadı.');
+      alert(t('attendanceAnalytics.exportError'));
     }
   };
 
@@ -63,7 +65,7 @@ const AttendanceAnalyticsPage = () => {
         <Sidebar />
         <main>
           <div className="analytics-page">
-            <div className="loading">Yükleniyor...</div>
+            <div className="loading">{t('common.loading')}</div>
           </div>
         </main>
       </div>
@@ -77,7 +79,7 @@ const AttendanceAnalyticsPage = () => {
         <Sidebar />
         <main>
           <div className="analytics-page">
-            <div className="error-message">{error || 'Veri yüklenemedi'}</div>
+            <div className="error-message">{error || t('common.noData')}</div>
           </div>
         </main>
       </div>
@@ -91,18 +93,18 @@ const AttendanceAnalyticsPage = () => {
       <main>
         <div className="analytics-page">
           <div className="analytics-header">
-            <h1>Yoklama Analitiği</h1>
+            <h1>{t('attendanceAnalytics.title')}</h1>
             <button className="btn btn-primary" onClick={handleExport}>
-              Raporu İndir (Excel)
+              {t('adminDashboard.downloadAttendanceReport')}
             </button>
           </div>
 
           {/* Date Filters */}
           <div className="filters-card">
-            <h3>Tarih Filtreleri</h3>
+            <h3>{t('attendanceAnalytics.dateFilters')}</h3>
             <div className="filter-inputs">
               <div>
-                <label>Başlangıç Tarihi:</label>
+                <label>{t('attendanceAnalytics.startDate')}:</label>
                 <input
                   type="date"
                   value={startDate}
@@ -110,7 +112,7 @@ const AttendanceAnalyticsPage = () => {
                 />
               </div>
               <div>
-                <label>Bitiş Tarihi:</label>
+                <label>{t('attendanceAnalytics.endDate')}:</label>
                 <input
                   type="date"
                   value={endDate}
@@ -118,14 +120,14 @@ const AttendanceAnalyticsPage = () => {
                 />
               </div>
               <button className="btn btn-secondary" onClick={() => { setStartDate(''); setEndDate(''); }}>
-                Filtreleri Temizle
+                {t('attendanceAnalytics.clearFilters')}
               </button>
             </div>
           </div>
 
           {/* Attendance by Course Chart */}
           <div className="chart-card">
-            <h2>Derslere Göre Yoklama Oranı</h2>
+            <h2>{t('attendanceAnalytics.attendanceByCourse')}</h2>
             <ResponsiveContainer width="100%" height={400}>
               <BarChart data={data.attendanceByCourse?.slice(0, 20)}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -133,14 +135,14 @@ const AttendanceAnalyticsPage = () => {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="attendanceRate" fill="#8884d8" name="Yoklama Oranı (%)" />
+                <Bar dataKey="attendanceRate" fill="#8884d8" name={t('attendanceAnalytics.attendanceRate')} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           {/* Attendance Trends */}
           <div className="chart-card">
-            <h2>Yoklama Trendleri (Zaman İçinde)</h2>
+            <h2>{t('attendanceAnalytics.attendanceTrends')}</h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={data.attendanceTrends}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -148,23 +150,23 @@ const AttendanceAnalyticsPage = () => {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="attendanceRate" stroke="#8884d8" name="Yoklama Oranı (%)" />
+                <Line type="monotone" dataKey="attendanceRate" stroke="#8884d8" name={t('attendanceAnalytics.attendanceRate')} />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
           {/* Critical Absence Students */}
           <div className="table-card">
-            <h2>Kritik Yoklama Oranına Sahip Öğrenciler (&lt; %70)</h2>
+            <h2>{t('attendanceAnalytics.criticalAbsenceStudents')}</h2>
             <table className="analytics-table">
               <thead>
                 <tr>
-                  <th>Öğrenci No</th>
-                  <th>Ad Soyad</th>
-                  <th>Bölüm</th>
-                  <th>Yoklama Oranı</th>
-                  <th>Toplam Mevcut</th>
-                  <th>Toplam Beklenen</th>
+                  <th>{t('academicAnalytics.studentNumber')}</th>
+                  <th>{t('academicAnalytics.fullName')}</th>
+                  <th>{t('academicAnalytics.department')}</th>
+                  <th>{t('attendanceAnalytics.attendanceRate')}</th>
+                  <th>{t('attendanceAnalytics.totalPresent')}</th>
+                  <th>{t('attendanceAnalytics.totalExpected')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -186,15 +188,15 @@ const AttendanceAnalyticsPage = () => {
 
           {/* Low Attendance Courses */}
           <div className="table-card">
-            <h2>Düşük Yoklama Oranına Sahip Dersler (&lt; %70)</h2>
+            <h2>{t('attendanceAnalytics.lowAttendanceCourses')}</h2>
             <table className="analytics-table">
               <thead>
                 <tr>
-                  <th>Ders Kodu</th>
-                  <th>Ders Adı</th>
-                  <th>Yoklama Oranı</th>
-                  <th>Toplam Oturum</th>
-                  <th>Toplam Kayıt</th>
+                  <th>{t('attendanceAnalytics.courseCode')}</th>
+                  <th>{t('attendanceAnalytics.courseName')}</th>
+                  <th>{t('attendanceAnalytics.attendanceRate')}</th>
+                  <th>{t('attendanceAnalytics.totalSessions')}</th>
+                  <th>{t('attendanceAnalytics.totalRecords')}</th>
                 </tr>
               </thead>
               <tbody>

@@ -21,8 +21,14 @@ RUN printf 'server { \
   server_name _; \
   root /usr/share/nginx/html; \
   index index.html; \
+  add_header Cache-Control "no-cache, no-store, must-revalidate" always; \
+  add_header Pragma "no-cache" always; \
+  add_header Expires "0" always; \
   location / { try_files $uri $uri/ /index.html; } \
-  location /static/ { try_files $uri =404; } \
+  location /static/ { \
+    try_files $uri =404; \
+    add_header Cache-Control "public, max-age=31536000, immutable"; \
+  } \
   location /api/ { \
     proxy_pass http://campus_backend:5000; \
     proxy_http_version 1.1; \

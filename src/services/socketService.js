@@ -11,7 +11,7 @@ class SocketService {
       return;
     }
 
-    // Extract base URL from API URL (remove /api/v1)
+    // Get backend URL from environment variable or use default
     const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
     const backendUrl = apiUrl.replace('/api/v1', '') || 'http://localhost:5000';
     
@@ -113,4 +113,3 @@ class SocketService {
 
 const socketService = new SocketService();
 export default socketService;
-

@@ -22,8 +22,10 @@ const GradesPage = () => {
   useEffect(() => {
     if (user?.role === 'faculty') {
       fetchFacultySections();
+    } else if (user?.role === 'student') {
+      fetchStudentGrades();
     }
-  }, [user]);
+  }, [user, language]);
 
   const fetchStudentGrades = async () => {
     setLoading(true);
@@ -60,12 +62,15 @@ const GradesPage = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'transkript.pdf');
+      link.setAttribute('download', language === 'en' ? 'transcript.xlsx' : 'transkript.xlsx');
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
     } catch (err) {
-      alert(t('grades.transcriptDownloadFailed'));
+      console.error('Transcript download error:', err);
+      alert(language === 'en' 
+        ? 'Failed to download transcript: ' + (err.response?.data?.error || err.message)
+        : 'Transkript indirilemedi: ' + (err.response?.data?.error || err.message));
     }
   };
 
@@ -208,11 +213,15 @@ const GradesPage = () => {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
             <div className="gpa-card" style={{ background: 'var(--card-bg)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
               <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>{language === 'en' ? 'Semester GPA (GPA)' : 'Dönem Ortalaması (GNO)'}</div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--accent-color)' }}>{gpa !== null ? gpa : '-'}</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--accent-color)' }}>
+                {gpa !== null ? parseFloat(gpa).toFixed(2) : '-'}
+              </div>
             </div>
             <div className="gpa-card" style={{ background: 'var(--card-bg)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
               <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>{language === 'en' ? 'Overall GPA (CGPA)' : 'Genel Ortalama (AGNO)'}</div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--success)' }}>{cgpa !== null ? cgpa : '-'}</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--success)' }}>
+                {cgpa !== null ? parseFloat(cgpa).toFixed(2) : '-'}
+              </div>
             </div>
           </div>
 

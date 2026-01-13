@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-import { BookIcon, GraduationCapIcon, CalendarIcon, SettingsIcon, CheckCircleIcon, ClockIcon } from '../components/Icons';
+import { BookIcon, GraduationCapIcon, CalendarIcon, SettingsIcon, CheckCircleIcon, ClockIcon, ChartIcon, BarChartIcon, TrendingUpIcon, WifiIcon, UtensilsIcon, ClipboardIcon, CreditCardIcon, PartyPopperIcon, SchoolIcon } from '../components/Icons';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -94,17 +94,65 @@ const Dashboard = () => {
           <div className="card admin-panel-card" style={{ marginBottom: '1.5rem', borderLeft: '4px solid var(--accent-color)' }}>
             <h3 className="mb-4">{t('dashboard.adminPanel')}</h3>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <button className="btn btn-primary" onClick={() => navigate('/admin/dashboard')}>
-                📊 {t('sidebar.adminDashboard')}
+              <button className="btn btn-primary" onClick={() => navigate('/admin/dashboard')} style={{
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--accent-color)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'white',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
+                <ChartIcon size={18} />
+                <span style={{ color: 'white' }}>{t('sidebar.adminDashboard')}</span>
               </button>
-              <button className="btn btn-primary" onClick={() => navigate('/admin/analytics/academic')}>
-                📈 {t('sidebar.academicAnalytics')}
+              <button className="btn btn-primary" onClick={() => navigate('/admin/analytics/academic')} style={{
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--accent-color)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'white',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
+                <BarChartIcon size={18} />
+                <span style={{ color: 'white' }}>{t('sidebar.academicAnalytics')}</span>
               </button>
-              <button className="btn btn-primary" onClick={() => navigate('/admin/analytics/attendance')}>
-                📉 {t('sidebar.attendanceAnalytics')}
+              <button className="btn btn-primary" onClick={() => navigate('/admin/analytics/attendance')} style={{
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--accent-color)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'white',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
+                <TrendingUpIcon size={18} />
+                <span style={{ color: 'white' }}>{t('sidebar.attendanceAnalytics')}</span>
               </button>
-              <button className="btn btn-primary" onClick={() => navigate('/admin/iot')}>
-                📡 {t('sidebar.iotDashboard')}
+              <button className="btn btn-primary" onClick={() => navigate('/admin/iot')} style={{
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--accent-color)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'white',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
+                <WifiIcon size={18} />
+                <span style={{ color: 'white' }}>{t('sidebar.iotDashboard')}</span>
               </button>
             </div>
           </div>
@@ -172,21 +220,77 @@ const Dashboard = () => {
           <div className="card">
             <h3 className="mb-4">{t('dashboard.quickAccess')}</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <button className="btn btn-secondary" onClick={() => handleAction('courses')} style={{ justifyContent: 'start', height: '100%' }}>
+              <button className="btn btn-secondary" onClick={() => handleAction('courses')} style={{ 
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                background: 'transparent',
+                justifyContent: 'start', 
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'var(--text-primary)',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
                 <BookIcon size={18} color="var(--accent-color)" />
-                <span>{t('dashboard.myCourses')}</span>
+                <span style={{ color: 'var(--text-primary)' }}>{t('dashboard.myCourses')}</span>
               </button>
-              <button className="btn btn-secondary" onClick={() => handleAction('grades')} style={{ justifyContent: 'start', height: '100%' }}>
+              <button className="btn btn-secondary" onClick={() => handleAction('grades')} style={{ 
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                background: 'transparent',
+                justifyContent: 'start', 
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'var(--text-primary)',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
                 <GraduationCapIcon size={18} color="var(--accent-color)" />
-                <span>{t('dashboard.gradeList')}</span>
+                <span style={{ color: 'var(--text-primary)' }}>{t('dashboard.gradeList')}</span>
               </button>
-              <button className="btn btn-secondary" onClick={() => handleAction('schedule')} style={{ justifyContent: 'start', height: '100%' }}>
+              <button className="btn btn-secondary" onClick={() => handleAction('schedule')} style={{ 
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                background: 'transparent',
+                justifyContent: 'start', 
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'var(--text-primary)',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
                 <CalendarIcon size={18} color="var(--accent-color)" />
-                <span>{t('dashboard.courseSchedule')}</span>
+                <span style={{ color: 'var(--text-primary)' }}>{t('dashboard.courseSchedule')}</span>
               </button>
-              <button className="btn btn-secondary" onClick={() => handleAction('settings')} style={{ justifyContent: 'start', height: '100%' }}>
+              <button className="btn btn-secondary" onClick={() => handleAction('settings')} style={{ 
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                background: 'transparent',
+                justifyContent: 'start', 
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'var(--text-primary)',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
                 <SettingsIcon size={18} color="var(--text-secondary)" />
-                <span>{t('dashboard.accountSettings')}</span>
+                <span style={{ color: 'var(--text-primary)' }}>{t('dashboard.accountSettings')}</span>
               </button>
             </div>
           </div>
@@ -195,13 +299,41 @@ const Dashboard = () => {
           <div className="card">
             <h3 className="mb-4">{t('dashboard.mealService')}</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <button className="btn btn-secondary" onClick={() => handleAction('meals')} style={{ justifyContent: 'start', height: '100%' }}>
-                <span style={{ fontSize: '20px', marginRight: '8px' }}>🍽️</span>
-                <span>{t('dashboard.mealMenu')}</span>
+              <button className="btn btn-secondary" onClick={() => handleAction('meals')} style={{ 
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                background: 'transparent',
+                justifyContent: 'start', 
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'var(--text-primary)',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
+                <UtensilsIcon size={18} color="var(--accent-color)" />
+                <span style={{ color: 'var(--text-primary)' }}>{t('dashboard.mealMenu')}</span>
               </button>
-              <button className="btn btn-secondary" onClick={() => navigate('/meals/reservations')} style={{ justifyContent: 'start', height: '100%' }}>
-                <span style={{ fontSize: '20px', marginRight: '8px' }}>📋</span>
-                <span>{t('dashboard.myReservations')}</span>
+              <button className="btn btn-secondary" onClick={() => navigate('/meals/reservations')} style={{ 
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                background: 'transparent',
+                justifyContent: 'start', 
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'var(--text-primary)',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
+                <ClipboardIcon size={18} color="var(--accent-color)" />
+                <span style={{ color: 'var(--text-primary)' }}>{t('dashboard.myReservations')}</span>
               </button>
             </div>
           </div>
@@ -210,21 +342,77 @@ const Dashboard = () => {
           <div className="card">
             <h3 className="mb-4">{t('dashboard.campusLife')}</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <button className="btn btn-secondary" onClick={() => handleAction('wallet')} style={{ justifyContent: 'start', height: '100%' }}>
-                <span style={{ fontSize: '20px', marginRight: '8px' }}>💳</span>
-                <span>{t('dashboard.wallet')}</span>
+              <button className="btn btn-secondary" onClick={() => handleAction('wallet')} style={{ 
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                background: 'transparent',
+                justifyContent: 'start', 
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'var(--text-primary)',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
+                <CreditCardIcon size={18} color="var(--accent-color)" />
+                <span style={{ color: 'var(--text-primary)' }}>{t('dashboard.wallet')}</span>
               </button>
-              <button className="btn btn-secondary" onClick={() => handleAction('events')} style={{ justifyContent: 'start', height: '100%' }}>
-                <span style={{ fontSize: '20px', marginRight: '8px' }}>🎉</span>
-                <span>{t('dashboard.events')}</span>
+              <button className="btn btn-secondary" onClick={() => handleAction('events')} style={{ 
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                background: 'transparent',
+                justifyContent: 'start', 
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'var(--text-primary)',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
+                <PartyPopperIcon size={18} color="var(--accent-color)" />
+                <span style={{ color: 'var(--text-primary)' }}>{t('dashboard.events')}</span>
               </button>
-              <button className="btn btn-secondary" onClick={() => navigate('/my-events')} style={{ justifyContent: 'start', height: '100%' }}>
-                <span style={{ fontSize: '20px', marginRight: '8px' }}>📅</span>
-                <span>{t('dashboard.myEvents')}</span>
+              <button className="btn btn-secondary" onClick={() => navigate('/my-events')} style={{ 
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                background: 'transparent',
+                justifyContent: 'start', 
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'var(--text-primary)',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
+                <CalendarIcon size={18} color="var(--accent-color)" />
+                <span style={{ color: 'var(--text-primary)' }}>{t('dashboard.myEvents')}</span>
               </button>
-              <button className="btn btn-secondary" onClick={() => handleAction('reservations')} style={{ justifyContent: 'start', height: '100%' }}>
-                <span style={{ fontSize: '20px', marginRight: '8px' }}>🏫</span>
-                <span>{t('dashboard.classroomReservation')}</span>
+              <button className="btn btn-secondary" onClick={() => handleAction('reservations')} style={{ 
+                padding: '1rem',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                background: 'transparent',
+                justifyContent: 'start', 
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'var(--text-primary)',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}>
+                <SchoolIcon size={18} color="var(--accent-color)" />
+                <span style={{ color: 'var(--text-primary)' }}>{t('dashboard.classroomReservation')}</span>
               </button>
             </div>
           </div>

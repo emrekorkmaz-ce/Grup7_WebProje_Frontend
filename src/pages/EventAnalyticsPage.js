@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { useTranslation } from '../hooks/useTranslation';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './AnalyticsPage.css';
 
 const EventAnalyticsPage = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -21,7 +23,7 @@ const EventAnalyticsPage = () => {
       setData(response.data.data);
       setError('');
     } catch (err) {
-      setError('Etkinlik analitiği verileri yüklenemedi.');
+      setError(t('eventAnalytics.errorLoading'));
       console.error('Error fetching event analytics:', err);
     } finally {
       setLoading(false);
@@ -42,7 +44,7 @@ const EventAnalyticsPage = () => {
       link.remove();
     } catch (err) {
       console.error('Error exporting report:', err);
-      alert('Rapor dışa aktarılamadı.');
+      alert(t('eventAnalytics.exportError'));
     }
   };
 
@@ -55,7 +57,7 @@ const EventAnalyticsPage = () => {
         <Sidebar />
         <main>
           <div className="analytics-page">
-            <div className="loading">Yükleniyor...</div>
+            <div className="loading">{t('common.loading')}</div>
           </div>
         </main>
       </div>
@@ -69,7 +71,7 @@ const EventAnalyticsPage = () => {
         <Sidebar />
         <main>
           <div className="analytics-page">
-            <div className="error-message">{error || 'Veri yüklenemedi'}</div>
+            <div className="error-message">{error || t('common.noData')}</div>
           </div>
         </main>
       </div>
@@ -83,27 +85,27 @@ const EventAnalyticsPage = () => {
       <main>
         <div className="analytics-page">
           <div className="analytics-header">
-            <h1>Etkinlik Analitiği</h1>
+            <h1>{t('eventAnalytics.title')}</h1>
             <button className="btn btn-primary" onClick={handleExport}>
-              Raporu İndir (Excel)
+              {t('adminDashboard.downloadEventReport')}
             </button>
           </div>
 
           {/* Summary Cards */}
           <div className="summary-cards">
             <div className="summary-card">
-              <h3>Ortalama Kayıt Oranı</h3>
+              <h3>{t('eventAnalytics.averageRegistrationRate')}</h3>
               <div className="summary-value">{data.averageRegistrationRate}%</div>
             </div>
             <div className="summary-card">
-              <h3>Ortalama Check-in Oranı</h3>
+              <h3>{t('eventAnalytics.averageCheckInRate')}</h3>
               <div className="summary-value">{data.averageCheckInRate}%</div>
             </div>
           </div>
 
           {/* Popular Events */}
           <div className="chart-card">
-            <h2>En Popüler Etkinlikler</h2>
+            <h2>{t('eventAnalytics.popularEvents')}</h2>
             <ResponsiveContainer width="100%" height={400}>
               <BarChart data={data.popularEvents}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -111,15 +113,15 @@ const EventAnalyticsPage = () => {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="registeredCount" fill="#8884d8" name="Kayıt Sayısı" />
-                <Bar dataKey="capacity" fill="#82ca9d" name="Kapasite" />
+                <Bar dataKey="registeredCount" fill="#8884d8" name={t('eventAnalytics.registrationCount')} />
+                <Bar dataKey="capacity" fill="#82ca9d" name={t('eventAnalytics.capacity')} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           {/* Category Breakdown */}
           <div className="chart-card">
-            <h2>Kategori Dağılımı</h2>
+            <h2>{t('eventAnalytics.categoryBreakdown')}</h2>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -143,14 +145,14 @@ const EventAnalyticsPage = () => {
 
           {/* Events with Check-ins */}
           <div className="table-card">
-            <h2>Etkinlik Check-in Oranları</h2>
+            <h2>{t('eventAnalytics.eventsWithCheckIns')}</h2>
             <table className="analytics-table">
               <thead>
                 <tr>
-                  <th>Etkinlik</th>
-                  <th>Toplam Kayıt</th>
-                  <th>Check-in Yapılan</th>
-                  <th>Check-in Oranı</th>
+                  <th>{t('eventAnalytics.event')}</th>
+                  <th>{t('eventAnalytics.totalRegistrations')}</th>
+                  <th>{t('eventAnalytics.checkedIn')}</th>
+                  <th>{t('eventAnalytics.checkInRate')}</th>
                 </tr>
               </thead>
               <tbody>
