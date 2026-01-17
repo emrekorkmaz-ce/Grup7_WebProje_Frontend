@@ -20,7 +20,6 @@ import {
   ClipboardIcon,
   CameraIcon,
   CreditCardIcon,
-  CheckIcon,
   SchoolIcon,
   BellIcon,
   SettingsIcon
@@ -62,10 +61,13 @@ const Sidebar = () => {
             <span>{t('sidebar.courseAssignment')}</span>
           </Link>
         )}
-        <Link to="/grades" className={`sidebar-link ${isActive('/grades')}`}>
-          <GraduationCapIcon size={20} className="sidebar-icon" />
-          <span>{t('sidebar.grades')}</span>
-        </Link>
+        {/* Notlar - Sadece Admin dışındaki kullanıcılar için */}
+        {user?.role !== 'admin' && (
+          <Link to="/grades" className={`sidebar-link ${isActive('/grades')}`}>
+            <GraduationCapIcon size={20} className="sidebar-icon" />
+            <span>{t('sidebar.grades')}</span>
+          </Link>
+        )}
 
         {/* Yoklama Menüsü */}
         <div className="sidebar-section">
@@ -185,12 +187,6 @@ const Sidebar = () => {
             <CalendarIcon size={20} className="sidebar-icon" />
             <span>{t('sidebar.myEvents')}</span>
           </Link>
-          {user?.role === 'admin' && (
-            <Link to="/events/checkin" className={`sidebar-link ${isActive('/events/checkin')}`}>
-              <CheckIcon size={20} className="sidebar-icon" />
-              <span>{t('sidebar.checkIn')}</span>
-            </Link>
-          )}
         </div>
 
         {/* Part 3: Schedule - Sadece Öğrenci */}
